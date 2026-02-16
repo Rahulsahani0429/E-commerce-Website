@@ -1,22 +1,26 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { API_BASE_URL } from '../config';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const categories = [
-    { name: 'All Products', icon: '🏠', path: '/shop' },
-    { name: 'Mobiles', icon: '📱', path: '/shop?category=Mobiles' },
-    { name: 'Electronics', icon: '💻', path: '/shop?category=Electronics' },
-    { name: 'Fashion', icon: '👕', path: '/shop?category=Fashion' },
-    { name: 'Home & Furniture', icon: '🛋️', path: '/shop?category=Home%20%26%20Furniture' },
-    { name: 'Appliances', icon: '📺', path: '/shop?category=Appliances' },
-    { name: 'Grocery', icon: '🛒', path: '/shop?category=Grocery' },
-    { name: 'Travel', icon: '✈️', path: '/shop?category=Travel' },
-    { name: 'Beauty', icon: '💄', path: '/shop?category=Beauty' }
+    { name: "All Products", icon: "🏠", path: "/shop" },
+    { name: "Mobiles", icon: "📱", path: "/shop?category=Mobiles" },
+    { name: "Electronics", icon: "💻", path: "/shop?category=Electronics" },
+    { name: "Fashion", icon: "👕", path: "/shop?category=Fashion" },
+    {
+      name: "Home & Furniture",
+      icon: "🛋️",
+      path: "/shop?category=Home%20%26%20Furniture",
+    },
+    { name: "Appliances", icon: "📺", path: "/shop?category=Appliances" },
+    { name: "Grocery", icon: "🛒", path: "/shop?category=Grocery" },
+    { name: "Travel", icon: "✈️", path: "/shop?category=Travel" },
+    { name: "Beauty", icon: "💄", path: "/shop?category=Beauty" },
   ];
 
   useEffect(() => {
@@ -25,17 +29,17 @@ const Home = () => {
         // Add timestamp to prevent caching
         const timestamp = new Date().getTime();
         const url = `${API_BASE_URL}/api/products?isFeatured=true&_t=${timestamp}`;
-        console.log('Fetching deals from:', url);
-        
+        console.log("Fetching deals from:", url);
+
         const { data } = await axios.get(url);
-        console.log('Deals received:', data);
-        console.log('Number of featured products:', data.length);
-        
+        console.log("Deals received:", data);
+        console.log("Number of featured products:", data.length);
+
         setProducts(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching deals:', error);
-        console.error('Error details:', error.response?.data || error.message);
+        console.error("Error fetching deals:", error);
+        console.error("Error details:", error.response?.data || error.message);
         setLoading(false);
       }
     };
@@ -53,12 +57,12 @@ const Home = () => {
     "https://picsum.photos/id/40/1600/400",
     "https://picsum.photos/id/50/1600/400",
     "https://picsum.photos/id/60/1600/400",
-    "https://picsum.photos/id/70/1600/400"
+    "https://picsum.photos/id/70/1600/400",
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveBanner(prev => (prev + 1) % banners.length);
+      setActiveBanner((prev) => (prev + 1) % banners.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
@@ -69,11 +73,7 @@ const Home = () => {
       <div className="category-bar">
         <div className="container cat-container">
           {categories.map((cat, idx) => (
-            <Link 
-              key={idx} 
-              to={cat.path} 
-              className="category-item"
-            >
+            <Link key={idx} to={cat.path} className="category-item">
               <span className="cat-icon">{cat.icon}</span>
               <span className="cat-name">{cat.name}</span>
             </Link>
@@ -84,28 +84,39 @@ const Home = () => {
       <div className="container">
         {/* Hero Slider */}
         <div className="hero-slider">
-          <div className="slider-wrapper" style={{ transform: `translateX(-${activeBanner * 100}%)` }}>
+          <div
+            className="slider-wrapper"
+            style={{ transform: `translateX(-${activeBanner * 100}%)` }}
+          >
             {banners.map((banner, i) => (
               <img key={i} src={banner} alt={`Promotion ${i + 1}`} />
             ))}
           </div>
           <div className="slider-dots">
             {banners.map((_, i) => (
-              <span key={i} className={`dot ${activeBanner === i ? 'active' : ''}`} onClick={() => setActiveBanner(i)}></span>
+              <span
+                key={i}
+                className={`dot ${activeBanner === i ? "active" : ""}`}
+                onClick={() => setActiveBanner(i)}
+              ></span>
             ))}
           </div>
         </div>
-      
+
         {/* Top Deals Section */}
         <div className="deals-section">
           <div className="deals-header">
             <div className="deals-title">
               <h2>Top Deals</h2>
-              <p>Featured Offers for You {products.length > 0 && `(${products.length} items)`}</p>
+              <p>
+                Featured of Rahul Offers for You{" "}
+                {products.length > 0 && `(${products.length} items)`}
+              </p>
             </div>
-            <Link to="/shop" className="view-all-btn">VIEW ALL</Link>
+            <Link to="/shop" className="view-all-btn">
+              VIEW ALL
+            </Link>
           </div>
-
 
           <div className="deals-body">
             <div className="deals-main-content">
@@ -113,14 +124,19 @@ const Home = () => {
                 <div className="deals-loading">Loading amazing deals...</div>
               ) : products.length > 0 ? (
                 <div className="deals-grid">
-                  {products.map(product => (
-                    <Link to={`/product/${product._id}`} key={product._id} className="deal-card">
+                  {products.map((product) => (
+                    <Link
+                      to={`/product/${product._id}`}
+                      key={product._id}
+                      className="deal-card"
+                    >
                       <div className="deal-image">
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
+                        <img
+                          src={product.image}
+                          alt={product.name}
                           onError={(e) => {
-                            e.target.src = 'https://picsum.photos/200/200?text=Product';
+                            e.target.src =
+                              "https://picsum.photos/200/200?text=Product";
                           }}
                         />
                       </div>
@@ -133,7 +149,9 @@ const Home = () => {
                   ))}
                 </div>
               ) : (
-                <div className="no-deals">Check back later for fresh deals!</div>
+                <div className="no-deals">
+                  Check back later for fresh deals!
+                </div>
               )}
             </div>
           </div>
