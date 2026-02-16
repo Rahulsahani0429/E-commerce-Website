@@ -1,22 +1,21 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await register(name, email, password);
-      navigate('/');
+      navigate("/login");
     } catch (error) {
-      alert(error.response?.data?.message || 'Registration failed');
+      alert(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -31,34 +30,42 @@ const Register = () => {
         <div className="auth-right-pane">
           <form onSubmit={handleSubmit}>
             <div className="form-group-flip">
-              <input 
-                type="text" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                required 
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
               />
-              <label className={name ? 'active' : ''}>Enter Full Name</label>
+
+              <label className={name ? "active" : ""}>Enter Full Name</label>
             </div>
             <div className="form-group-flip">
-              <input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
-              <label className={email ? 'active' : ''}>Enter Email Address</label>
+              <label className={email ? "active" : ""}>
+                Enter Email Address
+              </label>
             </div>
             <div className="form-group-flip">
-              <input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              <label className={password ? 'active' : ''}>Enter Password</label>
+              <label className={password ? "active" : ""}>Enter Password</label>
             </div>
-            <p className="terms-text">By continuing, you agree to Flipkart's Terms of Use and Privacy Policy.</p>
-            <button type="submit" className="login-btn-flip">Continue</button>
+            <p className="terms-text">
+              By continuing, you agree to Flipkart's Terms of Use and Privacy
+              Policy.
+            </p>
+            <button type="submit" className="login-btn-flip">
+              Continue
+            </button>
           </form>
           <div className="auth-footer-flip">
             <Link to="/login">Existing User? Log in</Link>

@@ -16,6 +16,10 @@ import ProductEdit from './pages/ProductEdit'
 import UserList from './pages/UserList'
 import OrderList from './pages/OrderList'
 import MyOrders from './pages/MyOrders'
+import Shipping from './pages/Shipping'
+import Payment from './pages/Payment'
+import PlaceOrder from './pages/PlaceOrder'
+import Success from './pages/Success'
 
 function App() {
   return (
@@ -38,6 +42,10 @@ function App() {
               <Route path="/admin/product/:id/edit" element={<ProductEdit />} />
               <Route path="/admin/users" element={<UserList />} />
               <Route path="/admin/orders" element={<OrderList />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/placeorder" element={<PlaceOrder />} />
+              <Route path="/success/:id" element={<Success />} />
             </Routes>
           </main>
           <Footer />

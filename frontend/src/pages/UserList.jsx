@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
@@ -17,7 +18,7 @@ const UserList = () => {
                     Authorization: `Bearer ${currentUser.token}`,
                 },
             };
-            const { data } = await axios.get('http://localhost:5000/api/auth', config);
+            const { data } = await axios.get(`${API_BASE_URL}/api/auth`, config);
             setUsers(data);
             setLoading(false);
         } catch (error) {
@@ -42,7 +43,7 @@ const UserList = () => {
                         Authorization: `Bearer ${currentUser.token}`,
                     },
                 };
-                await axios.delete(`http://localhost:5000/api/auth/${id}`, config);
+                await axios.delete(`${API_BASE_URL}/api/auth/${id}`, config);
                 fetchUsers();
             } catch (error) {
                 alert(error.response?.data?.message || error.message);
@@ -59,7 +60,7 @@ const UserList = () => {
                 },
             };
             await axios.put(
-                `http://localhost:5000/api/auth/${userToUpdate._id}`,
+                `${API_BASE_URL}/api/auth/${userToUpdate._id}`,
                 { ...userToUpdate, isAdmin: !userToUpdate.isAdmin },
                 config
             );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,7 @@ const Shop = () => {
   const [priceRange, setPriceRange] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const { search } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,14 +19,32 @@ const Shop = () => {
         setLoading(true);
         const searchParams = new URLSearchParams(search);
         const keyword = searchParams.get('keyword') || '';
+        const urlCategory = searchParams.get('category') || '';
+        const urlPriceRange = searchParams.get('priceRange') || '';
+        const isFeatured = searchParams.get('isFeatured') === 'true';
         
-        let url = `http://localhost:5000/api/products?keyword=${keyword}`;
-        if (category) url += `&category=${category}`;
+        // Sync state with URL for UI consistency
+        setCategory(urlCategory);
+        setPriceRange(urlPriceRange);
+
+        const params = new URLSearchParams();
+        if (keyword) params.append('keyword', keyword);
+        if (urlCategory) params.append('category', urlCategory);
+        if (isFeatured) params.append('isFeatured', 'true');
         
-        if (priceRange === 'under2000') url += '&maxPrice=2000';
-        else if (priceRange === '2000-5000') url += '&minPrice=2000&maxPrice=5000';
-        else if (priceRange === '5000-10000') url += '&minPrice=5000&maxPrice=10000';
-        else if (priceRange === 'over10000') url += '&minPrice=10000';
+        if (urlPriceRange === 'under2000') {
+          params.append('maxPrice', '2000');
+        } else if (urlPriceRange === '2000-5000') {
+          params.append('minPrice', '2000');
+          params.append('maxPrice', '5000');
+        } else if (urlPriceRange === '5000-10000') {
+          params.append('minPrice', '5000');
+          params.append('maxPrice', '10000');
+        } else if (urlPriceRange === 'over10000') {
+          params.append('minPrice', '10000');
+        }
+
+        const url = `${API_BASE_URL}/api/products?${params.toString()}`;
 
         const { data } = await axios.get(url);
         setProducts(data);
@@ -35,7 +55,23 @@ const Shop = () => {
       }
     };
     fetchProducts();
-  }, [search, category, priceRange]);
+  }, [search]);
+
+  const updateFilters = (newCat, newPrice) => {
+    const searchParams = new URLSearchParams(search);
+    
+    if (newCat !== undefined) {
+      if (newCat) searchParams.set('category', newCat);
+      else searchParams.delete('category');
+    }
+    
+    if (newPrice !== undefined) {
+      if (newPrice) searchParams.set('priceRange', newPrice);
+      else searchParams.delete('priceRange');
+    }
+    
+    navigate({ search: searchParams.toString() });
+  };
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
@@ -58,7 +94,7 @@ const Shop = () => {
               {(category || priceRange) && (
                 <button 
                   className="clear-all-btn"
-                  onClick={() => { setCategory(''); setPriceRange(''); }}
+                  onClick={() => { updateFilters('', ''); }}
                 >
                   Clear All
                 </button>
@@ -69,12 +105,12 @@ const Shop = () => {
           <div className="filter-group">
             <h4>Categories</h4>
             <ul>
-              {['Mobiles', 'Electronics', 'Fashion', 'Home & Furniture'].map(cat => (
+              {['Mobiles', 'Electronics', 'Fashion', 'Home & Furniture', 'Appliances', 'Grocery', 'Travel', 'Beauty'].map(cat => (
                 <li 
                   key={cat}
                   className={category === cat ? 'active-filter' : ''}
                   onClick={() => {
-                    setCategory(cat === category ? '' : cat);
+                    updateFilters(cat === category ? '' : cat);
                     if (window.innerWidth <= 768) setShowFilters(false);
                   }}
                 >
@@ -96,7 +132,7 @@ const Shop = () => {
                   key={range.value}
                   className={priceRange === range.value ? 'active-filter' : ''} 
                   onClick={() => {
-                    setPriceRange(range.value === priceRange ? '' : range.value);
+                    updateFilters(undefined, range.value === priceRange ? '' : range.value);
                     if (window.innerWidth <= 768) setShowFilters(false);
                   }}
                 >

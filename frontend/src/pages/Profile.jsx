@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const Profile = () => {
-    const { user, login } = useAuth();
+    const { user, updateUserInfo } = useAuth();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,8 +16,8 @@ const Profile = () => {
 
     useEffect(() => {
         if (user) {
-            setName(user.name);
-            setEmail(user.email);
+            setName(user.name || '');
+            setEmail(user.email || '');
         }
     }, [user]);
 
@@ -40,16 +41,19 @@ const Profile = () => {
             };
 
             const { data } = await axios.put(
-                'http://localhost:5000/api/auth/profile',
+                `${API_BASE_URL}/api/auth/profile`,
                 { name, email, password },
                 config
             );
 
-            // Update local storage and context
-            localStorage.setItem('userInfo', JSON.stringify(data));
-            // We might need a better way to update context without full login, but for now we re-trigger user state
+            // Flatten data and update context/localStorage
+            const userData = { ...data.user, token: data.token || user.token };
+            updateUserInfo(userData);
+            
             setSuccess(true);
             setLoading(false);
+            setPassword(''); // Clear password fields after update
+            setConfirmPassword('');
         } catch (error) {
             setMessage(error.response?.data?.message || error.message);
             setLoading(false);

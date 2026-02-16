@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const { cartItems } = useCart();
   const { user, logout } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
@@ -21,7 +21,7 @@ const Header = () => {
     e.preventDefault();
     if (searchTerm.trim()) {
       navigate(`/shop?keyword=${searchTerm}`);
-      setSearchTerm('');
+      setSearchTerm("");
       closeMenu();
     }
   };
@@ -30,7 +30,11 @@ const Header = () => {
     <header className="main-header">
       <div className="container header-container">
         <div className="header-top">
-          <button className={`mobile-toggle ${mobileMenuOpen ? 'active' : ''}`} onClick={toggleMenu} aria-label="Toggle Menu">
+          <button
+            className={`mobile-toggle ${mobileMenuOpen ? "active" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle Menu"
+          >
             <span className="bar"></span>
             <span className="bar"></span>
             <span className="bar"></span>
@@ -38,7 +42,9 @@ const Header = () => {
 
           <Link to="/" className="flipkart-logo" onClick={closeMenu}>
             <span className="logo-main">Flipkart</span>
-            <span className="logo-sub">Explore <span className="plus">Plus</span></span>
+            <span className="logo-sub">
+              Explore <span className="plus">Plus</span>
+            </span>
           </Link>
 
           <div className="header-actions-mobile">
@@ -48,20 +54,24 @@ const Header = () => {
           </div>
 
           <form className="search-bar desktop-search" onSubmit={handleSearch}>
-            <input 
-              type="text" 
-              placeholder="Search for Products, Brands and More" 
+            <input
+              type="text"
+              placeholder="Search for Products, Brands and More"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button type="submit" className="search-btn">🔍</button>
+            <button type="submit" className="search-btn">
+              🔍
+            </button>
           </form>
-          
+
           <div className="desktop-actions">
             <ul className="nav-items-list">
               {user ? (
                 <li className="dropdown">
-                  <span className="user-label">{user.name.split(' ')[0]} ▾</span>
+                  <span className="user-label">
+                    {(user?.name || "User").split(" ")[0]} ▾
+                  </span>
                   <div className="dropdown-content">
                     <Link to="/profile">My Profile</Link>
                     {user.isAdmin && <Link to="/admin">Admin Dashboard</Link>}
@@ -69,49 +79,111 @@ const Header = () => {
                   </div>
                 </li>
               ) : (
-                <li><Link to="/login" className="login-btn">Login</Link></li>
+                <li>
+                  <Link to="/login" className="login-btn">
+                    Login
+                  </Link>
+                </li>
               )}
-              <li><Link to="/cart" className="cart-nav">🛒 Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}</Link></li>
-              <li><button className="theme-toggle" onClick={toggleTheme}>{isDarkMode ? '☀️' : '🌙'}</button></li>
+              <li>
+                <Link to="/cart" className="cart-nav">
+                  🛒 Cart{" "}
+                  {cartCount > 0 && (
+                    <span className="cart-badge">{cartCount}</span>
+                  )}
+                </Link>
+              </li>
+              <li>
+                <button className="theme-toggle" onClick={toggleTheme}>
+                  {isDarkMode ? "☀️" : "🌙"}
+                </button>
+              </li>
             </ul>
           </div>
         </div>
 
         <form className="search-bar mobile-search" onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            placeholder="Search Products..." 
+          <input
+            type="text"
+            placeholder="Search Products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button type="submit" className="search-btn">🔍</button>
+          <button type="submit" className="search-btn">
+            🔍
+          </button>
         </form>
       </div>
 
       {/* Mobile Drawer */}
-      <div className={`mobile-drawer ${mobileMenuOpen ? 'open' : ''}`}>
+      <div className={`mobile-drawer ${mobileMenuOpen ? "open" : ""}`}>
         <div className="drawer-header">
           <div className="user-info">
-            {user ? `Hi, ${user.name}` : 'Welcome User'}
+            {user ? `Hi, ${user.name}` : "Welcome User"}
           </div>
-          <button className="close-drawer" onClick={closeMenu}>✕</button>
+          <button className="close-drawer" onClick={closeMenu}>
+            ✕
+          </button>
         </div>
         <ul className="drawer-links">
-          <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-          <li><Link to="/shop" onClick={closeMenu}>All Products</Link></li>
+          <li>
+            <Link to="/" onClick={closeMenu}>
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/shop" onClick={closeMenu}>
+              All Products
+            </Link>
+          </li>
           {user ? (
             <>
-              <li><Link to="/profile" onClick={closeMenu}>My Profile</Link></li>
-              {user.isAdmin && <li><Link to="/admin" onClick={closeMenu}>Admin Panel</Link></li>}
-              <li><button onClick={() => { logout(); closeMenu(); }}>Logout</button></li>
+              <li>
+                <Link to="/profile" onClick={closeMenu}>
+                  My Profile
+                </Link>
+              </li>
+              {user.isAdmin && (
+                <li>
+                  <Link to="/admin" onClick={closeMenu}>
+                    Admin Panel
+                  </Link>
+                </li>
+              )}
+              <li>
+                <button
+                  onClick={() => {
+                    logout();
+                    closeMenu();
+                  }}
+                >
+                  Logout
+                </button>
+              </li>
             </>
           ) : (
-            <li><Link to="/login" onClick={closeMenu}>Login / Signup</Link></li>
+            <li>
+              <Link to="/login" onClick={closeMenu}>
+                Login / Signup
+              </Link>
+            </li>
           )}
-          <li><button onClick={() => { toggleTheme(); closeMenu(); }}>{isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}</button></li>
+          <li>
+            <button
+              onClick={() => {
+                toggleTheme();
+                closeMenu();
+              }}
+            >
+              {isDarkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+            </button>
+          </li>
         </ul>
       </div>
-      <div className={`drawer-overlay ${mobileMenuOpen ? 'show' : ''}`} onClick={closeMenu}></div>
+      <div
+        className={`drawer-overlay ${mobileMenuOpen ? "show" : ""}`}
+        onClick={closeMenu}
+      ></div>
 
       <style>{`
         .main-header { position: sticky; top: 0; z-index: 1000; background: var(--primary); padding: 0.5rem 0; color: white; }
@@ -168,4 +240,3 @@ const Header = () => {
 };
 
 export default Header;
-

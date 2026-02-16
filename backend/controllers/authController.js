@@ -201,9 +201,6 @@
 //     updateUser,
 // };
 
-
-
-
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 
@@ -213,50 +210,52 @@ import generateToken from "../utils/generateToken.js";
  * @access  Public
  */
 const registerUser = async (req, res) => {
-    try {
-        let { name, email, password } = req.body;
+  try {
+    let { name, email, password, isAdmin } = req.body;
+    isAdmin = isAdmin === true || isAdmin === 'true'; // Default to false if not provided or not explicitly true
 
-        // 1️⃣ Validate input
-        if (!name || !email || !password) {
-            return res.status(400).json({
-                message: "Name, email and password are required",
-            });
-        }
-
-        // 2️⃣ Normalize data
-        name = name.trim();
-        email = email.toLowerCase().trim();
-
-        // 3️⃣ Check existing user
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(409).json({
-                message: "User already exists",
-            });
-        }
-
-        // 4️⃣ Create user
-        const user = await User.create({
-            name,
-            email,
-            password,
-        });
-
-        // 5️⃣ Response
-        return res.status(201).json({
-            message: "User registered successfully",
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                isAdmin: user.isAdmin,
-            },
-            token: generateToken(user._id),
-        });
-    } catch (error) {
-        console.error("Register Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    // 1️⃣ Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email and password are required",
+      });
     }
+
+    // 2️⃣ Normalize data
+    name = name.trim();
+    email = email.toLowerCase().trim();
+
+    // 3️⃣ Check existing user
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(409).json({
+        message: "User already exists",
+      });
+    }
+
+    // 4️⃣ Create user
+    const user = await User.create({
+      name,
+      email,
+      password,
+      isAdmin,
+    });
+
+    // 5️⃣ Response
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    console.error("Register Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -265,44 +264,44 @@ const registerUser = async (req, res) => {
  * @access  Public
  */
 const loginUser = async (req, res) => {
-    try {
-        let { email, password } = req.body;
+  try {
+    let { email, password } = req.body;
 
-        // 1️⃣ Validate input
-        if (!email || !password) {
-            return res.status(400).json({
-                message: "Email and password are required",
-            });
-        }
-
-        // 2️⃣ Normalize email
-        email = email.toLowerCase().trim();
-
-        // 3️⃣ Find user
-        const user = await User.findOne({ email });
-
-        // 4️⃣ Validate credentials
-        if (!user || !(await user.matchPassword(password))) {
-            return res.status(401).json({
-                message: "Invalid email or password",
-            });
-        }
-
-        // 5️⃣ Response
-        return res.status(200).json({
-            message: "Login successful",
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                isAdmin: user.isAdmin,
-            },
-            token: generateToken(user._id),
-        });
-    } catch (error) {
-        console.error("Login Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    // 1️⃣ Validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
     }
+
+    // 2️⃣ Normalize email
+    email = email.toLowerCase().trim();
+
+    // 3️⃣ Find user
+    const user = await User.findOne({ email });
+
+    // 4️⃣ Validate credentials
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    // 5️⃣ Response
+    return res.status(200).json({
+      message: "Login successful",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    console.error("Login Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -311,18 +310,18 @@ const loginUser = async (req, res) => {
  * @access  Private
  */
 const getUserProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id).select("-password");
+  try {
+    const user = await User.findById(req.user._id).select("-password");
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        return res.status(200).json(user);
-    } catch (error) {
-        console.error("Profile Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("Profile Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -331,36 +330,36 @@ const getUserProfile = async (req, res) => {
  * @access  Private
  */
 const updateUserProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id);
+  try {
+    const user = await User.findById(req.user._id);
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        user.name = req.body.name?.trim() || user.name;
-        user.email = req.body.email?.toLowerCase().trim() || user.email;
-
-        if (req.body.password) {
-            user.password = req.body.password;
-        }
-
-        const updatedUser = await user.save();
-
-        return res.status(200).json({
-            message: "Profile updated successfully",
-            user: {
-                _id: updatedUser._id,
-                name: updatedUser.name,
-                email: updatedUser.email,
-                isAdmin: updatedUser.isAdmin,
-            },
-            token: generateToken(updatedUser._id),
-        });
-    } catch (error) {
-        console.error("Update Profile Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    user.name = req.body.name?.trim() || user.name;
+    user.email = req.body.email?.toLowerCase().trim() || user.email;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isAdmin: updatedUser.isAdmin,
+      },
+      token: generateToken(updatedUser._id),
+    });
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -369,13 +368,13 @@ const updateUserProfile = async (req, res) => {
  * @access  Private/Admin
  */
 const getUsers = async (req, res) => {
-    try {
-        const users = await User.find({}).select("-password");
-        return res.status(200).json(users);
-    } catch (error) {
-        console.error("Get Users Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
-    }
+  try {
+    const users = await User.find({}).select("-password");
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error("Get Users Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -384,18 +383,18 @@ const getUsers = async (req, res) => {
  * @access  Private/Admin
  */
 const getUserById = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id).select("-password");
+  try {
+    const user = await User.findById(req.params.id).select("-password");
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        return res.status(200).json(user);
-    } catch (error) {
-        console.error("Get User By ID Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("Get User By ID Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -404,33 +403,33 @@ const getUserById = async (req, res) => {
  * @access  Private/Admin
  */
 const updateUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        user.name = req.body.name?.trim() || user.name;
-        user.email = req.body.email?.toLowerCase().trim() || user.email;
-        user.isAdmin =
-            req.body.isAdmin !== undefined ? req.body.isAdmin : user.isAdmin;
-
-        const updatedUser = await user.save();
-
-        return res.status(200).json({
-            message: "User updated successfully",
-            user: {
-                _id: updatedUser._id,
-                name: updatedUser.name,
-                email: updatedUser.email,
-                isAdmin: updatedUser.isAdmin,
-            },
-        });
-    } catch (error) {
-        console.error("Admin Update Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    user.name = req.body.name?.trim() || user.name;
+    user.email = req.body.email?.toLowerCase().trim() || user.email;
+    user.isAdmin =
+      req.body.isAdmin !== undefined ? req.body.isAdmin : user.isAdmin;
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      message: "User updated successfully",
+      user: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isAdmin: updatedUser.isAdmin,
+      },
+    });
+  } catch (error) {
+    console.error("Admin Update Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -439,31 +438,31 @@ const updateUser = async (req, res) => {
  * @access  Private/Admin
  */
 const deleteUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        await user.deleteOne();
-
-        return res.status(200).json({
-            message: "User deleted successfully",
-        });
-    } catch (error) {
-        console.error("Delete User Error:", error);
-        return res.status(500).json({ message: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    await user.deleteOne();
+
+    return res.status(200).json({
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export {
-    registerUser,
-    loginUser,
-    getUserProfile,
-    updateUserProfile,
-    getUsers,
-    getUserById,
-    updateUser,
-    deleteUser,
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserProfile,
+  getUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
 };

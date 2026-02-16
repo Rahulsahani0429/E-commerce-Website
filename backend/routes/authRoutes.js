@@ -1,18 +1,17 @@
-import express from 'express';
+import express from "express";
 import {
-    loginUser,
-    registerUser,
-    getUserProfile,
-    updateUserProfile,
-    getUsers,
-    deleteUser,
-    getUserById,
-    updateUser,
-} from '../controllers/authController.js';
-import { protect, admin } from '../middleware/authMiddleware.js';
+  loginUser,
+  registerUser,
+  getUserProfile,
+  updateUserProfile,
+  getUsers,
+  deleteUser,
+  getUserById,
+  updateUser,
+} from "../controllers/authController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
-
 
 // this is first method for small project
 /* router.post('/login', loginUser);
@@ -28,25 +27,19 @@ router.put('/:id', protect, admin, updateUser);
 router.delete('/:id', protect, admin, deleteUser); 
 */
 
-
 // this is second method for big project and professional project
 
-router.post('/login', loginUser);
-router.post('/register', registerUser);
+router.post("/login", loginUser);
+router.post("/register", registerUser);
 router
-    .route('/profile')
-    .get(protect, getUserProfile)
-    .put(protect, updateUserProfile);
-router.route('/').get(protect, admin, getUsers);
+  .route("/profile")
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile);
+router.route("/").get(protect, admin, getUsers);
 router
-    .route('/:id')
-    .delete(protect, admin, deleteUser)
-    .get(protect, admin, getUserById)
-    .put(protect, admin, updateUser);
-
-
-
-
-
+  .route("/:id")
+  .delete(protect, admin, deleteUser)
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser);
 
 export default router;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ const ProductList = () => {
 
     const fetchProducts = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/products');
+            const { data } = await axios.get(`${API_BASE_URL}/api/products`);
             setProducts(data);
             setLoading(false);
         } catch (error) {
@@ -37,7 +38,7 @@ const ProductList = () => {
                         Authorization: `Bearer ${user.token}`,
                     },
                 };
-                await axios.delete(`http://localhost:5000/api/products/${id}`, config);
+                await axios.delete(`${API_BASE_URL}/api/products/${id}`, config);
                 fetchProducts(); // Refresh list
             } catch (error) {
                 alert(error.response?.data?.message || error.message);
@@ -52,7 +53,7 @@ const ProductList = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.post('http://localhost:5000/api/products', {}, config);
+            const { data } = await axios.post(`${API_BASE_URL}/api/products`, {}, config);
             navigate(`/admin/product/${data._id}/edit`);
         } catch (error) {
             alert(error.response?.data?.message || error.message);

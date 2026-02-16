@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
@@ -17,7 +18,7 @@ const OrderList = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            const { data } = await axios.get('http://localhost:5000/api/orders', config);
+            const { data } = await axios.get(`${API_BASE_URL}/api/orders`, config);
             setOrders(data);
             setLoading(false);
         } catch (error) {
@@ -41,7 +42,7 @@ const OrderList = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            await axios.put(`http://localhost:5000/api/orders/${orderId}/deliver`, {}, config);
+            await axios.put(`${API_BASE_URL}/api/orders/${orderId}/deliver`, {}, config);
             fetchOrders();
         } catch (error) {
             alert(error.response?.data?.message || error.message);

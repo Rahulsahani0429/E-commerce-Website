@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   return (
     <footer style={{
@@ -21,16 +23,16 @@ const Footer = () => {
         </div>
         <div className="footer-section">
           <h4 style={{color: 'var(--primary)', marginBottom: '1.25rem'}}>Quick Links</h4>
-          <ul style={{listStyle: 'none', color: 'var(--text-muted)', fontSize: '0.9rem'}}>
-            <li style={{marginBottom: '0.5rem'}}>Shop All</li>
-            <li style={{marginBottom: '0.5rem'}}>Featured</li>
-            <li style={{marginBottom: '0.5rem'}}>Recent Arrivals</li>
+          <ul style={{listStyle: 'none', color: 'var(--text-muted)', fontSize: '0.9rem', padding: 0}}>
+            <li style={{marginBottom: '0.5rem'}}><Link to="/shop" style={{color: 'inherit', textDecoration: 'none'}}>Shop All</Link></li>
+            <li style={{marginBottom: '0.5rem'}}><Link to="/shop?isFeatured=true" style={{color: 'inherit', textDecoration: 'none'}}>Featured</Link></li>
+            <li style={{marginBottom: '0.5rem'}}><Link to="/shop" style={{color: 'inherit', textDecoration: 'none'}}>Recent Arrivals</Link></li>
           </ul>
         </div>
         <div className="footer-section">
           <h4 style={{color: 'var(--primary)', marginBottom: '1.25rem'}}>Contact</h4>
           <p style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>
-            support@premiumshop.com<br/>
+            <a href="mailto:support@premiumshop.com" style={{color: 'inherit', textDecoration: 'none'}}>support@premiumshop.com</a><br/>
             123 Luxury Lane, Grace City
           </p>
         </div>

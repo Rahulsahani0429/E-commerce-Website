@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const AuthContext = createContext();
 
@@ -17,9 +18,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      setUser(data);
-      localStorage.setItem('userInfo', JSON.stringify(data));
+      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
+      const userData = { ...data.user, token: data.token };
+      setUser(userData);
+      localStorage.setItem('userInfo', JSON.stringify(userData));
     } catch (error) {
       throw error;
     }
@@ -27,9 +29,10 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
-      setUser(data);
-      localStorage.setItem('userInfo', JSON.stringify(data));
+      const { data } = await axios.post(`${API_BASE_URL}/api/auth/register`, { name, email, password });
+      const userData = { ...data.user, token: data.token };
+      setUser(userData);
+      localStorage.setItem('userInfo', JSON.stringify(userData));
     } catch (error) {
       throw error;
     }
@@ -40,8 +43,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('userInfo');
   };
 
+  const updateUserInfo = (userData) => {
+    setUser(userData);
+    localStorage.setItem('userInfo', JSON.stringify(userData));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUserInfo }}>
       {children}
     </AuthContext.Provider>
   );

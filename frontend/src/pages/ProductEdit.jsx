@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const ProductEdit = () => {
     const { id: productId } = useParams();
@@ -21,7 +22,7 @@ const ProductEdit = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:5000/api/products/${productId}`);
+                const { data } = await axios.get(`${API_BASE_URL}/api/products/${productId}`);
                 setName(data.name);
                 setPrice(data.price);
                 setImage(data.image);
@@ -53,7 +54,7 @@ const ProductEdit = () => {
             };
 
             await axios.put(
-                `http://localhost:5000/api/products/${productId}`,
+                `${API_BASE_URL}/api/products/${productId}`,
                 { name, price, image, brand, category, countInStock, description },
                 config
             );

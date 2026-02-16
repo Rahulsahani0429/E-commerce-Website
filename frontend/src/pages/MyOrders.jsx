@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const MyOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -16,7 +17,7 @@ const MyOrders = () => {
                         Authorization: `Bearer ${user.token}`,
                     },
                 };
-                const { data } = await axios.get('http://localhost:5000/api/orders/myorders', config);
+                const { data } = await axios.get(`${API_BASE_URL}/api/orders/myorders`, config);
                 setOrders(data);
                 setLoading(false);
             } catch (error) {

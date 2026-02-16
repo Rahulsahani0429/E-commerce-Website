@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const categories = [
-    { name: 'Mobiles', icon: '📱' },
-    { name: 'Electronics', icon: '💻' },
-    { name: 'Fashion', icon: '👕' },
-    { name: 'Home', icon: '🏠' },
-    { name: 'Appliances', icon: '📺' },
-    { name: 'Grocery', icon: '🛒' },
-    { name: 'Travel', icon: '✈️' },
-    { name: 'Beauty', icon: '💄' }
+    { name: 'All Products', icon: '🏠', path: '/shop' },
+    { name: 'Mobiles', icon: '📱', path: '/shop?category=Mobiles' },
+    { name: 'Electronics', icon: '💻', path: '/shop?category=Electronics' },
+    { name: 'Fashion', icon: '👕', path: '/shop?category=Fashion' },
+    { name: 'Home & Furniture', icon: '🛋️', path: '/shop?category=Home%20%26%20Furniture' },
+    { name: 'Appliances', icon: '📺', path: '/shop?category=Appliances' },
+    { name: 'Grocery', icon: '🛒', path: '/shop?category=Grocery' },
+    { name: 'Travel', icon: '✈️', path: '/shop?category=Travel' },
+    { name: 'Beauty', icon: '💄', path: '/shop?category=Beauty' }
   ];
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const Home = () => {
       try {
         // Add timestamp to prevent caching
         const timestamp = new Date().getTime();
-        const url = `http://localhost:5000/api/products?isFeatured=true&_t=${timestamp}`;
+        const url = `${API_BASE_URL}/api/products?isFeatured=true&_t=${timestamp}`;
         console.log('Fetching deals from:', url);
         
         const { data } = await axios.get(url);
@@ -67,10 +69,14 @@ const Home = () => {
       <div className="category-bar">
         <div className="container cat-container">
           {categories.map((cat, idx) => (
-            <div key={idx} className="category-item">
+            <Link 
+              key={idx} 
+              to={cat.path} 
+              className="category-item"
+            >
               <span className="cat-icon">{cat.icon}</span>
               <span className="cat-name">{cat.name}</span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -140,7 +146,7 @@ const Home = () => {
         .category-bar { background: white; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); padding: 0.75rem 0; margin-bottom: 0.75rem; }
         .cat-container { display: flex; justify-content: space-around; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
         .cat-container::-webkit-scrollbar { display: none; }
-        .category-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 70px; flex-shrink: 0; padding: 0.5rem; transition: transform 0.2s; }
+        .category-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 70px; flex-shrink: 0; padding: 0.5rem; transition: transform 0.2s; text-decoration: none; }
         .category-item:hover { transform: translateY(-2px); }
         .cat-icon { font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
         .cat-name { font-size: 0.8rem; font-weight: 600; color: #212121; text-align: center; line-height: 1.2; }

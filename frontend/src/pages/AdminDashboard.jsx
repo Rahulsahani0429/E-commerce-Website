@@ -1,27 +1,27 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
-    return (
-        <div className="container admin-dashboard">
-            <h1>Admin Dashboard</h1>
-            <div className="admin-grid">
-                <Link to="/admin/products" className="admin-card">
-                    <div className="admin-icon">📦</div>
-                    <h3>Products</h3>
-                    <p>Manage catalog, update prices, and stock.</p>
-                </Link>
-                <Link to="/admin/users" className="admin-card">
-                    <div className="admin-icon">👥</div>
-                    <h3>Users</h3>
-                    <p>Manage customers and administrators.</p>
-                </Link>
-                <Link to="/admin/orders" className="admin-card">
-                    <div className="admin-icon">🚚</div>
-                    <h3>Orders</h3>
-                    <p>Track shipments and delivery status.</p>
-                </Link>
-            </div>
-            <style>{`
+  return (
+    <div className="container admin-dashboard">
+      <h1>Admin Dashboard</h1>
+      <div className="admin-grid">
+        <Link to="/admin/products" className="admin-card">
+          <div className="admin-icon">📦</div>
+          <h3>Products</h3>
+          <p>Manage catalog, update prices, and stock.</p>
+        </Link>
+        <Link to="/admin/users" className="admin-card">
+          <div className="admin-icon">👥</div>
+          <h3>Users</h3>
+          <p>Manage customers and administrators.</p>
+        </Link>
+        <Link to="/admin/orders" className="admin-card">
+          <div className="admin-icon">🚚</div>
+          <h3>Orders</h3>
+          <p>Track shipments and delivery status.</p>
+        </Link>
+      </div>
+      <style>{`
                 .admin-dashboard { padding: 4rem 2rem; text-align: center; }
                 .admin-dashboard h1 { margin-bottom: 3rem; font-size: 2.5rem; }
                 .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
@@ -46,8 +46,8 @@ const AdminDashboard = () => {
                     .admin-card { padding: 2rem; }
                 }
             `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default AdminDashboard;
