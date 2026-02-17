@@ -212,12 +212,12 @@ import generateToken from "../utils/generateToken.js";
 const registerUser = async (req, res) => {
   try {
     let { name, email, password, isAdmin } = req.body;
-    isAdmin = isAdmin === true || isAdmin === 'true'; // Default to false if not provided or not explicitly true
+    isAdmin = isAdmin === true || isAdmin === "true"; // Default to false if not provided or not explicitly true
 
     // 1️⃣ Validate input
     if (!name || !email || !password) {
       return res.status(400).json({
-        message: "Name, email and password are required",
+        message: "Name,  email and password are required gi",
       });
     }
 

@@ -174,7 +174,9 @@ const addOrderItems = async (req, res) => {
       return res.status(400).json({ message: "No order items provided" });
     }
     if (orderItems.length === 0) {
-      return res.status(400).json({ message: "No order items provided" });
+      return res
+        .status(400)
+        .json({ message: "No order items provided by you rahul" });
     }
     // this is second method
     // if (!orderItems || orderItems.length === 0) {
