@@ -6,13 +6,14 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(name, email, password);
+      await register(name, email, password, isAdmin);
       navigate("/login");
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
@@ -59,6 +60,20 @@ const Register = () => {
               />
               <label className={password ? "active" : ""}>Enter Password</label>
             </div>
+
+            <div className="role-selection">
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={isAdmin}
+                  onChange={(e) => setIsAdmin(e.target.checked)}
+                />
+                <span className="checkmark"></span>
+                Register as Admin
+              </label>
+              <p className="role-info">Admins can manage products and orders.</p>
+            </div>
+
             <p className="terms-text">
               By continuing, you agree to Flipkart's Terms of Use and Privacy
               Policy.

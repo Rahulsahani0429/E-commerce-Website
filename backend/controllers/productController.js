@@ -133,6 +133,7 @@
 // export { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
 
 import Product from "../models/Product.js";
+import { createNotification } from "./notificationController.js";
 
 /**
  * @desc    Fetch all products (with filters)
@@ -265,6 +266,17 @@ const updateProduct = async (req, res) => {
     product.countInStock = countInStock ?? product.countInStock;
 
     const updatedProduct = await product.save();
+
+    // Notify Admin of low stock
+    if (updatedProduct.countInStock < 5) {
+      await createNotification({
+        role: "admin",
+        title: "Low Stock Alert",
+        message: `Product "${updatedProduct.name}" is low in stock (${updatedProduct.countInStock} remaining).`,
+        type: "stock",
+        relatedId: updatedProduct._id,
+      });
+    }
 
     return res.status(200).json({
       message: "Product updated successfully",

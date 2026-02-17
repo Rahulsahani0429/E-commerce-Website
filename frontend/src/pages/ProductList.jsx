@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
+import AdminLayout from '../components/AdminLayout';
+import './AdminTables.css';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -39,10 +41,27 @@ const ProductList = () => {
                     },
                 };
                 await axios.delete(`${API_BASE_URL}/api/products/${id}`, config);
-                fetchProducts(); // Refresh list
+                fetchProducts();
             } catch (error) {
                 alert(error.response?.data?.message || error.message);
             }
+        }
+    };
+
+    const toggleFeaturedHandler = async (product) => {
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            await axios.put(`${API_BASE_URL}/api/products/${product._id}`, {
+                ...product,
+                isFeatured: !product.isFeatured
+            }, config);
+            fetchProducts();
+        } catch (error) {
+            alert(error.response?.data?.message || error.message);
         }
     };
 
@@ -54,48 +73,65 @@ const ProductList = () => {
                 },
             };
             const { data } = await axios.post(`${API_BASE_URL}/api/products`, {}, config);
-            navigate(`/admin/product/${data._id}/edit`);
+            navigate(`/admin/product/${data.product._id}/edit`);
         } catch (error) {
             alert(error.response?.data?.message || error.message);
         }
     };
 
-    if (loading) return <div className="container">Loading...</div>;
-    if (error) return <div className="container alert alert-danger">{error}</div>;
+    if (loading) return <AdminLayout><div className="loader-container"><div className="loader"></div></div></AdminLayout>;
+    if (error) return <AdminLayout><div className="alert alert-danger">{error}</div></AdminLayout>;
 
     return (
-        <div className="container admin-product-list">
-            <div className="header-row">
+        <AdminLayout>
+            <div className="admin-page-header">
                 <h1>Products Catalog</h1>
-                <button className="btn btn-primary" onClick={createProductHandler}>
-                    + Create Product
+                <button className="btn-add" onClick={createProductHandler}>
+                    <span>+</span> Create Product
                 </button>
             </div>
             
-            <div className="table-responsive">
-                <table>
+            <div className="table-container">
+                <table className="admin-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>NAME</th>
-                            <th>PRICE</th>
-                            <th>CATEGORY</th>
-                            <th>BRAND</th>
-                            <th>ACTIONS</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Featured</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {products.map((product) => (
                             <tr key={product._id}>
-                                <td>{product._id}</td>
-                                <td>{product.name}</td>
-                                <td>${product.price}</td>
-                                <td>{product.category}</td>
-                                <td>{product.brand}</td>
                                 <td>
-                                    <div className="actions">
-                                        <Link to={`/admin/product/${product._id}/edit`} className="edit-btn">Edit</Link>
-                                        <button className="delete-btn" onClick={() => deleteHandler(product._id)}>Delete</button>
+                                    <img src={product.image} alt={product.name} style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+                                </td>
+                                <td>{product.name}</td>
+                                <td>${product.price.toFixed(2)}</td>
+                                <td>{product.category}</td>
+                                <td>
+                                    <span className={`stock-badge ${product.countInStock > 0 ? 'stock-in' : 'stock-out'}`}>
+                                        {product.countInStock > 0 ? `${product.countInStock} In Stock` : 'Out of Stock'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <label className="toggle-switch">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={product.isFeatured} 
+                                            onChange={() => toggleFeaturedHandler(product)}
+                                        />
+                                        <span className="slider"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <div className="action-btns">
+                                        <Link to={`/admin/product/${product._id}/edit`} className="icon-btn btn-edit" title="Edit">📝</Link>
+                                        <button className="icon-btn btn-delete" onClick={() => deleteHandler(product._id)} title="Delete">🗑️</button>
                                     </div>
                                 </td>
                             </tr>
@@ -103,21 +139,12 @@ const ProductList = () => {
                     </tbody>
                 </table>
             </div>
-
             <style>{`
-                .admin-product-list { padding: 4rem 2rem; }
-                .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
-                .header-row h1 { font-size: 2rem; }
-                .table-responsive { overflow-x: auto; background: var(--bg-card); border-radius: 1rem; box-shadow: var(--shadow); }
-                table { width: 100%; border-collapse: collapse; text-align: left; }
-                th, td { padding: 1.25rem; border-bottom: 1px solid var(--border); }
-                th { background: rgba(0,0,0,0.02); font-weight: 700; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; }
-                tr:hover { background: rgba(0,0,0,0.01); }
-                .actions { display: flex; gap: 1rem; }
-                .edit-btn { text-decoration: none; color: #2563eb; font-weight: 600; }
-                .delete-btn { background: none; border: none; color: #dc2626; font-weight: 600; cursor: pointer; }
+                .loader-container { min-height: 50vh; display: flex; align-items: center; justify-content: center; }
+                .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #2874f0; border-radius: 50% !important; animation: spin 1s linear infinite; }
+                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
             `}</style>
-        </div>
+        </AdminLayout>
     );
 };
 

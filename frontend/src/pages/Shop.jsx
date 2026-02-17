@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
+import ProductCard from '../components/ProductCard';
 
 const Shop = () => {
   const [products, setProducts] = useState([]);
@@ -57,6 +58,39 @@ const Shop = () => {
     fetchProducts();
   }, [search]);
 
+  const [activeBanner, setActiveBanner] = useState(0);
+  const categories = [
+    { name: 'All Products', icon: '🏠', path: '/shop' },
+    { name: 'Mobiles', icon: '📱', path: '/shop?category=Mobiles' },
+    { name: 'Electronics', icon: '💻', path: '/shop?category=Electronics' },
+    { name: 'Fashion', icon: '👕', path: '/shop?category=Fashion' },
+    { name: 'Home & Furniture', icon: '🛋️', path: '/shop?category=Home%20%26%20Furniture' },
+    { name: 'Appliances', icon: '📺', path: '/shop?category=Appliances' },
+    { name: 'Grocery', icon: '🛒', path: '/shop?category=Grocery' },
+    { name: 'Travel', icon: '✈️', path: '/shop?category=Travel' },
+    { name: 'Beauty', icon: '💄', path: '/shop?category=Beauty' }
+  ];
+
+  const banners = [
+    "https://picsum.photos/seed/banner1/1600/400",
+    "https://picsum.photos/seed/banner2/1600/400",
+    "https://picsum.photos/seed/banner3/1600/400",
+    "https://picsum.photos/seed/banner4/1600/400",
+    "https://picsum.photos/seed/banner5/1600/400",
+    "https://picsum.photos/seed/banner6/1600/400",
+    "https://picsum.photos/seed/banner7/1600/400",
+    "https://picsum.photos/seed/banner8/1600/400",
+    "https://picsum.photos/seed/banner9/1600/400",
+    "https://picsum.photos/seed/banner10/1600/400"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveBanner(prev => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   const updateFilters = (newCat, newPrice) => {
     const searchParams = new URLSearchParams(search);
     
@@ -80,106 +114,140 @@ const Shop = () => {
 
   return (
     <div className="shop-page-wrapper">
-      <div className="container shop-container">
-        {/* Mobile Filter Button */}
-        <div className="mobile-filter-bar" onClick={toggleFilters}>
-          🔍 Filters {category || priceRange ? `(${!!category + !!priceRange})` : ''}
+      {/* Category Bar */}
+      <div className="category-bar">
+        <div className="container cat-container">
+          {categories.map((cat, idx) => (
+            <Link 
+              key={idx} 
+              to={cat.path} 
+              className={`category-item ${category === cat.name ? 'active-cat' : ''}`}
+            >
+              <span className="cat-icon">{cat.icon}</span>
+              <span className="cat-name">{cat.name}</span>
+            </Link>
+          ))}
         </div>
+      </div>
 
-        {/* Sidebar Filters */}
-        <aside className={`filter-sidebar ${showFilters ? 'open' : ''}`}>
-          <div className="filter-sidebar-header">
-            <h3>Filters</h3>
-            <div className="sidebar-actions">
-              {(category || priceRange) && (
-                <button 
-                  className="clear-all-btn"
-                  onClick={() => { updateFilters('', ''); }}
-                >
-                  Clear All
-                </button>
-              )}
-              <button className="close-filters" onClick={() => setShowFilters(false)}>✕</button>
-            </div>
-          </div>
-          <div className="filter-group">
-            <h4>Categories</h4>
-            <ul>
-              {['Mobiles', 'Electronics', 'Fashion', 'Home & Furniture', 'Appliances', 'Grocery', 'Travel', 'Beauty'].map(cat => (
-                <li 
-                  key={cat}
-                  className={category === cat ? 'active-filter' : ''}
-                  onClick={() => {
-                    updateFilters(cat === category ? '' : cat);
-                    if (window.innerWidth <= 768) setShowFilters(false);
-                  }}
-                >
-                  {cat}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="filter-group">
-            <h4>Price Range</h4>
-            <ul>
-              {[
-                { label: 'Under ₹2000', value: 'under2000' },
-                { label: '₹2000 - ₹5000', value: '2000-5000' },
-                { label: '₹5000 - ₹10000', value: '5000-10000' },
-                { label: 'Over ₹10000', value: 'over10000' }
-              ].map(range => (
-                <li 
-                  key={range.value}
-                  className={priceRange === range.value ? 'active-filter' : ''} 
-                  onClick={() => {
-                    updateFilters(undefined, range.value === priceRange ? '' : range.value);
-                    if (window.innerWidth <= 768) setShowFilters(false);
-                  }}
-                >
-                  {range.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
-        {/* Product Listing */}
-        <main className="product-listing">
-          <div className="shop-header">
-            <p>Showing {products.length} products</p>
-            <div className="sort-by">
-              Sort By: <strong>Relevance</strong>
-            </div>
-          </div>
-          
-          <div className="shop-product-grid">
-            {products.map((product) => (
-              <Link to={`/product/${product._id}`} key={product._id} className="shop-card">
-                <div className="shop-card-image">
-                  <img src={product.image} alt={product.name} />
-                </div>
-                <div className="shop-card-info">
-                  <h3 title={product.name}>{product.name}</h3>
-                  <div className="shop-rating">
-                    <span className="rating-badge">{product.rating} ★</span>
-                    <span className="rating-count">({product.numReviews})</span>
-                  </div>
-                  <div className="shop-price-row">
-                    <span className="price-main">₹{product.price}</span>
-                    <span className="flipkart-assured">Assured</span>
-                  </div>
-                  <p className="shop-brand">{product.brand}</p>
-                </div>
-              </Link>
+      <div className="container">
+        {/* Hero Slider */}
+        <div className="hero-slider">
+          <div className="slider-wrapper" style={{ transform: `translateX(-${activeBanner * 100}%)` }}>
+            {banners.map((banner, i) => (
+              <img key={i} src={banner} alt={`Promotion ${i + 1}`} />
             ))}
           </div>
-        </main>
+          <div className="slider-dots">
+            {banners.map((_, i) => (
+              <span key={i} className={`dot ${activeBanner === i ? 'active' : ''}`} onClick={() => setActiveBanner(i)}></span>
+            ))}
+          </div>
+        </div>
+
+        <div className="shop-container">
+          {/* Mobile Filter Button */}
+          <div className="mobile-filter-bar" onClick={toggleFilters}>
+            🔍 Filters {category || priceRange ? `(${!!category + !!priceRange})` : ''}
+          </div>
+
+          {/* Sidebar Filters */}
+          <aside className={`filter-sidebar ${showFilters ? 'open' : ''}`}>
+            <div className="filter-sidebar-header">
+              <h3>Filters</h3>
+              <div className="sidebar-actions">
+                {(category || priceRange) && (
+                  <button 
+                    className="clear-all-btn"
+                    onClick={() => { updateFilters('', ''); }}
+                  >
+                    Clear All
+                  </button>
+                )}
+                <button className="close-filters" onClick={() => setShowFilters(false)}>✕</button>
+              </div>
+            </div>
+            <div className="filter-group">
+              <h4>Categories</h4>
+              <ul>
+                {['Mobiles', 'Electronics', 'Fashion', 'Home & Furniture', 'Appliances', 'Grocery', 'Travel', 'Beauty'].map(cat => (
+                  <li 
+                    key={cat}
+                    className={category === cat ? 'active-filter' : ''}
+                    onClick={() => {
+                      updateFilters(cat === category ? '' : cat);
+                      if (window.innerWidth <= 768) setShowFilters(false);
+                    }}
+                  >
+                    {cat}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="filter-group">
+              <h4>Price Range</h4>
+              <ul>
+                {[
+                  { label: 'Under ₹2000', value: 'under2000' },
+                  { label: '₹2000 - ₹5000', value: '2000-5000' },
+                  { label: '₹5000 - ₹10000', value: '5000-10000' },
+                  { label: 'Over ₹10000', value: 'over10000' }
+                ].map(range => (
+                  <li 
+                    key={range.value}
+                    className={priceRange === range.value ? 'active-filter' : ''} 
+                    onClick={() => {
+                      updateFilters(undefined, range.value === priceRange ? '' : range.value);
+                      if (window.innerWidth <= 768) setShowFilters(false);
+                    }}
+                  >
+                    {range.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+
+          {/* Product Listing */}
+          <main className="product-listing">
+            <div className="shop-header">
+              <p>Showing {products.length} products</p>
+              <div className="sort-by">
+                Sort By: <strong>Relevance</strong>
+              </div>
+            </div>
+            
+            <div className="shop-product-grid">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} className="shop-card" />
+              ))}
+            </div>
+          </main>
+        </div>
       </div>
 
       <div className={`drawer-overlay ${showFilters ? 'show' : ''}`} onClick={() => setShowFilters(false)}></div>
 
       <style>{`
-        .shop-page-wrapper { background: #f1f3f6; min-height: 100vh; padding-top: 0.5rem; }
+        .shop-page-wrapper { padding-bottom: 3rem; background: #f1f3f6; min-height: 100vh; }
+        
+        /* Category Bar - Flipkart Style */
+        .category-bar { background: white; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); padding: 0.75rem 0; margin-bottom: 0.75rem; }
+        .cat-container { display: flex; justify-content: space-around; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+        .cat-container::-webkit-scrollbar { display: none; }
+        .category-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 70px; flex-shrink: 0; padding: 0.5rem; transition: transform 0.2s; text-decoration: none; }
+        .category-item:hover { transform: translateY(-2px); }
+        .category-item.active-cat { border-bottom: 2px solid #2874f0; }
+        .cat-icon { font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .cat-name { font-size: 0.8rem; font-weight: 600; color: #212121; text-align: center; line-height: 1.2; }
+
+        /* Hero Slider */
+        .hero-slider { margin-bottom: 0.75rem; height: 280px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); border-radius: 0; overflow: hidden; position: relative; background: white; }
+        .slider-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; }
+        .slider-wrapper img { min-width: 100%; height: 100%; object-fit: cover; }
+        .slider-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.3s; border: 1px solid rgba(0,0,0,0.1); }
+        .dot.active { background: white; width: 28px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .shop-container { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; align-items: start; }
         
         .filter-sidebar { background: white; padding: 1rem; box-shadow: var(--shadow); border-radius: 2px; position: sticky; top: 120px; transition: 0.3s; z-index: 10; }
@@ -202,8 +270,36 @@ const Shop = () => {
         .shop-product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
         .shop-card { text-decoration: none; color: inherit; padding: 0.75rem; border: 1px solid #f0f0f0; border-radius: 4px; transition: 0.2s; display: flex; flex-direction: column; }
         .shop-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.08); transform: translateY(-3px); }
-        .shop-card-image { height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; }
+        .shop-card-image { height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; position: relative; }
         .shop-card-image img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        /* Product Card Image Indicators */
+        .card-image-indicators {
+          position: absolute;
+          bottom: 5px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 4px;
+          z-index: 10;
+          padding: 4px 8px;
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 12px;
+        }
+        
+        .card-indicator-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.6);
+          transition: all 0.3s ease;
+        }
+        
+        .card-indicator-dot.active {
+          background: white;
+          width: 8px;
+          height: 8px;
+        }
         
         .shop-card-info h3 { font-size: 0.9rem; font-weight: 400; color: #212121; margin-bottom: 0.4rem; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 2.3rem; }
         .shop-rating { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.4rem; }

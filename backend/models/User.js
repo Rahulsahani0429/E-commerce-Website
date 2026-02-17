@@ -21,6 +21,14 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    avatar: {
+      type: String,
+      default: "https://i.pravatar.cc/150?u=fake@pravatar.com",
+    },
+    role: {
+      type: String,
+      default: "Sales Manager",
+    },
   },
   {
     timestamps: true,

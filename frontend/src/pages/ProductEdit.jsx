@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
+import AdminLayout from '../components/AdminLayout';
 
 const ProductEdit = () => {
     const { id: productId } = useParams();
@@ -67,79 +68,82 @@ const ProductEdit = () => {
     };
 
     return (
-        <div className="container product-edit-page">
-            <Link to="/admin/products" className="btn btn-light" style={{marginBottom: '2rem'}}>Go Back</Link>
-            
-            <div className="edit-card">
+        <AdminLayout>
+            <div className="admin-page-header">
                 <h1>Edit Product</h1>
+                <Link to="/admin/products" className="btn-add" style={{ textDecoration: 'none', background: '#f3f4f6', color: '#374151' }}>
+                    Go Back
+                </Link>
+            </div>
+            
+            <div className="table-container" style={{ padding: '2rem', maxWidth: '800px' }}>
                 {error && <div className="alert alert-danger">{error}</div>}
                 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Name</label>
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+                <form onSubmit={handleSubmit} className="admin-form">
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Product Name</label>
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Price ($)</label>
+                            <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} required />
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>Price</label>
-                        <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} required />
-                    </div>
+
                     <div className="form-group">
                         <label>Image URL</label>
                         <input type="text" value={image} onChange={(e) => setImage(e.target.value)} required />
                     </div>
-                    <div className="form-group">
-                        <label>Brand</label>
-                        <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Brand</label>
+                            <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Category</label>
+                            <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>Category</label>
-                        <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
-                    </div>
+
                     <div className="form-group">
                         <label>Count In Stock</label>
                         <input type="number" value={countInStock} onChange={(e) => setCountInStock(Number(e.target.value))} required />
                     </div>
+
                     <div className="form-group">
                         <label>Description</label>
                         <textarea rows="5" value={description} onChange={(e) => setDescription(e.target.value)} required></textarea>
                     </div>
                     
-                    <button type="submit" className="btn btn-primary" style={{width: '100%'}} disabled={loading}>
+                    <button type="submit" className="btn-add" style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }} disabled={loading}>
                         {loading ? 'Updating...' : 'Update Product'}
                     </button>
                 </form>
             </div>
 
             <style>{`
-                .product-edit-page { padding: 4rem 2rem; }
-                .edit-card {
-                    background: var(--bg-card);
-                    padding: 3rem;
-                    border-radius: 1.5rem;
-                    box-shadow: var(--shadow-lg);
-                    max-width: 600px;
-                    margin: 0 auto;
-                }
-                .edit-card h1 { margin-bottom: 2rem; text-align: center; font-size: 2rem; }
-                .form-group { margin-bottom: 1.5rem; }
-                .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
-                .form-group input, .form-group textarea {
+                .admin-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+                .admin-form .form-group { margin-bottom: 1.5rem; }
+                .admin-form label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: #4b5563; }
+                .admin-form input, .admin-form textarea {
                     width: 100%;
                     padding: 0.75rem 1rem;
-                    border: 1px solid var(--border);
-                    border-radius: 0.5rem;
-                    font-size: 1rem;
-                    font-family: inherit;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                    font-size: 0.95rem;
+                    transition: border-color 0.2s;
+                    box-sizing: border-box;
                 }
-                .alert { padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center; background: #fee2e2; color: #b91c1c; }
-
-                @media (max-width: 768px) {
-                    .product-edit-page { padding: 2rem 1rem; }
-                    .edit-card { padding: 2rem; }
-                    .edit-card h1 { font-size: 1.5rem; }
+                .admin-form input:focus, .admin-form textarea:focus { border-color: #2874f0; outline: none; }
+                .alert-danger { background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600; }
+                
+                @media (max-width: 640px) {
+                    .admin-form .form-row { grid-template-columns: 1fr; }
                 }
             `}</style>
-        </div>
+        </AdminLayout>
     );
 };
 

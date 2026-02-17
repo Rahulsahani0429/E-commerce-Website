@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
+import ProductCard from '../components/ProductCard';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -44,16 +45,16 @@ const Home = () => {
 
   const [activeBanner, setActiveBanner] = useState(0);
   const banners = [
-    "https://picsum.photos/id/1/1600/400",
-    "https://picsum.photos/id/2/1600/400",
-    "https://picsum.photos/id/3/1600/400",
-    "https://picsum.photos/id/10/1600/400",
-    "https://picsum.photos/id/20/1600/400",
-    "https://picsum.photos/id/30/1600/400",
-    "https://picsum.photos/id/40/1600/400",
-    "https://picsum.photos/id/50/1600/400",
-    "https://picsum.photos/id/60/1600/400",
-    "https://picsum.photos/id/70/1600/400"
+    "https://picsum.photos/seed/banner1/1600/400",
+    "https://picsum.photos/seed/banner2/1600/400",
+    "https://picsum.photos/seed/banner3/1600/400",
+    "https://picsum.photos/seed/banner4/1600/400",
+    "https://picsum.photos/seed/banner5/1600/400",
+    "https://picsum.photos/seed/banner6/1600/400",
+    "https://picsum.photos/seed/banner7/1600/400",
+    "https://picsum.photos/seed/banner8/1600/400",
+    "https://picsum.photos/seed/banner9/1600/400",
+    "https://picsum.photos/seed/banner10/1600/400"
   ];
 
   useEffect(() => {
@@ -114,22 +115,7 @@ const Home = () => {
               ) : products.length > 0 ? (
                 <div className="deals-grid">
                   {products.map(product => (
-                    <Link to={`/product/${product._id}`} key={product._id} className="deal-card">
-                      <div className="deal-image">
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
-                          onError={(e) => {
-                            e.target.src = 'https://picsum.photos/200/200?text=Product';
-                          }}
-                        />
-                      </div>
-                      <div className="deal-info">
-                        <p className="deal-name">{product.name}</p>
-                        <p className="deal-price">From ₹{product.price}</p>
-                        <p className="deal-brand">{product.brand}</p>
-                      </div>
-                    </Link>
+                    <ProductCard key={product._id} product={product} />
                   ))}
                 </div>
               ) : (
@@ -213,6 +199,7 @@ const Home = () => {
           margin-bottom: 1rem;
           padding: 0.5rem;
           transition: transform 0.4s ease;
+          position: relative;
         }
         
         .deal-card:hover .deal-image img { 
@@ -224,6 +211,34 @@ const Home = () => {
           max-height: 100%; 
           object-fit: contain; 
           transition: transform 0.4s ease;
+        }
+        
+        /* Product Card Image Indicators */
+        .card-image-indicators {
+          position: absolute;
+          bottom: 5px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 4px;
+          z-index: 10;
+          padding: 4px 8px;
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 12px;
+        }
+        
+        .card-indicator-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.6);
+          transition: all 0.3s ease;
+        }
+        
+        .card-indicator-dot.active {
+          background: white;
+          width: 8px;
+          height: 8px;
         }
         
         .deal-info { width: 100%; }

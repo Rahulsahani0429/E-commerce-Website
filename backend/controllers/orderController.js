@@ -147,6 +147,8 @@
 // };
 
 import Order from "../models/Order.js";
+import User from "../models/User.js";
+import { createNotification } from "./notificationController.js";
 
 /**
  * @desc    Create new order
@@ -220,17 +222,14 @@ const addOrderItems = async (req, res) => {
     // first method
     const createdOrder = await order.save();
 
-    // second method
-    // const createdOrder = await order.create({
-    //     orderItems,
-    //     user: req.user._id,
-    //     shippingAddress,
-    //     paymentMethod,
-    //     itemsPrice,
-    //     taxPrice,
-    //     shippingPrice,
-    //     totalPrice,
-    // });
+    // Notify Admin of new order
+    await createNotification({
+      role: "admin",
+      title: "New Order",
+      message: `A new order #${createdOrder._id} has been placed.`,
+      type: "order",
+      relatedId: createdOrder._id,
+    });
 
     return res.status(201).json({
       message: "Order created successfully",
@@ -283,6 +282,44 @@ const updateOrderToPaid = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    const isFailed = req.body.status === "failed";
+
+    if (isFailed) {
+      order.isPaid = false;
+      order.paymentResult = {
+        id: req.body.id,
+        status: "failed",
+        update_time: req.body.update_time,
+        email_address: req.body.payer?.email_address,
+      };
+
+      const updatedOrder = await order.save();
+
+      // Notify User
+      await createNotification({
+        recipient: order.user,
+        role: "user",
+        title: "Payment Failed",
+        message: "Your payment failed. Please retry.",
+        type: "payment",
+        relatedId: order._id,
+      });
+
+      // Notify Admin
+      await createNotification({
+        role: "admin",
+        title: "Payment Failed",
+        message: `Payment failed for Order #${order._id}.`,
+        type: "payment",
+        relatedId: order._id,
+      });
+
+      return res.status(200).json({
+        message: "Order payment failed",
+        order: updatedOrder,
+      });
+    }
+
     order.isPaid = true;
     order.paidAt = Date.now();
     order.paymentResult = {
@@ -293,6 +330,16 @@ const updateOrderToPaid = async (req, res) => {
     };
 
     const updatedOrder = await order.save();
+
+    // Notify User
+    await createNotification({
+      recipient: order.user,
+      role: "user",
+      title: "Payment Successful",
+      message: "Your payment was successful. We are processing your order.",
+      type: "payment",
+      relatedId: order._id,
+    });
 
     return res.status(200).json({
       message: "Order marked as paid",
@@ -321,6 +368,16 @@ const updateOrderToDelivered = async (req, res) => {
     order.deliveredAt = Date.now();
 
     const updatedOrder = await order.save();
+
+    // Notify User
+    await createNotification({
+      recipient: order.user,
+      role: "user",
+      title: "Order Delivered",
+      message: `Your order #${order._id} has been delivered. Enjoy your purchase!`,
+      type: "order",
+      relatedId: order._id,
+    });
 
     return res.status(200).json({
       message: "Order marked as delivered",
@@ -388,12 +445,137 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Cancel an order
+ * @route   PUT /api/orders/:id/cancel
+ * @access  Private
+ */
+const cancelOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Check ownership
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized to cancel this order" });
+    }
+
+    if (order.isDelivered) {
+      return res.status(400).json({ message: "Cannot cancel a delivered order" });
+    }
+
+    if (order.isCancelled) {
+      return res.status(400).json({ message: "Order is already cancelled" });
+    }
+
+    // You might also want to prevent cancellation if shipped,
+    // though the model doesn't have an isShipped field yet.
+    // Based on requirements: "Hide cancel button if order is shipped or delivered"
+    // Since we don't have isShipped, we will assume delivered is the main check for now,
+    // or add isShipped if needed. The prompt says "if order is shipped or delivered".
+
+    order.isCancelled = true;
+    order.cancelledAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    // Notify Admin of cancellation
+    await createNotification({
+      role: "admin",
+      title: "Order Cancelled",
+      message: `Order #${order._id} has been cancelled by the user.`,
+      type: "order",
+      relatedId: order._id,
+    });
+
+    return res.status(200).json({
+      message: "Order cancelled successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Cancel Order Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Update order to processing
+ * @route   PUT /api/orders/:id/process
+ * @access  Private/Admin
+ */
+const updateOrderToProcessing = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.isProcessing = true;
+    order.processedAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    return res.status(200).json({
+      message: "Order marked as processing",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Process Order Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Update order to shipped
+ * @route   PUT /api/orders/:id/ship
+ * @access  Private/Admin
+ */
+const updateOrderToShipped = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.isShipped = true;
+    order.shippedAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    // Notify User
+    await createNotification({
+      recipient: order.user,
+      role: "user",
+      title: "Order Shipped",
+      message: `Your order #${order._id} has been shipped. It will arrive soon!`,
+      type: "order",
+      relatedId: order._id,
+    });
+
+    return res.status(200).json({
+      message: "Order marked as shipped",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Ship Order Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   addOrderItems,
   getOrderById,
   updateOrderToPaid,
   updateOrderToDelivered,
+  updateOrderToProcessing,
+  updateOrderToShipped,
   getMyOrders,
   getOrders,
   deleteOrder,
+  cancelOrder,
 };

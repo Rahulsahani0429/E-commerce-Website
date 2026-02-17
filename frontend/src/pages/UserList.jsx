@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
+import AdminLayout from '../components/AdminLayout';
+import './AdminTables.css';
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
@@ -70,50 +72,56 @@ const UserList = () => {
         }
     };
 
-    if (loading) return <div className="container">Loading...</div>;
-    if (error) return <div className="container alert alert-danger">{error}</div>;
+    if (loading) return <AdminLayout><div className="loader-container"><div className="loader"></div></div></AdminLayout>;
+    if (error) return <AdminLayout><div className="alert alert-danger">{error}</div></AdminLayout>;
 
     return (
-        <div className="container admin-user-list">
-            <h1>Users Management</h1>
-            <div className="table-responsive">
-                <table>
+        <AdminLayout>
+            <div className="admin-page-header">
+                <h1>Users Management</h1>
+            </div>
+            
+            <div className="table-container">
+                <table className="admin-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>NAME</th>
-                            <th>EMAIL</th>
-                            <th>ADMIN</th>
-                            <th>ACTIONS</th>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
-                            <tr key={user._id}>
-                                <td>{user._id}</td>
-                                <td>{user.name}</td>
-                                <td><a href={`mailto:${user.email}`}>{user.email}</a></td>
+                        {users.map((u) => (
+                            <tr key={u._id}>
+                                <td>#{u._id.substring(u._id.length - 8).toUpperCase()}</td>
+                                <td>{u.name}</td>
+                                <td><a href={`mailto:${u.email}`} style={{ color: '#2563eb', textDecoration: 'none' }}>{u.email}</a></td>
                                 <td>
-                                    {user.isAdmin ? (
-                                        <span className="badge badge-success">Yes</span>
+                                    {u.isAdmin ? (
+                                        <span className="stock-badge" style={{ background: '#f5f3ff', color: '#7c3aed' }}>Administrator</span>
                                     ) : (
-                                        <span className="badge badge-danger">No</span>
+                                        <span className="stock-badge" style={{ background: '#f3f4f6', color: '#6b7280' }}>Client</span>
                                     )}
                                 </td>
                                 <td>
-                                    <div className="actions">
+                                    <div className="action-btns">
                                         <button 
-                                            className="toggle-btn"
-                                            onClick={() => toggleAdminHandler(user)}
+                                            className="icon-btn" 
+                                            onClick={() => toggleAdminHandler(u)}
+                                            title={u.isAdmin ? "Remove Admin" : "Make Admin"}
+                                            style={{ color: '#2563eb' }}
                                         >
-                                            Toggle Admin
+                                            {u.isAdmin ? '🔓' : '🛡️'}
                                         </button>
                                         <button 
-                                            className="delete-btn" 
-                                            onClick={() => deleteHandler(user._id)}
-                                            disabled={user._id === currentUser._id}
+                                            className="icon-btn btn-delete" 
+                                            onClick={() => deleteHandler(u._id)}
+                                            disabled={u._id === currentUser._id}
+                                            title="Delete User"
                                         >
-                                            Delete
+                                            🗑️
                                         </button>
                                     </div>
                                 </td>
@@ -122,30 +130,12 @@ const UserList = () => {
                     </tbody>
                 </table>
             </div>
-
             <style>{`
-                .admin-user-list { padding: 4rem 2rem; }
-                .admin-user-list h1 { margin-bottom: 2.5rem; font-size: 2rem; }
-                .table-responsive { overflow-x: auto; background: var(--bg-card); border-radius: 1rem; box-shadow: var(--shadow); }
-                table { width: 100%; border-collapse: collapse; text-align: left; }
-                th, td { padding: 1.25rem; border-bottom: 1px solid var(--border); }
-                th { background: rgba(0,0,0,0.02); font-weight: 700; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; }
-                tr:hover { background: rgba(0,0,0,0.01); }
-                .badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
-                .badge-success { background: #dcfce7; color: #15803d; }
-                .badge-danger { background: #fee2e2; color: #b91c1c; }
-                .actions { display: flex; gap: 1rem; }
-                .toggle-btn { background: none; border: none; color: #2563eb; font-weight: 600; cursor: pointer; }
-                .delete-btn { background: none; border: none; color: #dc2626; font-weight: 600; cursor: pointer; }
-                .delete-btn:disabled { color: var(--border); cursor: not-allowed; }
-
-                @media (max-width: 768px) {
-                    .admin-user-list { padding: 2rem 1rem; }
-                    .admin-user-list h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
-                    th, td { padding: 1rem 0.75rem; font-size: 0.85rem; }
-                }
+                .loader-container { min-height: 50vh; display: flex; align-items: center; justify-content: center; }
+                .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #2874f0; border-radius: 50% !important; animation: spin 1s linear infinite; }
+                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
             `}</style>
-        </div>
+        </AdminLayout>
     );
 };
 

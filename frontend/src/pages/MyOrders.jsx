@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 
 const MyOrders = () => {
@@ -62,7 +63,9 @@ const MyOrders = () => {
                                         {order.isPaid ? (
                                             <span className="badge badge-success">{order.paidAt.substring(0, 10)}</span>
                                         ) : (
-                                            <span className="badge badge-danger">No</span>
+                                            <span className={`badge ${order.paymentResult?.status === 'failed' ? 'badge-failed' : 'badge-danger'}`}>
+                                                {order.paymentResult?.status === 'failed' ? 'Failed' : 'No'}
+                                            </span>
                                         )}
                                     </td>
                                     <td>
@@ -73,7 +76,7 @@ const MyOrders = () => {
                                         )}
                                     </td>
                                     <td>
-                                        <button className="details-btn">Details</button>
+                                        <Link to={`/order-tracking/${order._id}`} className="details-btn">Details</Link>
                                     </td>
                                 </tr>
                             ))}
@@ -93,8 +96,10 @@ const MyOrders = () => {
                 .badge { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
                 .badge-success { background: #dcfce7; color: #15803d; }
                 .badge-danger { background: #fee2e2; color: #b91c1c; }
+                .badge-failed { background: #ff4d4f; color: white; }
                 .alert-info { background: #e0f2fe; color: #0369a1; padding: 1rem; border-radius: 0.5rem; text-align: center; }
-                .details-btn { background: none; border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem; }
+                .details-btn { background: none; border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; color: inherit; }
+                .details-btn:hover { background: rgba(0,0,0,0.05); }
             `}</style>
         </div>
     );

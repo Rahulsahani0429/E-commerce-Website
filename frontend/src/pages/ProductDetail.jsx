@@ -12,6 +12,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [qty, setQty] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,6 +30,25 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
+  // Auto-carousel effect - automatically rotate images
+  useEffect(() => {
+    if (!product || !isAutoPlaying) return;
+    
+    const allImages = product.images && product.images.length > 0 
+      ? product.images 
+      : [product.image];
+    
+    if (allImages.length <= 1) return; // Don't rotate if only one image
+    
+    const interval = setInterval(() => {
+      setSelectedImageIndex((prevIndex) => 
+        prevIndex === allImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 2000); // Change image every 2 seconds
+    
+    return () => clearInterval(interval);
+  }, [product, isAutoPlaying]);
+
   const addToCartHandler = () => {
     addToCart(product, qty);
     navigate('/cart');
@@ -36,6 +57,28 @@ const ProductDetail = () => {
   if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>Loading product details...</div>;
   if (error) return <div className="container" style={{padding: '5rem 0', textAlign: 'center', color: 'var(--accent)'}}>{error}</div>;
   if (!product) return <div className="container">Product not found</div>;
+
+  // Get all product images (main image + additional images)
+  const allImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image];
+
+  const currentImage = allImages[selectedImageIndex];
+
+  const handlePrevImage = () => {
+    setIsAutoPlaying(false);
+    setSelectedImageIndex((prev) => prev === 0 ? allImages.length - 1 : prev - 1);
+  };
+
+  const handleNextImage = () => {
+    setIsAutoPlaying(false);
+    setSelectedImageIndex((prev) => prev === allImages.length - 1 ? 0 : prev + 1);
+  };
+
+  const handleThumbnailClick = (index) => {
+    setIsAutoPlaying(false);
+    setSelectedImageIndex(index);
+  };
 
   return (
     <div className="product-detail-wrapper">
@@ -49,9 +92,53 @@ const ProductDetail = () => {
 
         <div className="detail-container">
           <div className="detail-left">
-            <div className="p-image-box">
-              <img src={product.image} alt={product.name} />
+            {/* Main Image Display with Auto-Carousel */}
+            <div 
+              className="p-image-box"
+              onMouseEnter={() => setIsAutoPlaying(false)}
+              onMouseLeave={() => setIsAutoPlaying(true)}
+            >
+              <img src={currentImage} alt={product.name} className="main-product-image" />
+              
+              {/* Navigation Arrows */}
+              {allImages.length > 1 && (
+                <>
+                  <button className="image-nav prev" onClick={handlePrevImage}>
+                    ‹
+                  </button>
+                  <button className="image-nav next" onClick={handleNextImage}>
+                    ›
+                  </button>
+                  
+                  {/* Image Indicators/Dots */}
+                  <div className="image-indicators">
+                    {allImages.map((_, index) => (
+                      <span
+                        key={index}
+                        className={`indicator-dot ${selectedImageIndex === index ? 'active' : ''}`}
+                        onClick={() => handleThumbnailClick(index)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
+            
+            {/* Image Thumbnails */}
+            {allImages.length > 1 && (
+              <div className="image-thumbnails">
+                {allImages.map((img, index) => (
+                  <div 
+                    key={index}
+                    className={`thumbnail ${selectedImageIndex === index ? 'active' : ''}`}
+                    onClick={() => handleThumbnailClick(index)}
+                  >
+                    <img src={img} alt={`${product.name} view ${index + 1}`} />
+                  </div>
+                ))}
+              </div>
+            )}
+            
             <div className="p-actions desktop-actions-box">
               <button 
                 className="add-cart-btn" 
@@ -140,8 +227,140 @@ const ProductDetail = () => {
         .detail-container { display: grid; grid-template-columns: 450px 1fr; gap: 1rem; background: white; padding: 1.5rem; border-radius: 2px; box-shadow: var(--shadow); }
         
         .detail-left { position: sticky; top: 120px; height: fit-content; }
-        .p-image-box { border: 1px solid #f0f0f0; padding: 1rem; margin-bottom: 1rem; height: 350px; display: flex; align-items: center; justify-content: center; }
-        .p-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        /* Auto-Carousel Image Box */
+        .p-image-box { 
+          position: relative;
+          border: 1px solid #f0f0f0; 
+          padding: 1rem; 
+          margin-bottom: 1rem; 
+          height: 350px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          background: #fafafa;
+          overflow: hidden;
+        }
+        
+        .main-product-image { 
+          max-width: 100%; 
+          max-height: 100%; 
+          object-fit: contain; 
+          transition: transform 0.3s ease, opacity 0.3s ease;
+          animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0.7; transform: scale(0.98); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Navigation Arrows */
+        .image-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid #e0e0e0;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          font-size: 24px;
+          font-weight: bold;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #212121;
+          transition: all 0.2s ease;
+          z-index: 10;
+          opacity: 0;
+        }
+        
+        .p-image-box:hover .image-nav {
+          opacity: 1;
+        }
+        
+        .image-nav:hover {
+          background: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          transform: translateY(-50%) scale(1.1);
+        }
+        
+        .image-nav.prev { left: 10px; }
+        .image-nav.next { right: 10px; }
+        
+        /* Image Indicators/Dots */
+        .image-indicators {
+          position: absolute;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 8px;
+          z-index: 10;
+        }
+        
+        .indicator-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.7);
+          border: 1px solid #ccc;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        
+        .indicator-dot:hover {
+          background: rgba(255, 255, 255, 0.9);
+          transform: scale(1.2);
+        }
+        
+        .indicator-dot.active {
+          background: #2874f0;
+          border-color: #2874f0;
+          width: 12px;
+          height: 12px;
+          box-shadow: 0 0 8px rgba(40, 116, 240, 0.5);
+        }
+        
+        /* Image Thumbnails Gallery */
+        .image-thumbnails { 
+          display: flex; 
+          gap: 0.5rem; 
+          margin-bottom: 1rem; 
+          flex-wrap: wrap; 
+          padding: 0.5rem 0; 
+        }
+        
+        .thumbnail { 
+          width: 60px; 
+          height: 60px; 
+          border: 2px solid #e0e0e0; 
+          padding: 4px; 
+          cursor: pointer; 
+          transition: all 0.2s ease; 
+          background: white;
+          border-radius: 4px;
+        }
+        
+        .thumbnail:hover { 
+          border-color: #2874f0; 
+          transform: scale(1.05); 
+          box-shadow: 0 2px 8px rgba(40, 116, 240, 0.2);
+        }
+        
+        .thumbnail.active { 
+          border-color: #2874f0; 
+          box-shadow: 0 0 8px rgba(40, 116, 240, 0.4);
+          transform: scale(1.05);
+        }
+        
+        .thumbnail img { 
+          width: 100%; 
+          height: 100%; 
+          object-fit: contain; 
+        }
         
         .p-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
         .p-actions button { padding: 1rem; border: none; font-size: 0.9rem; font-weight: 700; border-radius: 2px; cursor: pointer; }
@@ -173,6 +392,10 @@ const ProductDetail = () => {
           .detail-container { grid-template-columns: 1fr; padding: 1rem; }
           .detail-left { position: relative; top: 0; }
           .p-image-box { height: 280px; }
+          .thumbnail { width: 50px; height: 50px; }
+          .image-nav { width: 35px; height: 35px; font-size: 20px; }
+          .image-nav.prev { left: 5px; }
+          .image-nav.next { right: 5px; }
           .desktop-actions-box { display: none; }
           .mobile-sticky-actions { display: grid; }
           .detail-right { padding-left: 0; }
