@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
+import mongoose from "mongoose";
 
 /**
  * @desc    Get dashboard statistics
@@ -13,24 +14,74 @@ const getDashboardStats = async (req, res) => {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
 
+        // Total Revenue Calculation
         const revenueData = await Order.aggregate([
             { $match: { isPaid: true } },
             { $group: { _id: null, totalRevenue: { $sum: "$totalPrice" } } }
         ]);
-
         const totalRevenue = revenueData.length > 0 ? revenueData[0].totalRevenue : 0;
 
+        // Recently placed 5 orders
         const recentOrders = await Order.find({})
             .sort({ createdAt: -1 })
             .limit(5)
             .populate("user", "name email");
+
+        // Order Status Distribution (for Donut Chart)
+        const orderStatusStats = await Order.aggregate([
+            {
+                $group: {
+                    _id: "$orderStatus",
+                    value: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    name: "$_id",
+                    value: 1,
+                    _id: 0
+                }
+            }
+        ]);
+
+        // Revenue Overview (Last 7 Days for Line Chart)
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const revenueOverview = await Order.aggregate([
+            {
+                $match: {
+                    isPaid: true,
+                    paidAt: { $gte: sevenDaysAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$paidAt" } },
+                    value: { $sum: "$totalPrice" }
+                }
+            },
+            { $sort: { _id: 1 } },
+            {
+                $project: {
+                    name: "$_id",
+                    value: 1,
+                    _id: 0
+                }
+            }
+        ]);
+
+        // If no revenue in last 7 days, provide dummy growth markers or counts
+        // (Just returning counts for now as requested)
 
         return res.status(200).json({
             totalUsers,
             totalProducts,
             totalOrders,
             totalRevenue,
-            recentOrders
+            recentOrders,
+            orderStatusStats,
+            revenueOverview
         });
     } catch (error) {
         console.error("Dashboard Stats Error:", error);
@@ -38,4 +89,400 @@ const getDashboardStats = async (req, res) => {
     }
 };
 
-export { getDashboardStats };
+/**
+ * @desc    Get all customers with stats
+ * @route   GET /api/admin/customers
+ * @access  Private/Admin
+ */
+const getCustomers = async (req, res) => {
+    try {
+        const totalCustomers = await User.countDocuments();
+
+        // summary stats
+        const activeUsersCount = await User.countDocuments({ isAdmin: false });
+        const blockedUsersCount = await User.countDocuments({ status: "Blocked" }); // assuming status field might exist or adding it logic
+
+        const firstDayOfMonth = new Date();
+        firstDayOfMonth.setDate(1);
+        firstDayOfMonth.setHours(0, 0, 0, 0);
+        const newThisMonth = await User.countDocuments({ createdAt: { $gte: firstDayOfMonth } });
+
+        // Detailed customer list with aggregated order data
+        const customers = await User.aggregate([
+            {
+                $lookup: {
+                    from: "orders",
+                    localField: "_id",
+                    foreignField: "user",
+                    as: "orders"
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    email: 1,
+                    avatar: 1,
+                    isAdmin: 1,
+                    phone: 1,
+                    status: 1,
+                    createdAt: 1,
+                    totalOrders: { $size: "$orders" },
+                    totalSpent: {
+                        $sum: {
+                            $map: {
+                                input: {
+                                    $filter: {
+                                        input: "$orders",
+                                        as: "order",
+                                        cond: { $eq: ["$$order.isPaid", true] }
+                                    }
+                                },
+                                as: "paidOrder",
+                                in: "$paidOrder.totalPrice"
+                            }
+                        }
+                    }
+                }
+            },
+            { $sort: { createdAt: -1 } }
+        ]);
+
+        return res.status(200).json({
+            summary: {
+                totalCustomers,
+                activeUsers: activeUsersCount,
+                blockedUsers: blockedUsersCount, // 0 if field doesn't exist
+                newThisMonth
+            },
+            customers
+        });
+    } catch (error) {
+        console.error("Get Customers Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
+ * @desc    Get reports with filters
+ * @route   GET /api/admin/reports
+ * @access  Private/Admin
+ */
+const getReports = async (req, res) => {
+    try {
+        const { range, from, to } = req.query;
+        let startDate = new Date();
+        let endDate = new Date();
+
+        if (range === "7d") {
+            startDate.setDate(startDate.getDate() - 7);
+        } else if (range === "30d") {
+            startDate.setDate(startDate.getDate() - 30);
+        } else if (range === "12m") {
+            startDate.setFullYear(startDate.getFullYear() - 1);
+        } else if (from && to) {
+            startDate = new Date(from);
+            endDate = new Date(to);
+        } else {
+            startDate.setDate(startDate.getDate() - 30); // Default 30d
+        }
+
+        const db = mongoose.connection.db;
+
+        // 1. KPIs
+        const kpisArr = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, "$totalPrice", 0] } },
+                    totalOrders: { $sum: 1 },
+                    refunds: { $sum: 0 } // Assuming no refund logic yet
+                }
+            }
+        ]).toArray();
+
+        const kpis = kpisArr[0] || { totalRevenue: 0, totalOrders: 0, refunds: 0 };
+
+        const totalCustomers = await db.collection("users").countDocuments({ isAdmin: false });
+        const newCustomers = await db.collection("users").countDocuments({
+            isAdmin: false,
+            createdAt: { $gte: startDate, $lte: endDate }
+        });
+
+        // 2. Revenue Trend
+        const groupFormat = range === "12m" ? "%Y-%m" : "%Y-%m-%d";
+        const revenueTrendResults = await db.collection("orders").aggregate([
+            { $match: { isPaid: true, createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: groupFormat, date: "$createdAt" } },
+                    value: { $sum: "$totalPrice" }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]).toArray();
+
+        // 3. Orders By Status
+        const ordersByStatus = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $group: { _id: "$orderStatus", count: { $sum: 1 } } },
+            { $project: { status: "$_id", count: 1, _id: 0 } }
+        ]).toArray();
+
+        // 4. Payment Methods
+        const paymentMethods = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $group: { _id: "$paymentMethod", count: { $sum: 1 } } },
+            { $project: { method: { $ifNull: ["$_id", "Unknown"] }, count: 1, _id: 0 } }
+        ]).toArray();
+
+        // 5. Top Products
+        const topProducts = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $unwind: "$orderItems" },
+            {
+                $group: {
+                    _id: "$orderItems.name",
+                    soldQty: { $sum: "$orderItems.qty" },
+                    revenue: { $sum: { $multiply: ["$orderItems.qty", "$orderItems.price"] } }
+                }
+            },
+            { $sort: { soldQty: -1 } },
+            { $limit: 5 },
+            { $project: { name: "$_id", soldQty: 1, revenue: 1, _id: 0 } }
+        ]).toArray();
+
+        // 6. Daily Report Table
+        const dailyReport = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    orders: { $sum: 1 },
+                    revenue: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, "$totalPrice", 0] } }
+                }
+            },
+            { $sort: { _id: -1 } },
+            { $limit: 30 },
+            { $project: { date: "$_id", orders: 1, revenue: 1, _id: 0 } }
+        ]).toArray();
+
+        // Map Trend to labels/values
+        const trend = {
+            labels: revenueTrendResults.map(r => r._id),
+            values: revenueTrendResults.map(r => r.value)
+        };
+
+        return res.status(200).json({
+            range,
+            from: startDate,
+            to: endDate,
+            kpis: {
+                ...kpis,
+                totalCustomers,
+                newCustomers
+            },
+            charts: {
+                revenueTrend: trend,
+                ordersByStatus,
+                paymentMethods,
+                topProducts
+            },
+            table: dailyReport
+        });
+
+    } catch (error) {
+        console.error("Get Reports Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
+ * @desc    Get detailed statistics with filters
+ * @route   GET /api/admin/stats
+ * @access  Private/Admin
+ */
+const getAdminStats = async (req, res) => {
+    try {
+        const { range, from, to } = req.query;
+        let startDate = new Date();
+        let endDate = new Date();
+
+        if (range === "7d") {
+            startDate.setDate(startDate.getDate() - 7);
+        } else if (range === "30d") {
+            startDate.setDate(startDate.getDate() - 30);
+        } else if (range === "12m") {
+            startDate.setFullYear(startDate.getFullYear() - 1);
+        } else if (from && to) {
+            startDate = new Date(from);
+            endDate = new Date(to);
+        } else {
+            startDate.setDate(startDate.getDate() - 30);
+        }
+
+        const db = mongoose.connection.db;
+
+        // 1. KPIs Aggregation
+        const kpisArr = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $group: {
+                    _id: null,
+                    totalOrders: { $sum: 1 },
+                    paidOrders: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, 1, 0] } },
+                    deliveredOrders: { $sum: { $cond: [{ $eq: ["$orderStatus", "Delivered"] }, 1, 0] } },
+                    cancelledOrders: { $sum: { $cond: [{ $eq: ["$orderStatus", "Cancelled"] }, 1, 0] } },
+                    totalRevenue: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, "$totalPrice", 0] } }
+                }
+            }
+        ]).toArray();
+
+        const baseKpis = kpisArr[0] || { totalOrders: 0, paidOrders: 0, deliveredOrders: 0, cancelledOrders: 0, totalRevenue: 0 };
+
+        const kpis = {
+            totalOrders: baseKpis.totalOrders,
+            paidOrders: baseKpis.paidOrders,
+            deliveredOrders: baseKpis.deliveredOrders,
+            grossRevenue: baseKpis.totalRevenue,
+            avgOrderValue: baseKpis.paidOrders > 0 ? baseKpis.totalRevenue / baseKpis.paidOrders : 0,
+            deliveryRate: baseKpis.totalOrders > 0 ? (baseKpis.deliveredOrders / baseKpis.totalOrders) * 100 : 0,
+            cancelRate: baseKpis.totalOrders > 0 ? (baseKpis.cancelledOrders / baseKpis.totalOrders) * 100 : 0,
+            paidRate: baseKpis.totalOrders > 0 ? (baseKpis.paidOrders / baseKpis.totalOrders) * 100 : 0
+        };
+
+        // 2. Revenue Trend
+        const groupFormat = range === "12m" ? "%Y-%m" : "%Y-%m-%d";
+        const revenueTrendResults = await db.collection("orders").aggregate([
+            { $match: { isPaid: true, createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: groupFormat, date: "$createdAt" } },
+                    value: { $sum: "$totalPrice" }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]).toArray();
+
+        // 3. Order Funnel
+        const orderFunnel = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $group: { _id: "$orderStatus", count: { $sum: 1 } } },
+            { $project: { status: "$_id", count: 1, _id: 0 } }
+        ]).toArray();
+
+        // 4. Payment Methods
+        const paymentMethods = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $group: { _id: "$paymentMethod", count: { $sum: 1 } } },
+            { $project: { method: { $ifNull: ["$_id", "Unknown"] }, count: 1, _id: 0 } }
+        ]).toArray();
+
+        // 5. Top Categories
+        const topCategories = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate }, isPaid: true } },
+            { $unwind: "$orderItems" },
+            {
+                $group: {
+                    _id: { $ifNull: ["$orderItems.category", "Uncategorized"] },
+                    revenue: { $sum: { $multiply: ["$orderItems.qty", "$orderItems.price"] } }
+                }
+            },
+            { $sort: { revenue: -1 } },
+            { $project: { category: "$_id", revenue: 1, _id: 0 } }
+        ]).toArray();
+
+        // 6. Top Products
+        const topProducts = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            { $unwind: "$orderItems" },
+            {
+                $group: {
+                    _id: "$orderItems.name",
+                    soldQty: { $sum: "$orderItems.qty" },
+                    revenue: { $sum: { $multiply: ["$orderItems.qty", "$orderItems.price"] } }
+                }
+            },
+            { $sort: { soldQty: -1 } },
+            { $limit: 10 },
+            { $project: { name: "$_id", soldQty: 1, revenue: 1, _id: 0 } }
+        ]).toArray();
+
+        // 7. Daily Summary Table
+        const dailySummary = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    orders: { $sum: 1 },
+                    revenue: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, "$totalPrice", 0] } },
+                    paidOrders: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, 1, 0] } },
+                    deliveredOrders: { $sum: { $cond: [{ $eq: ["$orderStatus", "Delivered"] }, 1, 0] } },
+                    cancelledOrders: { $sum: { $cond: [{ $eq: ["$orderStatus", "Cancelled"] }, 1, 0] } }
+                }
+            },
+            { $sort: { _id: -1 } },
+            { $limit: 30 },
+            { $project: { date: "$_id", orders: 1, revenue: 1, paidOrders: 1, deliveredOrders: 1, cancelledOrders: 1, _id: 0 } }
+        ]).toArray();
+
+        // 8. Top Customers
+        const topCustomers = await db.collection("orders").aggregate([
+            { $match: { createdAt: { $gte: startDate, $lte: endDate }, isPaid: true } },
+            {
+                $group: {
+                    _id: "$user",
+                    spent: { $sum: "$totalPrice" },
+                    ordersCount: { $sum: 1 }
+                }
+            },
+            { $sort: { spent: -1 } },
+            { $limit: 5 },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "userDetails"
+                }
+            },
+            { $unwind: "$userDetails" },
+            {
+                $project: {
+                    name: "$userDetails.name",
+                    email: "$userDetails.email",
+                    ordersCount: 1,
+                    spent: 1,
+                    _id: 0
+                }
+            }
+        ]).toArray();
+
+        return res.status(200).json({
+            range,
+            from: startDate,
+            to: endDate,
+            kpis,
+            charts: {
+                revenueTrend: {
+                    labels: revenueTrendResults.map(r => r._id),
+                    values: revenueTrendResults.map(r => r.value)
+                },
+                orderFunnel,
+                paymentMethods,
+                topCategories,
+                topProducts
+            },
+            tables: {
+                dailySummary,
+                topCustomers
+            }
+        });
+
+    } catch (error) {
+        console.error("Get Stats Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export { getDashboardStats, getCustomers, getReports, getAdminStats };

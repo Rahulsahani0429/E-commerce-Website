@@ -250,7 +250,7 @@ const registerUser = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
       },
-      token: generateToken(user._id),
+      token: generateToken(user._id, user.isAdmin),
     });
   } catch (error) {
     console.error("Register Error:", error);
@@ -296,7 +296,7 @@ const loginUser = async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
       },
-      token: generateToken(user._id),
+      token: generateToken(user._id, user.isAdmin),
     });
   } catch (error) {
     console.error("Login Error:", error);
@@ -354,7 +354,7 @@ const updateUserProfile = async (req, res) => {
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
       },
-      token: generateToken(updatedUser._id),
+      token: generateToken(updatedUser._id, updatedUser.isAdmin),
     });
   } catch (error) {
     console.error("Update Profile Error:", error);

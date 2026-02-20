@@ -148,7 +148,7 @@
 
 import Order from "../models/Order.js";
 import User from "../models/User.js";
-import { createNotification } from "./notificationController.js";
+import { createNotification } from "../services/notificationService.js";
 
 /**
  * @desc    Create new order
@@ -226,11 +226,14 @@ const addOrderItems = async (req, res) => {
 
     // Notify Admin of new order
     await createNotification({
-      role: "admin",
-      title: "New Order",
-      message: `A new order #${createdOrder._id} has been placed.`,
-      type: "order",
-      relatedId: createdOrder._id,
+      type: "order_created",
+      title: "New Order Placed",
+      message: `New order #${createdOrder._id} for $${createdOrder.totalPrice}`,
+      meta: {
+        orderId: createdOrder._id,
+        amount: createdOrder.totalPrice,
+        userId: req.user._id
+      }
     });
 
     return res.status(201).json({
@@ -257,7 +260,7 @@ const getOrderById = async (req, res) => {
 
     const order = await Order.findById(req.params.id).populate(
       "user",
-      "name email",
+      "name email avatar",
     );
 
     if (!order) {
@@ -309,11 +312,13 @@ const updateOrderToPaid = async (req, res) => {
 
       // Notify Admin
       await createNotification({
-        role: "admin",
+        type: "payment_updated",
         title: "Payment Failed",
         message: `Payment failed for Order #${order._id}.`,
-        type: "payment",
-        relatedId: order._id,
+        meta: {
+          orderId: order._id,
+          paymentStatus: "failed"
+        }
       });
 
       return res.status(200).json({
@@ -341,6 +346,18 @@ const updateOrderToPaid = async (req, res) => {
       message: "Your payment was successful. We are processing your order.",
       type: "payment",
       relatedId: order._id,
+    });
+
+    // Notify Admin
+    await createNotification({
+      type: "payment_updated",
+      title: "Payment Successful",
+      message: `Order #${order._id} has been paid.`,
+      meta: {
+        orderId: order._id,
+        paymentStatus: "paid",
+        amount: order.totalPrice
+      }
     });
 
     return res.status(200).json({
@@ -414,7 +431,7 @@ const getMyOrders = async (req, res) => {
  */
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).populate("user", "id name");
+    const orders = await Order.find({}).populate("user", "id name email avatar");
 
     return res.status(200).json(orders);
   } catch (error) {
@@ -569,6 +586,109 @@ const updateOrderToShipped = async (req, res) => {
   }
 };
 
+// @desc    Update order status
+// @route   PATCH /api/v1/admin/orders/:id/status
+// @access  Private/Admin
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const statusEnum = ["Order Placed", "Processing", "Shipped", "Delivered"];
+
+    if (!statusEnum.includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const currentIndex = statusEnum.indexOf(order.orderStatus);
+    const newIndex = statusEnum.indexOf(status);
+
+    if (newIndex <= currentIndex) {
+      return res.status(400).json({ message: `Cannot move status back or stay the same. Current: ${order.orderStatus}` });
+    }
+
+    order.orderStatus = status;
+
+    // Maintain backward compatibility with old flags
+    if (status === "Processing") {
+      order.isProcessing = true;
+      order.processedAt = Date.now();
+    } else if (status === "Shipped") {
+      order.isShipped = true;
+      order.shippedAt = Date.now();
+    } else if (status === "Delivered") {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+    }
+
+    const updatedOrder = await order.save();
+
+    // Notify Admin
+    await createNotification({
+      type: "order_status_changed",
+      title: "Order Status Updated",
+      message: `Order #${order._id} status changed to ${status}`,
+      meta: {
+        orderId: order._id,
+        orderStatus: status
+      }
+    });
+
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update order payment status
+// @route   PATCH /api/v1/admin/orders/:id/payment
+// @access  Private/Admin
+const updateOrderPayment = async (req, res) => {
+  try {
+    const { paymentStatus } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (!["NOT_PAID", "PAID"].includes(paymentStatus)) {
+      return res.status(400).json({ message: "Invalid payment status" });
+    }
+
+    order.paymentStatus = paymentStatus;
+
+    if (paymentStatus === "PAID") {
+      order.isPaid = true;
+      order.paidAt = Date.now();
+    } else {
+      order.isPaid = false;
+      order.paidAt = null;
+    }
+
+    const updatedOrder = await order.save();
+
+    // Notify Admin
+    await createNotification({
+      type: "payment_updated",
+      title: "Payment Status Updated",
+      message: `Order #${order._id} payment status changed to ${paymentStatus}`,
+      meta: {
+        orderId: order._id,
+        paymentStatus: paymentStatus
+      }
+    });
+
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   addOrderItems,
   getOrderById,
@@ -576,6 +696,8 @@ export {
   updateOrderToDelivered,
   updateOrderToProcessing,
   updateOrderToShipped,
+  updateOrderStatus,
+  updateOrderPayment,
   getMyOrders,
   getOrders,
   deleteOrder,

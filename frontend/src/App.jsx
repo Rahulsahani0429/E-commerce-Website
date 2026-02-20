@@ -14,7 +14,14 @@ import AdminDashboard from './pages/AdminDashboard'
 import ProductList from './pages/ProductList'
 import ProductEdit from './pages/ProductEdit'
 import UserList from './pages/UserList'
+import AdminCustomers from './pages/AdminCustomers'
+import AdminReports from './pages/AdminReports'
+import AdminStats from './pages/AdminStats'
+import AdminNotifications from './pages/AdminNotifications'
+import AdminHelp from './pages/AdminHelp'
+import AdminSettings from './pages/AdminSettings'
 import OrderList from './pages/OrderList'
+import PaymentList from './pages/PaymentList'
 import MyOrders from './pages/MyOrders'
 import Shipping from './pages/Shipping'
 import Payment from './pages/Payment'
@@ -53,10 +60,18 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/orders" element={<MyOrders />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<ProductList />} />
           <Route path="/admin/product/:id/edit" element={<ProductEdit />} />
           <Route path="/admin/users" element={<UserList />} />
+          <Route path="/admin/customers" element={<AdminCustomers />} />
+          <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/stats" element={<AdminStats />} />
+          <Route path="/admin/notifications" element={<AdminNotifications />} />
+          <Route path="/admin/help" element={<AdminHelp />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/admin/orders" element={<OrderList />} />
+          <Route path="/admin/payments" element={<PaymentList />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/placeorder" element={<PlaceOrder />} />

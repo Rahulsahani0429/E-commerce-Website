@@ -28,8 +28,10 @@ export const NotificationProvider = ({ children }) => {
         : `${API_BASE_URL}/api/notifications`;
 
       const { data } = await axios.get(url, config);
-      setNotifications(data);
-      setUnreadCount(data.filter((n) => !n.isRead).length);
+      // Backend returns { items, unreadCount, total, ... }
+      const notificationList = Array.isArray(data) ? data : (data.items || []);
+      setNotifications(notificationList);
+      setUnreadCount(data.unreadCount !== undefined ? data.unreadCount : notificationList.filter((n) => !n.isRead).length);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     } finally {
@@ -45,12 +47,11 @@ export const NotificationProvider = ({ children }) => {
         },
       };
 
-      const url = user.isAdmin
-        ? `${API_BASE_URL}/api/notifications/admin/${id}/read`
-        : `${API_BASE_URL}/api/notifications/${id}/read`;
+      // Both admin and user use the same base route for marking read
+      const url = `${API_BASE_URL}/api/notifications/${id}/read`;
 
-      await axios.put(url, {}, config);
-      
+      await axios.patch(url, {}, config);
+
       setNotifications((prev) =>
         prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
       );

@@ -1,0 +1,198 @@
+.order-tracker-container {
+    padding: 40px 10px;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.tracker-steps-line {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Base Line (Gray) */
+.line-bg {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e2e8f0;
+    z-index: 1;
+    border-radius: 4px;
+}
+
+/* Progress Line (Green) */
+.line-progress {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    height: 4px;
+    background: #10b981;
+    z-index: 2;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.tracker-step {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+    /* Base width for centering */
+}
+
+/* Step Circle */
+.step-point {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+    cursor: default;
+    position: relative;
+    font-size: 1.1rem;
+}
+
+.step-icon-inner {
+    transition: transform 0.3s ease;
+}
+
+/* Completed State */
+.tracker-step.completed .step-point {
+    background: #10b981;
+    border-color: #10b981;
+    color: white;
+    font-weight: bold;
+}
+
+/* Active State */
+.tracker-step.active .step-point {
+    border-color: #10b981;
+    background: white;
+    color: #10b981;
+    transform: scale(1.1);
+}
+
+.tracker-step.active.completed .step-point {
+    background: #10b981;
+    color: white;
+}
+
+/* Glow Effect for Active */
+.active-glow {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 2px solid #10b981;
+    opacity: 0.4;
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 0.1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+}
+
+/* Label Styling */
+.step-label-container {
+    position: absolute;
+    top: 50px;
+    text-align: center;
+    width: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    transition: color 0.3s ease;
+}
+
+.tracker-step.completed .step-label,
+.tracker-step.active .step-label {
+    color: #10b981;
+}
+
+/* Cancelled State */
+.tracker-step.cancelled .step-point {
+    border-color: #fca5a5;
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .tracker-steps-line {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 60px;
+        padding-left: 20px;
+    }
+
+    .line-bg {
+        left: 38px;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        height: 100%;
+    }
+
+    .line-progress {
+        left: 38px;
+        top: 0;
+        width: 4px !important;
+        height: 0;
+        /* Dynamic height via JS if needed, or static percentage */
+        transition: height 0.6s ease;
+    }
+
+    /* Update vertical progress on mobile */
+    .line-progress {
+        height: var(--mobile-progress-height, 0);
+    }
+
+    .tracker-step {
+        flex-direction: row;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .step-label-container {
+        position: static;
+        transform: none;
+        text-align: left;
+        width: auto;
+    }
+
+    .tracker-step.active .step-point {
+        transform: scale(1.05);
+    }
+}

@@ -27,7 +27,16 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      default: "Sales Manager",
+      default: "Client",
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Blocked"],
+      default: "Active",
     },
   },
   {

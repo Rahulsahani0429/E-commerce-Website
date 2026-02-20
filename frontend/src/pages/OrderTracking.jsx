@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
+import OrderTracker from '../components/OrderTracker';
 import './OrderTracking.css';
 
 const OrderTracking = () => {
@@ -55,17 +56,6 @@ const OrderTracking = () => {
   if (error) return <div className="error-container">{error}</div>;
   if (!order) return <div className="error-container">Order not found</div>;
 
-  const getStatusIndex = () => {
-    if (order.isCancelled) return -1;
-    if (order.isDelivered) return 3;
-    if (order.isPaid) return 1;
-    if (order.paymentResult?.status === "failed") return 0; // Show at 'Order Placed' but with fail highlight
-    return 0; // Order Placed
-  };
-
-  const statusIndex = getStatusIndex();
-  const steps = ['Order Placed', 'Processing', 'Shipped', 'Delivered'];
-
   return (
     <div className="order-tracking-wrapper">
       <div className="order-tracking-container">
@@ -86,19 +76,10 @@ const OrderTracking = () => {
             <span className="order-id">ID: #{order._id.substring(order._id.length - 8).toUpperCase()}</span>
           </div>
           <div className="track-card-content">
-            <div className="status-timeline">
-              {steps.map((step, index) => (
-                <div 
-                  key={step} 
-                  className={`timeline-step ${order.isCancelled ? '' : (index <= statusIndex ? 'completed' : '')} ${index === statusIndex ? 'active' : ''}`}
-                >
-                  <div className="step-marker">
-                    {index <= statusIndex && !order.isCancelled ? '✓' : ''}
-                  </div>
-                  <div className="step-label">{step}</div>
-                </div>
-              ))}
-            </div>
+            <OrderTracker
+              status={order.orderStatus || 'Order Placed'}
+              isCancelled={order.isCancelled}
+            />
 
             <div className="info-grid">
               <div className="info-section">
@@ -114,11 +95,11 @@ const OrderTracking = () => {
                 <h3>Order Info</h3>
                 <div className="info-content">
                   <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
-                  <p><strong>Payment:</strong> <span className={`badge ${order.isPaid ? 'badge-paid' : (order.paymentResult?.status === 'failed' ? 'badge-failed' : 'badge-notpaid')}`}>
-                    {order.isPaid ? 'Paid' : (order.paymentResult?.status === 'failed' ? 'Failed' : 'Not Paid')}
+                  <p><strong>Payment:</strong> <span className={`badge ${order.isPaid ? 'badge-paid' : 'badge-cancelled'}`}>
+                    {order.isPaid ? 'PAID' : 'NOT PAID'}
                   </span></p>
-                  <p><strong>Status:</strong> <span className={`badge ${order.isCancelled ? 'badge-cancelled' : (order.isDelivered ? 'badge-delivered' : (order.isPaid ? 'badge-paid' : 'badge-notpaid'))}`}>
-                    {order.isCancelled ? 'Cancelled' : (order.isDelivered ? 'Delivered' : (order.isPaid ? 'Processing' : 'Awaiting Payment'))}
+                  <p><strong>Status:</strong> <span className={`badge ${order.isCancelled ? 'badge-cancelled' : 'badge-paid'}`}>
+                    {order.isCancelled ? 'Cancelled' : (order.orderStatus || 'Order Placed')}
                   </span></p>
                 </div>
               </div>
@@ -163,7 +144,7 @@ const OrderTracking = () => {
               </div>
             </div>
           </div>
-          
+
           {!order.isDelivered && !order.isCancelled && (
             <div className="order-actions">
               {order.paymentResult?.status === 'failed' && !order.isPaid && (
