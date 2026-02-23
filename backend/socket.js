@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 let io;
 
@@ -20,24 +21,8 @@ export const initSocket = (server) => {
 
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-            // For backward compatibility or extra security, we can check DB
-            // But if isAdmin is in token, we trust it for now
-            if (decoded.isAdmin) {
-                socket.user = decoded;
-                return next();
-            }
-
-            // Fallback: Fetch from DB if isAdmin not in token
-            const { default: User } = await import("./models/User.js");
-            const user = await User.findById(decoded.id);
-            if (user && user.isAdmin) {
-                socket.user = { id: user._id, isAdmin: true };
-                next();
-            } else {
-                console.error(`Socket Auth: User ${decoded.id} is not an admin`);
-                next(new Error("Admin access required"));
-            }
+            socket.user = decoded;
+            next();
         } catch (err) {
             console.error("Socket Auth Error:", err.message);
             next(new Error("Authentication error"));
@@ -45,11 +30,44 @@ export const initSocket = (server) => {
     });
 
     io.on("connection", (socket) => {
-        console.log(`Admin connected: ${socket.id}`);
-        socket.join("admins");
+        console.log(`Socket connected: ${socket.id}`);
+
+        if (socket.user) {
+            // Join user room
+            socket.join(socket.user.id.toString());
+            console.log(`User ${socket.user.id} joined their room`);
+
+            // Join admin room if applicable
+            if (socket.user.isAdmin) {
+                socket.join("adminRoom");
+                console.log(`Admin ${socket.user.id} joined adminRoom`);
+            }
+
+            // Listen for order details request
+            socket.on("getOrderDetails", async (orderId) => {
+                try {
+                    const db = mongoose.connection.db;
+                    const order = await db.collection("orders").findOne({ _id: new mongoose.Types.ObjectId(orderId) });
+
+                    if (order) {
+                        // Check ownership
+                        if (order.user.toString() === socket.user.id.toString() || socket.user.isAdmin) {
+                            socket.emit("orderDetailsResponse", { success: true, data: order });
+                        } else {
+                            socket.emit("orderDetailsResponse", { success: false, message: "Not authorized" });
+                        }
+                    } else {
+                        socket.emit("orderDetailsResponse", { success: false, message: "Order not found" });
+                    }
+                } catch (error) {
+                    console.error("Socket fetch order error:", error);
+                    socket.emit("orderDetailsResponse", { success: false, message: "Server error" });
+                }
+            });
+        }
 
         socket.on("disconnect", () => {
-            console.log(`Admin disconnected: ${socket.id}`);
+            console.log(`Socket disconnected: ${socket.id}`);
         });
     });
 

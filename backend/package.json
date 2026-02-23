@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "start": "node --watch app.js",
@@ -16,6 +16,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.6",
     "multer": "^2.0.2",
+    "pdfkit": "^0.17.2",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {

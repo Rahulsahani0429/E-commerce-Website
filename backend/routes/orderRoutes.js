@@ -12,6 +12,8 @@ import {
   updateOrderToShipped,
   updateOrderStatus,
   updateOrderPayment,
+  generateInvoice,
+  sendPaymentReminder,
 } from "../controllers/orderController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -19,6 +21,8 @@ const router = express.Router();
 
 router.route("/").post(protect, addOrderItems).get(protect, admin, getOrders);
 router.route("/myorders").get(protect, getMyOrders);
+router.route("/:id/invoice").get(protect, generateInvoice);
+router.route("/:id/reminder").post(protect, admin, sendPaymentReminder);
 router.route("/v1/admin/orders/:id/status").patch(protect, admin, updateOrderStatus);
 router.route("/v1/admin/orders/:id/payment").patch(protect, admin, updateOrderPayment);
 router

@@ -147,8 +147,10 @@
 // };
 
 import Order from "../models/Order.js";
+import PDFDocument from "pdfkit";
 import User from "../models/User.js";
 import { createNotification } from "../services/notificationService.js";
+import { getIO } from "../socket.js";
 
 /**
  * @desc    Create new order
@@ -267,6 +269,11 @@ const getOrderById = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    // Verify ownership or admin access
+    if (order.user._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(401).json({ message: "Not authorized to view this order" });
+    }
+
     return res.status(200).json(order);
   } catch (error) {
     console.error("Get Order Error:", error);
@@ -338,6 +345,11 @@ const updateOrderToPaid = async (req, res) => {
 
     const updatedOrder = await order.save();
 
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
+
     // Notify User
     await createNotification({
       recipient: order.user,
@@ -387,6 +399,11 @@ const updateOrderToDelivered = async (req, res) => {
     order.deliveredAt = Date.now();
 
     const updatedOrder = await order.save();
+
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
 
     // Notify User
     await createNotification({
@@ -453,10 +470,23 @@ const deleteOrder = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    const orderId = order._id;
+    const userId = order.user;
+
     await order.deleteOne();
+
+    // Emit socket events
+    try {
+      const io = getIO();
+      io.to("adminRoom").emit("orderDeleted", orderId);
+      io.to(userId.toString()).emit("orderDeleted", orderId);
+    } catch (err) {
+      console.error("Socket emit error on delete:", err);
+    }
 
     return res.status(200).json({
       message: "Order deleted successfully",
+      id: orderId,
     });
   } catch (error) {
     console.error("Delete Order Error:", error);
@@ -482,24 +512,24 @@ const cancelOrder = async (req, res) => {
       return res.status(401).json({ message: "Not authorized to cancel this order" });
     }
 
-    if (order.isDelivered) {
+    if (order.orderStatus === 'Delivered' || order.isDelivered) {
       return res.status(400).json({ message: "Cannot cancel a delivered order" });
     }
 
-    if (order.isCancelled) {
+    if (order.orderStatus === 'Cancelled' || order.isCancelled) {
       return res.status(400).json({ message: "Order is already cancelled" });
     }
 
-    // You might also want to prevent cancellation if shipped,
-    // though the model doesn't have an isShipped field yet.
-    // Based on requirements: "Hide cancel button if order is shipped or delivered"
-    // Since we don't have isShipped, we will assume delivered is the main check for now,
-    // or add isShipped if needed. The prompt says "if order is shipped or delivered".
-
     order.isCancelled = true;
+    order.orderStatus = "Cancelled";
     order.cancelledAt = Date.now();
 
     const updatedOrder = await order.save();
+
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
 
     // Notify Admin of cancellation
     await createNotification({
@@ -538,6 +568,11 @@ const updateOrderToProcessing = async (req, res) => {
 
     const updatedOrder = await order.save();
 
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
+
     return res.status(200).json({
       message: "Order marked as processing",
       order: updatedOrder,
@@ -565,6 +600,11 @@ const updateOrderToShipped = async (req, res) => {
     order.shippedAt = Date.now();
 
     const updatedOrder = await order.save();
+
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
 
     // Notify User
     await createNotification({
@@ -627,6 +667,11 @@ const updateOrderStatus = async (req, res) => {
 
     const updatedOrder = await order.save();
 
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
+
     // Notify Admin
     await createNotification({
       type: "order_status_changed",
@@ -672,6 +717,11 @@ const updateOrderPayment = async (req, res) => {
 
     const updatedOrder = await order.save();
 
+    // Emit socket event
+    const io = getIO();
+    io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+    io.to("adminRoom").emit("orderUpdated", updatedOrder);
+
     // Notify Admin
     await createNotification({
       type: "payment_updated",
@@ -689,6 +739,199 @@ const updateOrderPayment = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Generate invoice PDF
+ * @route   GET /api/orders/:id/invoice
+ * @access  Private/Admin
+ */
+const generateInvoice = async (req, res) => {
+  console.log(`[DEBUG] generateInvoice called for order: ${req.params.id}`);
+  try {
+    const order = await Order.findById(req.params.id).populate("user", "name email");
+    console.log(`[DEBUG] Order found: ${!!order}`);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Check ownership or admin status
+    if (order.user._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(401).json({ message: "Not authorized to download this invoice" });
+    }
+
+    const doc = new PDFDocument({ size: "A4", margin: 40 });
+    let filename = `Invoice-${order._id}.pdf`;
+
+    // Strip special characters from filename
+    filename = encodeURIComponent(filename);
+
+    res.setHeader("Content-disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-type", "application/pdf");
+
+    doc.pipe(res);
+
+    // --- HEADER SECTION ---
+    // Left: Company Info
+    doc.fillColor("#1a1a1a").font("Helvetica-Bold").fontSize(24).text("ProfitPulse E-commerce", 40, 40);
+    doc.font("Helvetica").fontSize(10).fillColor("#555555");
+    doc.text("123 Tech Avenue, Silicon Valley", 40, 70);
+    doc.text("California, USA, 94000", 40, 85);
+    doc.text("Support: support@profitpulse.com", 40, 100);
+
+    // Right: Invoice Metadata (strictly aligned to right edge)
+    const rightSideAlign = 400;
+    doc.fillColor("#1a1a1a").font("Helvetica-Bold").fontSize(28).text("INVOICE", rightSideAlign, 40, { align: "right", width: 155 });
+
+    doc.fontSize(10).font("Helvetica").fillColor("#555555");
+    const metaY = 80;
+    doc.font("Helvetica-Bold").text("Invoice #:", rightSideAlign, metaY, { align: "right", width: 70 });
+    doc.font("Helvetica").text(`${order._id}`, rightSideAlign + 75, metaY, { align: "right", width: 80 });
+
+    doc.font("Helvetica-Bold").text("Invoice Date:", rightSideAlign, metaY + 15, { align: "right", width: 70 });
+    doc.font("Helvetica").text(`${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, rightSideAlign + 75, metaY + 15, { align: "right", width: 80 });
+
+    doc.font("Helvetica-Bold").text("Order Date:", rightSideAlign, metaY + 30, { align: "right", width: 70 });
+    doc.font("Helvetica").text(`${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, rightSideAlign + 75, metaY + 30, { align: "right", width: 80 });
+
+    doc.moveDown(4);
+
+    // --- CUSTOMER & SUMMARY SECTION ---
+    const sectionTop = 160;
+    // Left: Bill To
+    doc.fillColor("#1a1a1a").font("Helvetica-Bold").fontSize(12).text("Bill To:", 40, sectionTop);
+    doc.font("Helvetica").fontSize(10).fillColor("#333333");
+    doc.text(order.user?.name || "Customer", 40, sectionTop + 18);
+    doc.text(order.user?.email || "N/A", 40, sectionTop + 33);
+    doc.text(`${order.shippingAddress.address}`, 40, sectionTop + 48);
+    doc.text(`${order.shippingAddress.city}, ${order.shippingAddress.postalCode}`, 40, sectionTop + 63);
+    doc.text(`${order.shippingAddress.country}`, 40, sectionTop + 78);
+
+    // Right: Order Summary
+    doc.fillColor("#1a1a1a").font("Helvetica-Bold").fontSize(12).text("Order Summary:", rightSideAlign, sectionTop, { align: "right", width: 155 });
+    doc.font("Helvetica").fontSize(10).fillColor("#333333");
+    doc.text(`Payment Method: ${order.paymentMethod}`, rightSideAlign, sectionTop + 18, { align: "right", width: 155 });
+
+    doc.text("Status: ", rightSideAlign, sectionTop + 33, { continued: true, align: "right", width: 155 });
+    const isPaid = order.paymentStatus === "PAID" || order.isPaid;
+    doc.fillColor(isPaid ? "#27ae60" : "#e74c3c").font("Helvetica-Bold")
+      .text(order.paymentStatus || (order.isPaid ? 'PAID' : 'NOT_PAID'), { align: "right" });
+
+    if (isPaid && order.paidAt) {
+      doc.fillColor("#333333").font("Helvetica")
+        .text(`Paid On: ${new Date(order.paidAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, rightSideAlign, sectionTop + 48, { align: "right", width: 155 });
+    }
+
+    doc.moveDown(4);
+
+    // --- ITEMS TABLE ---
+    const tableTop = 280;
+    doc.font("Helvetica-Bold").fontSize(10).fillColor("#1a1a1a");
+
+    // Table Headers
+    doc.text("Item Description", 40, tableTop);
+    doc.text("Qty", 320, tableTop, { width: 30, align: "center" });
+    doc.text("Unit Price", 370, tableTop, { width: 80, align: "right" });
+    doc.text("Subtotal", 475, tableTop, { width: 80, align: "right" });
+
+    // Header Border
+    doc.moveTo(40, tableTop + 15).lineTo(555, tableTop + 15).lineWidth(1).strokeColor("#eeeeee").stroke();
+
+    // Table Rows
+    let y = tableTop + 25;
+    doc.font("Helvetica").fillColor("#333333");
+    order.orderItems.forEach((item) => {
+      // Handle multiline name if needed
+      const name = item.name.length > 50 ? item.name.substring(0, 47) + "..." : item.name;
+      doc.text(name, 40, y, { width: 270 });
+      doc.text(item.qty.toString(), 320, y, { width: 30, align: "center" });
+      doc.text(`$${item.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, 370, y, { width: 80, align: "right" });
+      doc.text(`$${(item.qty * item.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, 475, y, { width: 80, align: "right" });
+      y += 20;
+    });
+
+    // Sub-table border
+    doc.moveTo(40, y).lineTo(555, y).lineWidth(1).strokeColor("#eeeeee").stroke();
+    y += 15;
+
+    // --- TOTALS SECTION ---
+    const totalLabelX = 370;
+    const totalValX = 475;
+
+    doc.font("Helvetica").fontSize(10).fillColor("#555555");
+
+    doc.text("Items Total:", totalLabelX, y, { width: 80, align: "right" });
+    doc.text(`$${order.itemsPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, totalValX, y, { width: 80, align: "right" });
+
+    y += 18;
+    doc.text("Shipping Fee:", totalLabelX, y, { width: 80, align: "right" });
+    doc.text(order.shippingPrice === 0 ? "FREE" : `$${order.shippingPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, totalValX, y, { width: 80, align: "right" });
+
+    y += 18;
+    doc.text("Tax:", totalLabelX, y, { width: 80, align: "right" });
+    doc.text(`$${order.taxPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, totalValX, y, { width: 80, align: "right" });
+
+    if (order.discount > 0) {
+      y += 18;
+      doc.fillColor("#e74c3c").text("Discount:", totalLabelX, y, { width: 80, align: "right" });
+      doc.text(`-$${order.discount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, totalValX, y, { width: 80, align: "right" });
+      doc.fillColor("#555555");
+    }
+
+    y += 22;
+    // Final Total Border
+    doc.moveTo(totalLabelX - 20, y - 5).lineTo(555, y - 5).lineWidth(0.5).strokeColor("#1a1a1a").stroke();
+
+    doc.font("Helvetica-Bold").fontSize(14).fillColor("#1a1a1a");
+    doc.text("Final Total:", totalLabelX - 50, y, { width: 130, align: "right" });
+    doc.text(`$${order.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, totalValX, y, { width: 80, align: "right" });
+
+    // --- FOOTER SECTION ---
+    doc.fontSize(10).font("Helvetica-Oblique").fillColor("#777777");
+    doc.text("Thank you for choosing ProfitPulse! We appreciate your business.", 40, 750, { align: "center", width: 515 });
+    doc.fontSize(8).font("Helvetica").text("This is a computer generated invoice and does not require a signature.", 40, 765, { align: "center", width: 515 });
+
+    doc.end();
+  } catch (error) {
+    console.error("Generate Invoice Error:", error);
+    res.status(500).json({ message: "Error generating invoice" });
+  }
+};
+
+/**
+ * @desc    Send payment reminder
+ * @route   POST /api/orders/:id/reminder
+ * @access  Private/Admin
+ */
+const sendPaymentReminder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id).populate("user", "name email");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Mocking email sending for now
+    console.log(`[MOCK EMAIL] To: ${order.user?.email || 'N/A'}, Subject: Payment Reminder for Order #${order._id}`);
+
+    // Create a notification for the user
+    if (order.user) {
+      await createNotification({
+        recipient: order.user._id,
+        role: "user",
+        title: "Payment Reminder",
+        message: `Friendly reminder to complete payment for your order #${order._id}.`,
+        type: "order",
+        relatedId: order._id,
+      });
+    }
+
+    return res.status(200).json({ message: "Payment reminder sent successfully" });
+  } catch (error) {
+    console.error("Send Reminder Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   addOrderItems,
   getOrderById,
@@ -702,4 +945,6 @@ export {
   getOrders,
   deleteOrder,
   cancelOrder,
+  generateInvoice,
+  sendPaymentReminder,
 };

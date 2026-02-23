@@ -34,6 +34,7 @@ const Login = () => {
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
+                autoComplete="email"
               />
               <label className={email ? 'active' : ''}>Enter Email/Mobile number</label>
             </div>
@@ -43,6 +44,7 @@ const Login = () => {
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
+                autoComplete="current-password"
               />
               <label className={password ? 'active' : ''}>Enter Password</label>
             </div>

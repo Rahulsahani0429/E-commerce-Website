@@ -13,6 +13,12 @@ const orderSchema = mongoose.Schema(
         qty: { type: Number, required: true },
         image: { type: String, required: true },
         price: { type: Number, required: true },
+        seller: { type: String, default: "Squid-Game Shop" },
+        properties: {
+          color: { type: String },
+          ram: { type: String },
+          storage: { type: String },
+        },
         product: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
@@ -47,6 +53,11 @@ const orderSchema = mongoose.Schema(
       default: 0.0,
     },
     shippingPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    discount: {
       type: Number,
       required: true,
       default: 0.0,
@@ -88,10 +99,18 @@ const orderSchema = mongoose.Schema(
     shippedAt: {
       type: Date,
     },
+    isCancelled: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    cancelledAt: {
+      type: Date,
+    },
     orderStatus: {
       type: String,
       required: true,
-      enum: ["Order Placed", "Processing", "Shipped", "Delivered"],
+      enum: ["Order Placed", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"],
       default: "Order Placed",
     },
     paymentStatus: {
@@ -99,9 +118,6 @@ const orderSchema = mongoose.Schema(
       required: true,
       enum: ["NOT_PAID", "PAID"],
       default: "NOT_PAID",
-    },
-    cancelledAt: {
-      type: Date,
     },
   },
   {

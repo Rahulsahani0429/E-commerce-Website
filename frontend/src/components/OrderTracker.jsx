@@ -3,66 +3,53 @@ import './OrderTracker.css';
 
 const OrderTracker = ({ status, isCancelled }) => {
     const steps = [
-        { label: 'Order Confirmed', icon: '📦', status: ['Order Placed', 'Confirmed'] },
-        { label: 'Processing', icon: '⚙️', status: ['Processing'] },
-        { label: 'Shipped', icon: '🚚', status: ['Shipped'] },
-        { label: 'Out for Delivery', icon: '🛵', status: ['Out for Delivery'] },
-        { label: 'Delivered', icon: '🏠', status: ['Delivered'] }
+        { label: 'Ordered Confirmed', status: ['Order Placed', 'Confirmed'] },
+        { label: 'Processing', status: ['Processing'] },
+        { label: 'Shipped', status: ['Shipped'] },
+        { label: 'Out for Delivery', status: ['Out for Delivery'] },
+        { label: 'Delivered', status: ['Delivered'] }
     ];
 
-    const getActiveStep = () => {
-        if (isCancelled) return -1;
-
-        // Find highest index that matches status
-        let activeIndex = 0;
-        for (let i = 0; i < steps.length; i++) {
-            if (steps[i].status.includes(status)) {
-                activeIndex = i;
-                break;
-            }
-        }
-
-        // Special handling for legacy/missing statuses to ensure flow
+    const getActiveStepForVisuals = () => {
         if (status === 'Delivered') return 4;
         if (status === 'Out for Delivery') return 3;
         if (status === 'Shipped') return 2;
         if (status === 'Processing') return 1;
-
-        return activeIndex;
+        if (status === 'Order Placed' || status === 'Confirmed') return 0;
+        return 0;
     };
 
-    const currentStep = getActiveStep();
+    const currentStep = getActiveStepForVisuals();
 
     return (
-        <div className="order-tracker-container">
-            <div className="tracker-steps-line">
-                {/* Connection Line Background */}
-                <div className="line-bg"></div>
-                {/* Progressive Active Line */}
-                <div
-                    className="line-progress"
-                    style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
-                ></div>
-
+        <div className={`order-tracker-new ${isCancelled ? 'is-cancelled' : ''}`}>
+            <div className="tracker-line-container">
+                <div className="tracker-line-bg"></div>
+                {!isCancelled && (
+                    <div
+                        className="tracker-line-progress"
+                        style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+                    ></div>
+                )}
+                
                 {steps.map((step, index) => {
-                    const isCompleted = index < currentStep;
-                    const isActive = index === currentStep;
-                    const isFuture = index > currentStep;
+                    const isCompleted = index < currentStep && !isCancelled;
+                    const isActive = index === currentStep && !isCancelled;
+                    const isFuture = index > currentStep && !isCancelled;
+                    const isDeliveredStep = index === 4;
 
                     return (
-                        <div
-                            key={index}
-                            className={`tracker-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''} ${isFuture ? 'future' : ''} ${isCancelled ? 'cancelled' : ''}`}
-                        >
-                            <div className="step-point">
-                                <div className="step-icon-inner">
-                                    {isCompleted ? '✓' : step.icon}
-                                </div>
-                                {isActive && <div className="active-glow"></div>}
+                        <div key={index} className={`tracker-node ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''} ${isFuture ? 'future' : ''}`}>
+                            <div className="node-circle">
+                                {isCompleted ? (
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                ) : isDeliveredStep ? (
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                ) : isActive ? (
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                ) : null}
                             </div>
-                            <div className="step-label-container">
-                                <span className="step-label">{step.label}</span>
-                            </div>
+                            <span className="node-label">{step.label}</span>
                         </div>
                     );
                 })}

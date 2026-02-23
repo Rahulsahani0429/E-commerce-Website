@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import mongoose from "mongoose";
+import { getIO } from "../socket.js";
 
 /**
  * @desc    Get dashboard statistics
@@ -485,4 +486,91 @@ const getAdminStats = async (req, res) => {
     }
 };
 
-export { getDashboardStats, getCustomers, getReports, getAdminStats };
+/**
+ * @desc    Update user by admin
+ * @route   PUT /api/admin/customers/:id
+ * @access  Private/Admin
+ */
+const updateUserByAdmin = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.name = req.body.name || user.name;
+        user.phone = req.body.phone !== undefined ? req.body.phone : user.phone;
+        user.role = req.body.role || user.role;
+        user.status = req.body.status || user.status;
+        user.isAdmin = req.body.isAdmin !== undefined ? req.body.isAdmin : user.isAdmin;
+
+        const updatedUser = await user.save();
+
+        // Real-time update via Socket.io
+        const io = getIO();
+        io.emit("customerUpdated", {
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            phone: updatedUser.phone,
+            role: updatedUser.role,
+            status: updatedUser.status,
+            isAdmin: updatedUser.isAdmin,
+        });
+
+        return res.status(200).json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            phone: updatedUser.phone,
+            role: updatedUser.role,
+            status: updatedUser.status,
+            isAdmin: updatedUser.isAdmin,
+        });
+    } catch (error) {
+        console.error("Update User Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
+ * @desc    Delete user by admin
+ * @route   DELETE /api/admin/customers/:id
+ * @access  Private/Admin
+ */
+const deleteUserByAdmin = async (req, res) => {
+    try {
+        const userToDelete = await User.findById(req.params.id);
+
+        if (!userToDelete) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Security check: Prevent admin from deleting themselves
+        if (userToDelete._id.toString() === req.user._id.toString()) {
+            return res.status(400).json({ message: "You cannot delete yourself" });
+        }
+
+        // Security check: Prevent deleting the last admin
+        if (userToDelete.isAdmin) {
+            const adminCount = await User.countDocuments({ isAdmin: true });
+            if (adminCount <= 1) {
+                return res.status(400).json({ message: "Cannot delete the last remaining administrator" });
+            }
+        }
+
+        await User.findByIdAndDelete(req.params.id);
+
+        // Real-time update via Socket.io
+        const io = getIO();
+        io.emit("customerDeleted", req.params.id);
+
+        return res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error("Delete User Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export { getDashboardStats, getCustomers, getReports, getAdminStats, updateUserByAdmin, deleteUserByAdmin };

@@ -4,14 +4,20 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import OrderTracker from '../components/OrderTracker';
+import { useSocket } from '../context/SocketContext';
+import { toast } from 'react-toastify';
 import './OrderTracking.css';
 
 const OrderTracking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const socket = useSocket();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [cancelling, setCancelling] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
   const [error, setError] = useState('');
 
   const fetchOrder = async () => {
@@ -36,19 +42,46 @@ const OrderTracking = () => {
     }
   }, [id, user]);
 
+  useEffect(() => {
+    if (socket && id) {
+      socket.on('orderUpdated', (updatedOrder) => {
+        if (updatedOrder._id === id) {
+          setOrder(prev => ({ ...prev, ...updatedOrder }));
+          
+          if (updatedOrder.isCancelled) {
+             setSuccessMsg('Order has been cancelled successfully.');
+             toast.error('Order cancelled');
+          } else if (updatedOrder.orderStatus === 'Shipped') {
+             toast.success('Great news! Your order has been shipped.');
+          } else if (updatedOrder.orderStatus === 'Delivered') {
+             toast.success('Your order has been delivered.');
+          }
+        }
+      });
+
+      return () => {
+        socket.off('orderUpdated');
+      };
+    }
+  }, [socket, id]);
+
   const handleCancelOrder = async () => {
-    if (window.confirm('Are you sure you want to cancel this order?')) {
-      try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-        await axios.put(`${API_BASE_URL}/api/orders/${id}/cancel`, {}, config);
-        fetchOrder(); // Refresh data
-      } catch (err) {
-        alert(err.response?.data?.message || 'Failed to cancel order');
-      }
+    try {
+      setCancelling(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      await axios.put(`${API_BASE_URL}/api/orders/${id}/cancel`, {}, config);
+      setSuccessMsg('Order has been cancelled successfully.');
+      setShowModal(false);
+      fetchOrder(); // Refresh data
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to cancel order. Please try again.');
+      setShowModal(false);
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -95,15 +128,21 @@ const OrderTracking = () => {
                 <h3>Order Info</h3>
                 <div className="info-content">
                   <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</p>
-                  <p><strong>Payment:</strong> <span className={`badge ${order.isPaid ? 'badge-paid' : 'badge-cancelled'}`}>
-                    {order.isPaid ? 'PAID' : 'NOT PAID'}
+                  <p><strong>Payment:</strong> <span className={`badge ${order.isPaid ? 'badge-paid' : 'badge-unpaid'}`}>
+                    {order.isPaid ? 'PAID' : (order.paymentMethod === 'COD' ? 'PAY ON DELIVERY' : 'NOT PAID')}
                   </span></p>
-                  <p><strong>Status:</strong> <span className={`badge ${order.isCancelled ? 'badge-cancelled' : 'badge-paid'}`}>
-                    {order.isCancelled ? 'Cancelled' : (order.orderStatus || 'Order Placed')}
+                  <p><strong>Status:</strong> <span className={`badge ${order.isCancelled ? 'badge-cancelled-red' : 'badge-paid'}`}>
+                    {order.isCancelled ? 'CANCELLED' : (order.orderStatus || 'Order Placed')}
                   </span></p>
                 </div>
               </div>
             </div>
+
+            {successMsg && (
+              <div className="success-alert">
+                <span className="success-icon">✓</span> {successMsg}
+              </div>
+            )}
           </div>
         </div>
 
@@ -145,16 +184,47 @@ const OrderTracking = () => {
             </div>
           </div>
 
-          {!order.isDelivered && !order.isCancelled && (
+          {(!order.isDelivered || order.isCancelled) && (
             <div className="order-actions">
-              {order.paymentResult?.status === 'failed' && !order.isPaid && (
-                <button className="retry-btn" onClick={() => navigate(`/payment`)}>Retry Payment</button>
+              {order.isCancelled ? (
+                <button className="cancel-btn-disabled" disabled>Order Cancelled</button>
+              ) : (
+                <>
+                  {order.paymentResult?.status === 'failed' && !order.isPaid && (
+                    <button className="retry-btn" onClick={() => navigate(`/payment`)}>Retry Payment</button>
+                  )}
+                  <button className="cancel-btn" onClick={() => setShowModal(true)}>Cancel Order</button>
+                </>
               )}
-              <button className="cancel-btn" onClick={handleCancelOrder}>Cancel Order</button>
             </div>
           )}
         </div>
       </div>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Cancel Order</h3>
+            <p>Are you sure you want to cancel this order? This action cannot be undone.</p>
+            <div className="modal-actions">
+              <button 
+                className="btn-confirm" 
+                onClick={handleCancelOrder}
+                disabled={cancelling}
+              >
+                {cancelling ? 'Cancelling...' : 'Yes, Cancel Order'}
+              </button>
+              <button 
+                className="btn-no" 
+                onClick={() => setShowModal(false)}
+                disabled={cancelling}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         .loader-container { min-height: 80vh; display: flex; align-items: center; justify-content: center; }

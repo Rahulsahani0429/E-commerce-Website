@@ -76,7 +76,7 @@ const Success = () => {
             </div>
           </div>
 
-          <Link to={`/order/${id}`} className="track-order-btn-link">
+          <Link to={`/orders/${id}`} className="track-order-btn-link">
              <button className="track-order-btn">Track Your Order</button>
           </Link>
         </div>

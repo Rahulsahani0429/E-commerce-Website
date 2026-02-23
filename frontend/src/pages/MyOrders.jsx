@@ -76,7 +76,7 @@ const MyOrders = () => {
                                         )}
                                     </td>
                                     <td>
-                                        <Link to={`/order-tracking/${order._id}`} className="details-btn">Details</Link>
+                                        <Link to={`/orders/${order._id}`} className="details-btn">Details</Link>
                                     </td>
                                 </tr>
                             ))}

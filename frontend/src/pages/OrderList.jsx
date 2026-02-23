@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
+import { useSocket } from '../context/SocketContext';
+import { toast } from 'react-toastify';
 import AdminLayout from '../components/AdminLayout';
+import ActionDropdown from '../components/ActionDropdown';
 import './AdminOrders.css';
 
 const OrderList = () => {
@@ -13,9 +16,43 @@ const OrderList = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrderIds, setSelectedOrderIds] = useState([]);
   const [filterStatus, setFilterStatus] = useState('All');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [editData, setEditData] = useState({ status: '', payment: '', shipping: '' });
 
   const { user } = useAuth();
   const navigate = useNavigate();
+  const socket = useSocket();
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('orderUpdated', (updatedOrder) => {
+        setOrders(prevOrders => 
+          prevOrders.map(order => order._id === updatedOrder._id ? { ...order, ...updatedOrder } : order)
+        );
+
+        if (selectedOrder && selectedOrder._id === updatedOrder._id) {
+          setSelectedOrder(prev => ({ ...prev, ...updatedOrder }));
+        }
+
+        toast.info(`Order #${updatedOrder._id.substring(updatedOrder._id.length - 6).toUpperCase()} updated`);
+      });
+
+      socket.on('orderDeleted', (orderId) => {
+        setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId));
+        if (selectedOrder && selectedOrder._id === orderId) {
+          setSelectedOrder(null);
+        }
+        toast.error(`Order #${orderId.substring(orderId.length - 6).toUpperCase()} deleted`);
+      });
+
+      return () => {
+        socket.off('orderUpdated');
+        socket.off('orderDeleted');
+      };
+    }
+  }, [socket, selectedOrder]);
 
   const fetchOrders = async () => {
     try {
@@ -155,6 +192,91 @@ const OrderList = () => {
     }
   };
 
+  const handleAction = async (actionId, order) => {
+    setSelectedOrder(order);
+    if (actionId === 'view') {
+      navigate(`/admin/orders/${order._id}`);
+    } else if (actionId === 'edit') {
+      setEditData({
+        status: order.orderStatus || 'Order Placed',
+        payment: order.paymentStatus || (order.isPaid ? 'PAID' : 'NOT_PAID'),
+        shipping: order.shippingAddress.address || ''
+      });
+      setShowEditModal(true);
+    } else if (actionId === 'delete') {
+      setShowDeleteModal(true);
+    } else if (actionId === 'reminder') {
+      try {
+        setActionLoading(true);
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+        await axios.post(`${API_BASE_URL}/api/orders/${order._id}/reminder`, {}, config);
+        toast.success("Payment reminder sent successfully.");
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Failed to send reminder");
+      } finally {
+        setActionLoading(false);
+      }
+    } else if (actionId === 'invoice') {
+      try {
+        setActionLoading(true);
+        const config = { 
+          headers: { Authorization: `Bearer ${user.token}` },
+          responseType: 'blob'
+        };
+        const { data } = await axios.get(`${API_BASE_URL}/api/orders/${order._id}/invoice`, config);
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Invoice_${order._id}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (err) {
+        toast.error("Failed to download invoice");
+      } finally {
+        setActionLoading(false);
+      }
+    }
+  };
+
+  const submitEdit = async () => {
+    try {
+      setActionLoading(true);
+      const config = { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}` } };
+      
+      if (editData.status !== selectedOrder.orderStatus) {
+        await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${selectedOrder._id}/status`, { status: editData.status }, config);
+      }
+      
+      const currentPay = selectedOrder.paymentStatus || (selectedOrder.isPaid ? 'PAID' : 'NOT_PAID');
+      if (editData.payment !== currentPay) {
+        await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${selectedOrder._id}/payment`, { paymentStatus: editData.payment }, config);
+      }
+
+      toast.success("Order updated successfully");
+      setShowEditModal(false);
+      fetchOrders();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update order");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setActionLoading(true);
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.delete(`${API_BASE_URL}/api/orders/${selectedOrder._id}`, config);
+      setShowDeleteModal(false);
+      fetchOrders();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete order");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const getOrderStatusBadge = (order) => {
     const status = order.orderStatus || 'Order Placed';
     if (status === 'Delivered') return { label: 'Delivered', class: 'badge-completed' };
@@ -269,7 +391,9 @@ const OrderList = () => {
                       <td style={{ color: '#9a9fa5' }}>
                         {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </td>
-                      <td><button className="square-icon-btn" style={{ border: 'none', background: 'none' }}>•••</button></td>
+                      <td>
+                        <ActionDropdown order={order} onAction={handleAction} />
+                      </td>
                     </tr>
                   );
                 })}
@@ -326,7 +450,7 @@ const OrderList = () => {
                   <span className="total-value-lg">${selectedOrder.totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="footer-actions-grid">
-                  <button className="btn-black" onClick={() => navigate(`/order/${selectedOrder._id}`)}>
+                  <button className="btn-black" onClick={() => navigate(`/orders/${selectedOrder._id}`)}>
                     Track
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                   </button>
@@ -340,6 +464,70 @@ const OrderList = () => {
           )}
         </div>
       </div>
+
+      {/* Action Modals */}
+      {showEditModal && (
+        <div className="modal-overlay">
+          <div className="modal-content admin-modal">
+            <h3>Edit Order</h3>
+            <div className="form-group-admin">
+              <label>Order Status</label>
+              <select 
+                value={editData.status} 
+                onChange={(e) => setEditData({...editData, status: e.target.value})}
+              >
+                {["Order Placed", "Processing", "Shipped", "Delivered"].map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group-admin">
+              <label>Payment Status</label>
+              <select 
+                value={editData.payment} 
+                onChange={(e) => setEditData({...editData, payment: e.target.value})}
+              >
+                <option value="NOT_PAID">Not Paid</option>
+                <option value="PAID">Paid</option>
+              </select>
+            </div>
+            <div className="modal-actions">
+              <button className="btn-confirm" onClick={submitEdit} disabled={actionLoading}>
+                {actionLoading ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button className="btn-no" onClick={() => setShowEditModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal-content admin-modal">
+            <h3 style={{ color: '#ff4d4f' }}>Delete Order</h3>
+            <p>Are you sure you want to delete this order? This action cannot be undone.</p>
+            <div className="modal-actions">
+              <button 
+                className="btn-confirm" 
+                style={{ backgroundColor: '#ff4d4f' }} 
+                onClick={confirmDelete}
+                disabled={actionLoading}
+              >
+                {actionLoading ? 'Deleting...' : 'Yes, Delete Order'}
+              </button>
+              <button className="btn-no" onClick={() => setShowDeleteModal(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        .admin-modal { max-width: 400px; padding: 2rem; border-radius: 1rem; }
+        .form-group-admin { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group-admin label { font-weight: 600; font-size: 0.85rem; color: #6f767e; }
+        .form-group-admin select { padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #efefef; background: #f4f7f9; }
+        .modal-overlay { z-index: 2000; }
+      `}</style>
     </AdminLayout>
   );
 };

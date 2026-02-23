@@ -8,6 +8,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
+import { useSocket } from '../context/SocketContext';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -35,18 +36,30 @@ const AdminDashboard = () => {
     }
   }, [user.token]);
 
+  const socket = useSocket();
+
   useEffect(() => {
     if (user && user.isAdmin) {
       fetchDashboardData(true);
 
-      // Real-time update: Poll every 30 seconds
+      // Socket update: refresh on any order change
+      if (socket) {
+        socket.on('orderUpdated', () => {
+          fetchDashboardData();
+        });
+      }
+
+      // Fallback: Poll every 60 seconds (less frequent if socket is working)
       const interval = setInterval(() => {
         fetchDashboardData();
-      }, 30000);
+      }, 60000);
 
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+        if (socket) socket.off('orderUpdated');
+      };
     }
-  }, [user, fetchDashboardData]);
+  }, [user, fetchDashboardData, socket]);
 
   const COLORS = ['#4338ca', '#3b82f6', '#06b6d4', '#10b981', '#94a3b8'];
 

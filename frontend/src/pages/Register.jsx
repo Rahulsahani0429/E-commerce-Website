@@ -36,6 +36,7 @@ const Register = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                autoComplete="name"
               />
 
               <label className={name ? "active" : ""}>Enter Full Name</label>
@@ -46,6 +47,7 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
               />
               <label className={email ? "active" : ""}>
                 Enter Email Address
@@ -57,6 +59,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="new-password"
               />
               <label className={password ? "active" : ""}>Enter Password</label>
             </div>

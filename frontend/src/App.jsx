@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+import { SocketProvider } from './context/SocketContext'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -27,16 +30,19 @@ import Shipping from './pages/Shipping'
 import Payment from './pages/Payment'
 import PlaceOrder from './pages/PlaceOrder'
 import Success from './pages/Success'
-import OrderTracking from './pages/OrderTracking'
+import OrderDetails from './pages/OrderDetails'
 import InfoPage from './pages/InfoPage'
 
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <SocketProvider>
+          <Router>
+            <ToastContainer position="top-right" autoClose={3000} />
+            <AppContent />
+          </Router>
+        </SocketProvider>
       </CartProvider>
     </AuthProvider>
   )
@@ -71,12 +77,14 @@ function AppContent() {
           <Route path="/admin/help" element={<AdminHelp />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/admin/orders" element={<OrderList />} />
+          <Route path="/admin/orders/:orderId" element={<OrderDetails />} />
           <Route path="/admin/payments" element={<PaymentList />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/placeorder" element={<PlaceOrder />} />
           <Route path="/success/:id" element={<Success />} />
-          <Route path="/order/:id" element={<OrderTracking />} />
+          <Route path="/order/:orderId" element={<OrderDetails />} />
+          <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route path="/info/:slug" element={<InfoPage />} />
         </Routes>
       </main>
