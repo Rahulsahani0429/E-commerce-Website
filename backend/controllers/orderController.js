@@ -149,8 +149,9 @@
 import Order from "../models/Order.js";
 import PDFDocument from "pdfkit";
 import User from "../models/User.js";
-import { createNotification } from "../services/notificationService.js";
+import { createNotification, sendUserNotification } from "../services/notificationService.js";
 import { getIO } from "../socket.js";
+import { syncShipmentData } from "./shipmentController.js";
 
 /**
  * @desc    Create new order
@@ -238,6 +239,12 @@ const addOrderItems = async (req, res) => {
       }
     });
 
+    // Notify User via Email and In-app
+    await sendUserNotification(req.user._id, "ORDER_PLACED", {
+      orderId: createdOrder._id,
+      amount: createdOrder.totalPrice
+    });
+
     return res.status(201).json({
       message: "Order created successfully",
       order: createdOrder,
@@ -298,6 +305,7 @@ const updateOrderToPaid = async (req, res) => {
 
     if (isFailed) {
       order.isPaid = false;
+      order.paymentStatus = "FAILED";
       order.paymentResult = {
         id: req.body.id,
         status: "failed",
@@ -313,7 +321,7 @@ const updateOrderToPaid = async (req, res) => {
         role: "user",
         title: "Payment Failed",
         message: "Your payment failed. Please retry.",
-        type: "payment",
+        type: "PAYMENT_FAILED",
         relatedId: order._id,
       });
 
@@ -324,7 +332,7 @@ const updateOrderToPaid = async (req, res) => {
         message: `Payment failed for Order #${order._id}.`,
         meta: {
           orderId: order._id,
-          paymentStatus: "failed"
+          paymentStatus: "FAILED"
         }
       });
 
@@ -336,6 +344,7 @@ const updateOrderToPaid = async (req, res) => {
 
     order.isPaid = true;
     order.paidAt = Date.now();
+    order.paymentStatus = "SUCCESS";
     order.paymentResult = {
       id: req.body.id,
       status: req.body.status,
@@ -356,7 +365,7 @@ const updateOrderToPaid = async (req, res) => {
       role: "user",
       title: "Payment Successful",
       message: "Your payment was successful. We are processing your order.",
-      type: "payment",
+      type: "PAYMENT_SUCCESS",
       relatedId: order._id,
     });
 
@@ -367,7 +376,7 @@ const updateOrderToPaid = async (req, res) => {
       message: `Order #${order._id} has been paid.`,
       meta: {
         orderId: order._id,
-        paymentStatus: "paid",
+        paymentStatus: "SUCCESS",
         amount: order.totalPrice
       }
     });
@@ -396,6 +405,7 @@ const updateOrderToDelivered = async (req, res) => {
     }
 
     order.isDelivered = true;
+    order.orderStatus = "DELIVERED";
     order.deliveredAt = Date.now();
 
     const updatedOrder = await order.save();
@@ -496,7 +506,7 @@ const deleteOrder = async (req, res) => {
 
 /**
  * @desc    Cancel an order
- * @route   PUT /api/orders/:id/cancel
+ * @route   POST /api/orders/:id/cancel
  * @access  Private
  */
 const cancelOrder = async (req, res) => {
@@ -512,17 +522,44 @@ const cancelOrder = async (req, res) => {
       return res.status(401).json({ message: "Not authorized to cancel this order" });
     }
 
-    if (order.orderStatus === 'Delivered' || order.isDelivered) {
-      return res.status(400).json({ message: "Cannot cancel a delivered order" });
-    }
-
-    if (order.orderStatus === 'Cancelled' || order.isCancelled) {
+    if (order.orderStatus === 'CANCELLED') {
       return res.status(400).json({ message: "Order is already cancelled" });
     }
 
-    order.isCancelled = true;
-    order.orderStatus = "Cancelled";
-    order.cancelledAt = Date.now();
+    const stage = order.orderStatus;
+    let canCancelImmediately = false;
+    let needsRequest = false;
+
+    if (stage === 'ORDER_CONFIRMED' || stage === 'PROCESSING') {
+      canCancelImmediately = true;
+    } else if (stage === 'SHIPPED' || stage === 'OUT_FOR_DELIVERY') {
+      needsRequest = true;
+    } else if (stage === 'DELIVERED') {
+      const deliveredAt = order.deliveredAt;
+      const hoursSinceDelivery = (Date.now() - new Date(deliveredAt)) / (1000 * 60 * 60);
+
+      if (hoursSinceDelivery <= 24) {
+        canCancelImmediately = true;
+      } else {
+        return res.status(400).json({ message: "Cancellation window closed. You can request a return instead." });
+      }
+    }
+
+    if (canCancelImmediately) {
+      order.orderStatus = 'CANCELLED';
+      order.isCancelled = true;
+      order.cancelledAt = Date.now();
+      order.cancellationStatus = 'COMPLETED';
+
+      // Refund logic
+      if (order.paymentMethod !== 'COD' && order.isPaid) {
+        order.refundStatus = 'PENDING';
+      } else {
+        order.refundStatus = 'NOT_REQUIRED';
+      }
+    } else if (needsRequest) {
+      order.cancellationStatus = 'REQUESTED';
+    }
 
     const updatedOrder = await order.save();
 
@@ -531,17 +568,22 @@ const cancelOrder = async (req, res) => {
     io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
     io.to("adminRoom").emit("orderUpdated", updatedOrder);
 
-    // Notify Admin of cancellation
+    // Notify User
+    await sendUserNotification(order.user, canCancelImmediately ? "ORDER_CANCELLED" : "ORDER_CANCELLATION_REQUESTED", {
+      orderId: order._id,
+    });
+
+    // Notify Admin
     await createNotification({
       role: "admin",
-      title: "Order Cancelled",
-      message: `Order #${order._id} has been cancelled by the user.`,
+      title: canCancelImmediately ? "Order Cancelled" : "Cancellation Requested",
+      message: canCancelImmediately ? `Order #${order._id} has been cancelled by the user.` : `User requested cancellation for Shipped Order #${order._id}.`,
       type: "order",
       relatedId: order._id,
     });
 
     return res.status(200).json({
-      message: "Order cancelled successfully",
+      message: canCancelImmediately ? "Order cancelled successfully" : "Cancellation requested successfully",
       order: updatedOrder,
     });
   } catch (error) {
@@ -564,6 +606,7 @@ const updateOrderToProcessing = async (req, res) => {
     }
 
     order.isProcessing = true;
+    order.orderStatus = "PROCESSING";
     order.processedAt = Date.now();
 
     const updatedOrder = await order.save();
@@ -597,6 +640,7 @@ const updateOrderToShipped = async (req, res) => {
     }
 
     order.isShipped = true;
+    order.orderStatus = "SHIPPED";
     order.shippedAt = Date.now();
 
     const updatedOrder = await order.save();
@@ -638,7 +682,7 @@ const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    const statusEnum = ["Order Placed", "Processing", "Shipped", "Delivered"];
+    const statusEnum = ["ORDER_CONFIRMED", "PROCESSING", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED"];
 
     if (!statusEnum.includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
@@ -654,13 +698,13 @@ const updateOrderStatus = async (req, res) => {
     order.orderStatus = status;
 
     // Maintain backward compatibility with old flags
-    if (status === "Processing") {
+    if (status === "PROCESSING") {
       order.isProcessing = true;
       order.processedAt = Date.now();
-    } else if (status === "Shipped") {
+    } else if (status === "SHIPPED") {
       order.isShipped = true;
       order.shippedAt = Date.now();
-    } else if (status === "Delivered") {
+    } else if (status === "DELIVERED") {
       order.isDelivered = true;
       order.deliveredAt = Date.now();
     }
@@ -672,6 +716,9 @@ const updateOrderStatus = async (req, res) => {
     io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
     io.to("adminRoom").emit("orderUpdated", updatedOrder);
 
+    // Sync Shipment Data
+    const shipment = await syncShipmentData(order._id, status);
+
     // Notify Admin
     await createNotification({
       type: "order_status_changed",
@@ -682,6 +729,20 @@ const updateOrderStatus = async (req, res) => {
         orderStatus: status
       }
     });
+
+    // Notify User based on status
+    if (status === "SHIPPED") {
+      await sendUserNotification(order.user, "ORDER_SHIPPED", { orderId: order._id });
+    } else if (status === "DELIVERED") {
+      await sendUserNotification(order.user, "ORDER_DELIVERED", { orderId: order._id });
+    }
+
+    // Emit shipment update event if shipment exists
+    if (shipment) {
+      io.to(`shipment_${order._id}`).emit("shipmentUpdated", shipment);
+      // Also notify user room for general awareness if needed
+      io.to(order.user.toString()).emit("shipmentUpdated", shipment);
+    }
 
     res.json(updatedOrder);
   } catch (error) {
@@ -701,13 +762,13 @@ const updateOrderPayment = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    if (!["NOT_PAID", "PAID"].includes(paymentStatus)) {
+    if (!["PENDING", "SUCCESS", "FAILED", "REFUNDED"].includes(paymentStatus)) {
       return res.status(400).json({ message: "Invalid payment status" });
     }
 
     order.paymentStatus = paymentStatus;
 
-    if (paymentStatus === "PAID") {
+    if (paymentStatus === "SUCCESS") {
       order.isPaid = true;
       order.paidAt = Date.now();
     } else {
@@ -932,6 +993,136 @@ const sendPaymentReminder = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Request order return
+ * @route   POST /api/orders/:id/return
+ * @access  Private
+ */
+const requestOrderReturn = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Check ownership
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized to return this order" });
+    }
+
+    // Validate eligibility
+    if (!order.isDelivered) {
+      return res.status(400).json({ message: "Cannot return an undelivered order" });
+    }
+
+    const returnWindowDays = 10;
+    const deliveryDate = new Date(order.deliveredAt);
+    const currentDate = new Date();
+    const diffTime = Math.abs(currentDate - deliveryDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays > returnWindowDays) {
+      return res.status(400).json({ message: "Return window has expired (Allowed: 10 days)" });
+    }
+
+    if (order.returnStatus !== "NONE") {
+      return res.status(400).json({ message: "Return already requested for this order" });
+    }
+
+    order.returnStatus = "REQUESTED";
+    order.returnReason = reason;
+    order.returnRequestedAt = Date.now();
+
+    const updatedOrder = await order.save();
+
+    // Notify Admin
+    await createNotification({
+      role: "admin",
+      title: "Return Requested",
+      message: `Return requested for Order #${order._id}. Reason: ${reason}`,
+      type: "RETURN_REQUESTED",
+      relatedId: order._id,
+    });
+
+    // Notify User
+    await sendUserNotification(order.user, "RETURN_REQUESTED", {
+      orderId: order._id,
+    });
+
+    // Emit socket
+    try {
+      const io = getIO();
+      io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+      io.to("adminRoom").emit("orderUpdated", updatedOrder);
+    } catch (err) {
+      console.error("Socket error in return request:", err);
+    }
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error("Return Request Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * @desc    Update return status
+ * @route   PUT /api/orders/:id/return-status
+ * @access  Private/Admin
+ */
+const updateReturnStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (!["NONE", "REQUESTED", "APPROVED", "REJECTED", "COMPLETED"].includes(status)) {
+      return res.status(400).json({ message: "Invalid return status" });
+    }
+
+    order.returnStatus = status;
+    const updatedOrder = await order.save();
+
+    // Notify User
+    let message = `Your return request for Order #${order._id} has been ${status.toLowerCase()}.`;
+    if (status === "APPROVED") message = `Your return request for Order #${order._id} is approved. Pickup scheduled.`;
+    if (status === "COMPLETED") message = `Return for Order #${order._id} completed. Refund processed.`;
+
+    // Notify User
+    if (status === "APPROVED") {
+      await sendUserNotification(order.user, "RETURN_APPROVED", { orderId: order._id });
+    } else {
+      await createNotification({
+        recipient: order.user,
+        role: "user",
+        title: "Return Status Updated",
+        message: message,
+        type: "RETURN_STATUS_UPDATED",
+        relatedId: order._id,
+      });
+    }
+
+    // Emit socket
+    try {
+      const io = getIO();
+      io.to(order.user.toString()).emit("orderUpdated", updatedOrder);
+      io.to("adminRoom").emit("orderUpdated", updatedOrder);
+    } catch (err) {
+      console.error("Socket error in update return status:", err);
+    }
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error("Update Return Status Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   addOrderItems,
   getOrderById,
@@ -947,4 +1138,6 @@ export {
   cancelOrder,
   generateInvoice,
   sendPaymentReminder,
+  requestOrderReturn,
+  updateReturnStatus,
 };

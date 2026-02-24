@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, RAZORPAY_KEY_ID } from '../config';
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
@@ -37,7 +37,8 @@ const PlaceOrder = () => {
         },
       };
 
-      const { data } = await axios.post(
+      // 1. Create Order in our DB
+      const { data: orderResponse } = await axios.post(
         `${API_BASE_URL}/api/orders`,
         {
           orderItems: cartItems,
@@ -51,11 +52,67 @@ const PlaceOrder = () => {
         config
       );
 
-      clearCart();
-      navigate(`/success/${data.order._id}`);
+      const orderId = orderResponse.order._id;
+
+      if (paymentMethod === 'Razorpay') {
+        // 2. Create Razorpay Order on server
+        const { data: rpOrder } = await axios.post(
+          `${API_BASE_URL}/api/payments/create-order`,
+          { orderId },
+          config
+        );
+
+        // 3. Open Razorpay Checkout
+        const options = {
+          key: RAZORPAY_KEY_ID,
+          amount: rpOrder.amount,
+          currency: rpOrder.currency,
+          name: "Premium Ecommerce",
+          description: "Order Payment",
+          order_id: rpOrder.id,
+          handler: async (response) => {
+            try {
+              // 4. Verify Payment on success
+              const { data: verifyData } = await axios.post(
+                `${API_BASE_URL}/api/payments/verify`,
+                {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                },
+                config
+              );
+
+              if (verifyData.order.paymentStatus === 'SUCCESS') {
+                clearCart();
+                navigate(`/success/${orderId}`);
+              } else {
+                alert('Payment verification failed');
+              }
+            } catch (err) {
+              console.error('Verification Error:', err);
+              alert('Payment Verification Failed');
+            }
+          },
+          prefill: {
+            name: user.name,
+            email: user.email,
+          },
+          theme: {
+            color: "#fb641b",
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      } else {
+        // For COD or others
+        clearCart();
+        navigate(`/success/${orderId}`);
+      }
     } catch (error) {
       console.error('Order Error:', error);
-      alert('Failed to place order. Please try again.');
+      alert(error.response?.data?.message || 'Failed to place order. Please try again.');
     }
   };
 

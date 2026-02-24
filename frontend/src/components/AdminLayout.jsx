@@ -19,6 +19,7 @@ const AdminLayout = ({
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
+    // Auth check is now handled by ProtectedRoute, but we keep this for defense in depth
     if (!user || !user.isAdmin) {
       navigate("/");
     } else {
@@ -96,7 +97,7 @@ const AdminLayout = ({
         </div>
 
         <nav className="sidebar-menu">
-          <NavLink to="/admin/dashboard" icon="🏠" label="Dashboard" />
+          <NavLink to="/admin" icon="🏠" label="Dashboard" />
           <NavLink to="/admin/orders" icon="🔳" label="Orders" />
           <NavLink to="/admin/payments" icon="💳" label="Payments" />
           <NavLink to="/admin/customers" icon="👥" label="Customers" />

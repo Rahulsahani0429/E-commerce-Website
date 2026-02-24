@@ -23,6 +23,18 @@ const Payment = () => {
               <input
                 type="radio"
                 name="paymentMethod"
+                value="Razorpay"
+                checked={paymentMethod === 'Razorpay'}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <span>Razorpay (India)</span>
+            </label>
+          </div>
+          <div className="form-group">
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="paymentMethod"
                 value="PayPal"
                 checked={paymentMethod === 'PayPal'}
                 onChange={(e) => setPaymentMethod(e.target.value)}

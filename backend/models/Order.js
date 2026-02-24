@@ -110,14 +110,64 @@ const orderSchema = mongoose.Schema(
     orderStatus: {
       type: String,
       required: true,
-      enum: ["Order Placed", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"],
-      default: "Order Placed",
+      enum: ["ORDER_CONFIRMED", "PROCESSING", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"],
+      default: "ORDER_CONFIRMED",
+    },
+    cancellationStatus: {
+      type: String,
+      required: true,
+      enum: ["NONE", "REQUESTED", "APPROVED", "REJECTED", "COMPLETED"],
+      default: "NONE",
+    },
+    refundStatus: {
+      type: String,
+      required: true,
+      enum: ["NOT_REQUIRED", "PENDING", "COMPLETED"],
+      default: "NOT_REQUIRED",
     },
     paymentStatus: {
       type: String,
       required: true,
-      enum: ["NOT_PAID", "PAID"],
-      default: "NOT_PAID",
+      enum: ["PENDING", "SUCCESS", "FAILED", "REFUNDED"],
+      default: "PENDING",
+    },
+    paymentNotes: {
+      type: String,
+      default: "",
+    },
+    receiptSent: {
+      type: Boolean,
+      default: false,
+    },
+    receiptSentAt: {
+      type: Date,
+    },
+    returnStatus: {
+      type: String,
+      required: true,
+      enum: ["NONE", "REQUESTED", "APPROVED", "REJECTED", "COMPLETED"],
+      default: "NONE",
+    },
+    returnReason: {
+      type: String,
+    },
+    returnRequestedAt: {
+      type: Date,
+    },
+    razorpay_order_id: {
+      type: String,
+    },
+    razorpay_payment_id: {
+      type: String,
+    },
+    razorpay_signature: {
+      type: String,
+    },
+    refund_id: {
+      type: String,
+    },
+    webhook_event_id: {
+      type: String,
     },
   },
   {

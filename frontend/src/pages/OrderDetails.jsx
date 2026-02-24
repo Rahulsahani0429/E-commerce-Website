@@ -20,6 +20,8 @@ const OrderDetails = () => {
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [cancelling, setCancelling] = useState(false);
     const [downloading, setDownloading] = useState(false);
+    const [returnReason, setReturnReason] = useState("");
+    const [submittingReturn, setSubmittingReturn] = useState(false);
 
     const fetchOrder = async () => {
         try {
@@ -65,7 +67,12 @@ const OrderDetails = () => {
             socket.on('orderUpdated', (updatedOrder) => {
                 if (updatedOrder._id === orderId) {
                     setOrder(prev => ({ ...prev, ...updatedOrder }));
-                    toast.info(`Order status updated: ${updatedOrder.orderStatus}`);
+                    if (updatedOrder.orderStatus !== order?.orderStatus) {
+                        toast.info(`Your order status has been updated to: ${updatedOrder.orderStatus}`);
+                    }
+                    if (updatedOrder.receiptSent && !order?.receiptSent) {
+                        toast.success('Your payment receipt has been sent!');
+                    }
                 }
             });
 
@@ -84,14 +91,36 @@ const OrderDetails = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            await axios.put(`${API_BASE_URL}/api/orders/${orderId}/cancel`, {}, config);
-            toast.success('Order cancelled successfully');
+            await axios.post(`${API_BASE_URL}/api/user/orders/${orderId}/cancel`, {}, config);
+            toast.success('Cancellation request processed. Check your email for updates.');
             setShowCancelModal(false);
             fetchOrder();
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to cancel order');
         } finally {
             setCancelling(false);
+        }
+    };
+
+    const handleReturnProduct = async () => {
+        if (!returnReason) {
+            toast.error("Please select a reason for return");
+            return;
+        }
+        setSubmittingReturn(true);
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+            const { data } = await axios.post(`${API_BASE_URL}/api/user/orders/${orderId}/return`, { reason: returnReason }, config);
+            setOrder(data);
+            toast.success("Return request submitted successfully. Check your email for updates.");
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to submit return request");
+        } finally {
+            setSubmittingReturn(false);
         }
     };
 
@@ -166,7 +195,15 @@ const OrderDetails = () => {
         </div>
     );
 
-    const canCancel = !order.isDelivered && !order.isCancelled && order.orderStatus !== 'Delivered' && order.orderStatus !== 'Shipped' && order.orderStatus !== 'Out for Delivery';
+    const isDelivered = order.orderStatus === 'DELIVERED' || order.isDelivered;
+    const deliveryDate = order.deliveredAt ? new Date(order.deliveredAt) : null;
+    const hoursSinceDelivery = deliveryDate ? (new Date() - deliveryDate) / (1000 * 60 * 60) : 0;
+    
+    const canCancel = order.orderStatus !== 'CANCELLED' && 
+                      order.cancellationStatus === 'NONE' &&
+                      (order.orderStatus !== 'DELIVERED' || hoursSinceDelivery <= 24);
+
+    const isRequestOnly = order.orderStatus === 'SHIPPED' || order.orderStatus === 'OUT_FOR_DELIVERY';
 
     return (
         <div className="order-details-wrapper">
@@ -185,10 +222,10 @@ const OrderDetails = () => {
                         <div className="details-card tracker-card">
                             <div className="card-header">
                                 <h3 className="delivery-status">
-                                    {order.orderStatus === 'Cancelled' ? (
+                                    {order.orderStatus === 'CANCELLED' ? (
                                         <span className="cancelled-text">Status: Cancelled</span>
                                     ) : (
-                                        `Expected Delivery: ${order.orderStatus === 'Delivered' ? 'Delivered' : (order.expectedDelivery ? new Date(order.expectedDelivery).toLocaleDateString('en-GB') : 'Processing')}`
+                                        `Expected Delivery: ${order.orderStatus === 'DELIVERED' ? 'Delivered' : (order.expectedDelivery ? new Date(order.expectedDelivery).toLocaleDateString('en-GB') : 'Processing')}`
                                     )}
                                 </h3>
                                 <div className="order-id-capsule">
@@ -197,23 +234,19 @@ const OrderDetails = () => {
                                 </div>
                             </div>
                             <div className="tracker-inner-padding">
-                                {order.orderStatus === 'Cancelled' ? (
+                                {order.orderStatus === 'CANCELLED' ? (
                                     <div className="cancelled-badge-large">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                                         ORDER CANCELLED
                                     </div>
                                 ) : (
                                     <OrderTracker 
-                                        status={order.orderStatus || 'Order Placed'} 
-                                        isCancelled={order.isCancelled} 
+                                        order={order}
+                                        status={order.orderStatus || 'ORDER_CONFIRMED'} 
+                                        isCancelled={order.orderStatus === 'CANCELLED'} 
                                     />
                                 )}
                             </div>
-                            {canCancel && (
-                                <div className="cancel-order-action">
-                                    <button onClick={() => setShowCancelModal(true)} className="details-cancel-btn">Cancel Order</button>
-                                </div>
-                            )}
                         </div>
 
                         {/* Shipment Section */}
@@ -242,6 +275,47 @@ const OrderDetails = () => {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Refund/Return Details Section */}
+                        {(order.orderStatus === 'CANCELLED' || order.returnStatus !== 'NONE') && order.isPaid && (
+                            <div className="details-card refund-card">
+                                <div className="card-header">
+                                    <h3>Refund Information</h3>
+                                    <span className={`status-pill ${order.paymentStatus === 'REFUNDED' ? 'is-success' : 'is-pending'}`}>
+                                        {order.paymentStatus === 'REFUNDED' ? 'Refund Processed' : 'Refund Pending'}
+                                    </span>
+                                </div>
+                                <div className="refund-body">
+                                    <div className="detail-row">
+                                        <span>Refund Amount:</span>
+                                        <strong>${order.totalPrice.toFixed(2)}</strong>
+                                    </div>
+                                    <div className="detail-row">
+                                        <span>Refund Method:</span>
+                                        <span>Original Payment Method ({order.paymentMethod})</span>
+                                    </div>
+                                    <div className="detail-row">
+                                        <span>Status:</span>
+                                        <span>{order.paymentStatus === 'REFUNDED' ? 'Success' : 'Processing'}</span>
+                                    </div>
+                                    {order.refund_id && (
+                                        <div className="detail-row">
+                                            <span>Refund ID:</span>
+                                            <span style={{fontSize: '0.8rem'}}>{order.refund_id}</span>
+                                        </div>
+                                    )}
+                                    <div className="refund-actions" style={{marginTop: '1.5rem'}}>
+                                        <button className="reorder-btn" onClick={() => navigate('/shop')}>Reorder</button>
+                                        <button className="contact-support-btn" onClick={() => window.location.href = 'mailto:support@example.com'}>Contact Support</button>
+                                    </div>
+                                    <p className="refund-note">
+                                        {order.paymentStatus === 'REFUNDED' 
+                                            ? 'The amount has been credited to your account. It may take 5-7 business days to reflect in your statement.'
+                                            : 'Your refund will be initiated within 24-48 hours once the cancellation/return is finalized.'}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Address Section */}
                         <div className="details-card address-card">
@@ -303,6 +377,19 @@ const OrderDetails = () => {
                                     )}
                                     {downloading ? 'Downloading...' : 'Download Invoice'}
                                 </button>
+                                <button 
+                                    onClick={() => navigate(`/track-shipment/${order._id}`)} 
+                                    className="track-shipment-btn"
+                                    disabled={!['SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(order.orderStatus)}
+                                    title={
+                                        order.orderStatus === 'ORDER_CONFIRMED' ? 'Tracking will be available once your order is processed.' :
+                                        order.orderStatus === 'PROCESSING' ? 'Preparing your shipment.' :
+                                        ''
+                                    }
+                                >
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width: '16px', marginRight: '8px'}}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    Track Shipment
+                                </button>
                             </div>
                         </div>
 
@@ -316,13 +403,121 @@ const OrderDetails = () => {
                                     <span className="pay-label">Method:</span>
                                     <span className="pay-val">{order.paymentMethod}</span>
                                 </div>
+                                {order.razorpay_payment_id && (
+                                    <div className="pay-item">
+                                        <span className="pay-label">Ref ID:</span>
+                                        <span className="pay-val" style={{fontSize: '0.8rem'}}>{order.razorpay_payment_id}</span>
+                                    </div>
+                                )}
                                 <div className="pay-item">
                                     <span className="pay-label">Status:</span>
-                                    <span className={`status-pill ${order.isPaid ? 'is-paid' : 'is-pending'}`}>
-                                        {order.isPaid ? 'PAID' : 'PENDING'}
-                                    </span>
+                                    {(() => {
+                                        const status = order.paymentStatus || (order.isPaid ? 'SUCCESS' : 'PENDING');
+                                        let statusClass = 'is-pending';
+                                        if (status === 'SUCCESS') statusClass = 'is-success';
+                                        if (status === 'FAILED') statusClass = 'is-failed';
+                                        if (status === 'REFUNDED') statusClass = 'is-refunded';
+                                        
+                                        return (
+                                            <span className={`status-pill ${statusClass}`}>
+                                                {status}
+                                            </span>
+                                        );
+                                    })()}
                                 </div>
-                                {order.isPaid && <p className="paid-timestamp">Paid on {new Date(order.paidAt).toLocaleDateString('en-GB')}</p>}
+                                {order.paymentStatus === 'SUCCESS' && <p className="paid-timestamp">Paid on {new Date(order.paidAt).toLocaleDateString('en-GB')}</p>}
+                                {order.receiptSent && (
+                                    <div className="receipt-sent-info">
+                                        <div className="pay-item">
+                                            <span className="pay-label">Receipt:</span>
+                                            <span className="receipt-badge-sent">SENT</span>
+                                        </div>
+                                        <p className="sent-timestamp">Sent at: {new Date(order.receiptSentAt).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}</p>
+                                    </div>
+                                )}
+                                {order.paymentNotes && (
+                                    <div className="payment-notes-box">
+                                        <p className="notes-label">Internal Notes:</p>
+                                        <p className="notes-text">{order.paymentNotes}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Return Options Card */}
+                        {/* Return / Cancellation Options Card */}
+                        <div className="details-card options-card">
+                            <div className="card-header">
+                                <h3>Return / Cancellation Options</h3>
+                            </div>
+                            <div className="options-body">
+                                {order.orderStatus === 'CANCELLED' ? (
+                                    <div className="options-cancelled-badge">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width: '20px', marginRight: '8px'}}><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                        Order Cancelled
+                                    </div>
+                                ) : (
+                                    <>
+                                        {canCancel && (
+                                            <div className="option-action-block">
+                                                <button 
+                                                    onClick={() => setShowCancelModal(true)} 
+                                                    className={`option-btn ${isRequestOnly || order.orderStatus === 'DELIVERED' ? 'orange' : 'red'}`}
+                                                >
+                                                    {isRequestOnly || order.orderStatus === 'DELIVERED' ? 'Request Cancellation' : 'Cancel Order'}
+                                                </button>
+                                                {order.orderStatus === 'DELIVERED' && (
+                                                    <p className="option-helper-text">* Available within 24 hours of delivery</p>
+                                                )}
+                                                {order.orderStatus === 'OUT_FOR_DELIVERY' && (
+                                                    <p className="option-helper-text">Cancellation may convert to Return after delivery.</p>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {order.cancellationStatus === 'REQUESTED' && (
+                                            <div className="option-pending-info">
+                                                Cancellation Requested – Waiting for seller confirmation
+                                            </div>
+                                        )}
+
+                                        {isDelivered && hoursSinceDelivery > 24 && order.returnStatus === 'NONE' && (
+                                            <div className="option-action-block">
+                                                <button 
+                                                    className="option-btn blue"
+                                                    disabled={submittingReturn}
+                                                    onClick={() => {
+                                                        const reason = prompt("Please enter reason for return:", "Damaged Product");
+                                                        if (reason) {
+                                                            setReturnReason(reason);
+                                                            handleReturnProduct();
+                                                        }
+                                                    }}
+                                                >
+                                                    {submittingReturn ? "Processing..." : "Return Product"}
+                                                </button>
+                                                <p className="option-helper-text">Return your order within 10 days for full refund</p>
+                                            </div>
+                                        )}
+
+                                        {order.returnStatus && order.returnStatus !== 'NONE' && (
+                                            <div className="return-mini-status">
+                                                <span className={`status-pill status-${order.returnStatus.toLowerCase()}`}>
+                                                    Return {order.returnStatus.charAt(0)?.toUpperCase() + order.returnStatus.slice(1).toLowerCase()}
+                                                </span>
+                                                <p className="return-reason-text">Reason: {order.returnReason}</p>
+                                            </div>
+                                        )}
+
+                                        {(!canCancel && order.orderStatus !== 'DELIVERED' && order.cancellationStatus === 'NONE') && (
+                                            <p className="options-empty-msg">No actions available at this stage.</p>
+                                        )}
+
+                                        {isDelivered && hoursSinceDelivery <= 24 && (
+                                            <p className="option-note">Not satisfied with your product? Return will be available after 24 hours of delivery.</p>
+                                        )}
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -9,6 +9,22 @@ import AdminLayout from '../components/AdminLayout';
 import ActionDropdown from '../components/ActionDropdown';
 import './AdminOrders.css';
 
+const ORDER_STATUSES = {
+  ORDER_CONFIRMED: { label: 'Order Placed', class: 'badge-paid' },
+  PROCESSING: { label: 'Processing', class: 'badge-paid' },
+  SHIPPED: { label: 'Shipped', class: 'badge-delivered' },
+  OUT_FOR_DELIVERY: { label: 'Out for Delivery', class: 'badge-delivered' },
+  DELIVERED: { label: 'Delivered', class: 'badge-completed' },
+  CANCELLED: { label: 'Cancelled', class: 'badge-cancelled' }
+};
+
+const PAYMENT_STATUSES = {
+  PENDING: { label: 'Pending', class: 'badge-delivered' },
+  SUCCESS: { label: 'Paid', class: 'badge-completed' },
+  FAILED: { label: 'Failed', class: 'badge-cancelled' },
+  REFUNDED: { label: 'Refunded', class: 'badge-shipped' }
+};
+
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +35,7 @@ const OrderList = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [editData, setEditData] = useState({ status: '', payment: '', shipping: '' });
+  const [editData, setEditData] = useState({ status: '', payment: '', shipping: '', returnStatus: 'NONE' });
 
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -33,7 +49,7 @@ const OrderList = () => {
         );
 
         if (selectedOrder && selectedOrder._id === updatedOrder._id) {
-          setSelectedOrder(prev => ({ ...prev, ...updatedOrder }));
+          setSelectedOrder(updatedOrder);
         }
 
         toast.info(`Order #${updatedOrder._id.substring(updatedOrder._id.length - 6).toUpperCase()} updated`);
@@ -93,65 +109,19 @@ const OrderList = () => {
     }
   };
 
-  const toggleSelectAll = () => {
-    if (selectedOrderIds.length === filteredOrders.length) {
-      setSelectedOrderIds([]);
-    } else {
-      setSelectedOrderIds(filteredOrders.map(o => o._id));
-    }
-  };
-
-  const updateStatus = async (orderId, status) => {
+  const handleStatusChange = async (orderId, newStatus) => {
     try {
       const config = {
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.put(`${API_BASE_URL}/api/orders/${orderId}/${status}`, {}, config);
+      await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${orderId}/status`, { status: newStatus }, config);
       fetchOrders();
-      // Update selected order in view
-      if (selectedOrder?._id === orderId) {
-        const { data } = await axios.get(`${API_BASE_URL}/api/orders/${orderId}`, config);
-        setSelectedOrder(data);
-      }
     } catch (error) {
-      alert(error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || 'Failed to update status');
     }
-  };
-
-  const filteredOrders = orders.filter(order => {
-    if (filterStatus === 'All') return true;
-    if (filterStatus === 'Paid') return order.isPaid;
-    if (filterStatus === 'Unpaid') return !order.isPaid;
-    if (filterStatus === 'Delivered') return order.isDelivered;
-    if (filterStatus === 'Cancelled') return order.isCancelled;
-    return true;
-  });
-
-
-  const exportToCSV = () => {
-    const headers = ['Order ID', 'Customer', 'Email', 'Status', 'Payment', 'Total', 'Date'];
-    const csvData = filteredOrders.map(order => [
-      order._id,
-      order.user?.name || 'Guest',
-      order.user?.email || 'N/A',
-      getOrderStatusBadge(order).label,
-      order.isPaid ? 'Paid' : 'Unpaid',
-      order.totalPrice.toFixed(2),
-      new Date(order.createdAt).toLocaleDateString()
-    ]);
-
-    const csvContent = [headers, ...csvData].map(e => e.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   const handlePaymentChange = async (orderId, newPaymentStatus) => {
@@ -164,31 +134,27 @@ const OrderList = () => {
       };
       await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${orderId}/payment`, { paymentStatus: newPaymentStatus }, config);
       fetchOrders();
-      if (selectedOrder?._id === orderId) {
-        const { data } = await axios.get(`${API_BASE_URL}/api/orders/${orderId}`, config);
-        setSelectedOrder(data);
-      }
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to update payment status');
+      toast.error(error.response?.data?.message || 'Failed to update payment status');
     }
   };
 
-  const handleStatusChange = async (orderId, newStatus) => {
+  const handleReturnStatusUpdate = async (orderId, newReturnStatus) => {
     try {
+      setActionLoading(true);
       const config = {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${orderId}/status`, { status: newStatus }, config);
+      await axios.put(`${API_BASE_URL}/api/orders/${orderId}/return-status`, { status: newReturnStatus }, config);
       fetchOrders();
-      if (selectedOrder?._id === orderId) {
-        const { data } = await axios.get(`${API_BASE_URL}/api/orders/${orderId}`, config);
-        setSelectedOrder(data);
-      }
+      toast.success(`Return status updated to ${newReturnStatus}`);
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to update status');
+      toast.error(error.response?.data?.message || 'Failed to update return status');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -198,9 +164,10 @@ const OrderList = () => {
       navigate(`/admin/orders/${order._id}`);
     } else if (actionId === 'edit') {
       setEditData({
-        status: order.orderStatus || 'Order Placed',
-        payment: order.paymentStatus || (order.isPaid ? 'PAID' : 'NOT_PAID'),
-        shipping: order.shippingAddress.address || ''
+        status: order.orderStatus || 'ORDER_CONFIRMED',
+        payment: order.paymentStatus || (order.isPaid ? 'SUCCESS' : 'PENDING'),
+        shipping: order.shippingAddress?.address || '',
+        returnStatus: order.returnStatus || 'NONE'
       });
       setShowEditModal(true);
     } else if (actionId === 'delete') {
@@ -248,9 +215,13 @@ const OrderList = () => {
         await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${selectedOrder._id}/status`, { status: editData.status }, config);
       }
       
-      const currentPay = selectedOrder.paymentStatus || (selectedOrder.isPaid ? 'PAID' : 'NOT_PAID');
+      const currentPay = selectedOrder.paymentStatus || (selectedOrder.isPaid ? 'SUCCESS' : 'PENDING');
       if (editData.payment !== currentPay) {
         await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${selectedOrder._id}/payment`, { paymentStatus: editData.payment }, config);
+      }
+
+      if (editData.returnStatus !== selectedOrder.returnStatus) {
+        await axios.put(`${API_BASE_URL}/api/orders/${selectedOrder._id}/return-status`, { status: editData.returnStatus }, config);
       }
 
       toast.success("Order updated successfully");
@@ -278,38 +249,36 @@ const OrderList = () => {
   };
 
   const getOrderStatusBadge = (order) => {
-    const status = order.orderStatus || 'Order Placed';
-    if (status === 'Delivered') return { label: 'Delivered', class: 'badge-completed' };
-    if (status === 'Shipped') return { label: 'Shipped', class: 'badge-delivered' };
-    if (status === 'Processing') return { label: 'Processing', class: 'badge-paid' };
-    return { label: 'Order Placed', class: 'badge-paid' };
+    const status = order.orderStatus || 'ORDER_CONFIRMED';
+    const config = ORDER_STATUSES[status] || ORDER_STATUSES.ORDER_CONFIRMED;
+    return config;
   };
 
   const getPaymentStatusBadge = (order) => {
-    const status = order.paymentStatus || (order.isPaid ? 'PAID' : 'NOT_PAID');
-    if (status === 'PAID') return { label: 'Paid', class: 'badge-completed' };
-    return { label: 'Not Paid', class: 'badge-delivered' }; // badge-delivered is orange/red in this CSS
+    const status = order.paymentStatus || (order.isPaid ? 'SUCCESS' : 'PENDING');
+    return PAYMENT_STATUSES[status] || PAYMENT_STATUSES.PENDING;
   };
 
-  const printInvoice = () => {
-    window.print();
-  };
+  const filteredOrders = orders.filter(order => {
+    if (filterStatus === 'All') return true;
+    if (filterStatus === 'Paid') return order.isPaid;
+    if (filterStatus === 'Unpaid') return !order.isPaid;
+    if (filterStatus === 'Delivered') return order.isDelivered;
+    if (filterStatus === 'Cancelled') return order.isCancelled;
+    return true;
+  });
 
   if (loading) return <AdminLayout><div className="loader-container"><div className="loader"></div></div></AdminLayout>;
 
   return (
     <AdminLayout pageTitle="Orders">
       <div className="orders-dashboard">
-        {/* Filters Header */}
         <div className="table-header-filters">
           <div className="filter-group">
             <select className="filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
               <option value="All">Any status</option>
               <option value="Paid">Paid</option>
               <option value="Unpaid">Unpaid</option>
-            </select>
-            <select className="filter-select">
-              <option>$100-$1500</option>
             </select>
           </div>
           <select className="filter-select">
@@ -337,8 +306,6 @@ const OrderList = () => {
                   const oBadge = getOrderStatusBadge(order);
                   const pBadge = getPaymentStatusBadge(order);
                   const isSelected = selectedOrder?._id === order._id;
-                  const orderStatuses = ["Order Placed", "Processing", "Shipped", "Delivered"];
-                  const paymentStatuses = ["NOT_PAID", "PAID"];
 
                   return (
                     <tr
@@ -366,12 +333,12 @@ const OrderList = () => {
                         <select
                           className={`status-badge-flat ${oBadge.class}`}
                           style={{ border: 'none', cursor: 'pointer', outline: 'none' }}
-                          value={order.orderStatus || "Order Placed"}
+                          value={order.orderStatus || "ORDER_CONFIRMED"}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(e) => handleStatusChange(order._id, e.target.value)}
                         >
-                          {orderStatuses.map(s => (
-                            <option key={s} value={s}>{s}</option>
+                          {Object.entries(ORDER_STATUSES).map(([value, { label }]) => (
+                            <option key={value} value={value}>{label}</option>
                           ))}
                         </select>
                       </td>
@@ -379,12 +346,13 @@ const OrderList = () => {
                         <select
                           className={`status-badge-flat ${pBadge.class}`}
                           style={{ border: 'none', cursor: 'pointer', outline: 'none' }}
-                          value={order.paymentStatus || (order.isPaid ? 'PAID' : 'NOT_PAID')}
+                          value={order.paymentStatus || (order.isPaid ? 'SUCCESS' : 'PENDING')}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(e) => handlePaymentChange(order._id, e.target.value)}
                         >
-                          <option value="NOT_PAID">Not Paid</option>
-                          <option value="PAID">Paid</option>
+                          {Object.entries(PAYMENT_STATUSES).map(([value, { label }]) => (
+                            <option key={value} value={value}>{label}</option>
+                          ))}
                         </select>
                       </td>
                       <td>${order.totalPrice.toFixed(2)}</td>
@@ -401,7 +369,6 @@ const OrderList = () => {
             </table>
           </div>
 
-          {/* Right Detail Panel */}
           {selectedOrder && (
             <aside className="detail-pane">
               <div className="detail-header-refined">
@@ -409,9 +376,6 @@ const OrderList = () => {
                   <h2 style={{ fontSize: '1.2rem', fontWeight: 800 }}>Order #{selectedOrder._id.substring(selectedOrder._id.length - 6).toUpperCase()}</h2>
                   <span className={`status-badge-flat ${getOrderStatusBadge(selectedOrder).class}`} style={{ padding: '0.2rem 0.5rem' }}>
                     {getOrderStatusBadge(selectedOrder).label}
-                  </span>
-                  <span style={{ fontSize: '0.75rem', color: '#9a9fa5' }}>
-                    {new Date(selectedOrder.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, {new Date(selectedOrder.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                   </span>
                 </div>
                 <button className="close-btn" onClick={() => setSelectedOrder(null)}>✕</button>
@@ -421,11 +385,6 @@ const OrderList = () => {
                 <div className="profile-section-centered">
                   <img src={selectedOrder.user?.avatar || `https://i.pravatar.cc/150?u=${selectedOrder.user?.email}`} alt="" className="profile-avatar-lg" />
                   <span className="profile-name-lg">{selectedOrder.user?.name}</span>
-                  <div className="contact-button-group">
-                    <button className="contact-btn-circle" title="View Profile">✉️</button>
-                    <button className="contact-btn-circle" title="Call Customer">📞</button>
-                    <button className="contact-btn-circle" title="WhatsApp Message">💬</button>
-                  </div>
                 </div>
 
                 <div className="items-section">
@@ -442,6 +401,27 @@ const OrderList = () => {
                     ))}
                   </div>
                 </div>
+
+                {selectedOrder.returnStatus !== 'NONE' && (
+                  <div className="return-management-section">
+                    <span className="section-title-sm">Return Request</span>
+                    <div className="return-info-box">
+                      <p><strong>Status:</strong> {selectedOrder.returnStatus}</p>
+                      <p><strong>Reason:</strong> {selectedOrder.returnReason}</p>
+                      <div className="return-action-btns">
+                        {selectedOrder.returnStatus === 'REQUESTED' && (
+                          <>
+                            <button className="btn-green-sm" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'APPROVED')}>Approve</button>
+                            <button className="btn-red-sm" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'REJECTED')}>Reject</button>
+                          </>
+                        )}
+                        {selectedOrder.returnStatus === 'APPROVED' && (
+                          <button className="btn-blue-sm" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'COMPLETED')}>Complete & Refund</button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="detail-footer-refined">
@@ -450,13 +430,11 @@ const OrderList = () => {
                   <span className="total-value-lg">${selectedOrder.totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="footer-actions-grid">
-                  <button className="btn-black" onClick={() => navigate(`/orders/${selectedOrder._id}`)}>
+                  <button className="btn-black" onClick={() => navigate(`/order/${selectedOrder._id}`)}>
                     Track
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                   </button>
-                  <button className="btn-yellow" onClick={() => alert('Refund process initiated')}>
+                  <button className="btn-yellow" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'COMPLETED')}>
                     Refund
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
                   </button>
                 </div>
               </div>
@@ -465,30 +443,34 @@ const OrderList = () => {
         </div>
       </div>
 
-      {/* Action Modals */}
       {showEditModal && (
         <div className="modal-overlay">
           <div className="modal-content admin-modal">
             <h3>Edit Order</h3>
             <div className="form-group-admin">
               <label>Order Status</label>
-              <select 
-                value={editData.status} 
-                onChange={(e) => setEditData({...editData, status: e.target.value})}
-              >
-                {["Order Placed", "Processing", "Shipped", "Delivered"].map(s => (
-                  <option key={s} value={s}>{s}</option>
+              <select value={editData.status} onChange={(e) => setEditData({...editData, status: e.target.value})}>
+                {Object.entries(ORDER_STATUSES).map(([value, { label }]) => (
+                  <option key={value} value={value}>{label}</option>
                 ))}
               </select>
             </div>
             <div className="form-group-admin">
               <label>Payment Status</label>
-              <select 
-                value={editData.payment} 
-                onChange={(e) => setEditData({...editData, payment: e.target.value})}
-              >
-                <option value="NOT_PAID">Not Paid</option>
-                <option value="PAID">Paid</option>
+              <select value={editData.payment} onChange={(e) => setEditData({...editData, payment: e.target.value})}>
+                {Object.entries(PAYMENT_STATUSES).map(([value, { label }]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group-admin">
+              <label>Return Status</label>
+              <select value={editData.returnStatus} onChange={(e) => setEditData({...editData, returnStatus: e.target.value})}>
+                <option value="NONE">None</option>
+                <option value="REQUESTED">Requested</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+                <option value="COMPLETED">Completed</option>
               </select>
             </div>
             <div className="modal-actions">
@@ -505,14 +487,9 @@ const OrderList = () => {
         <div className="modal-overlay">
           <div className="modal-content admin-modal">
             <h3 style={{ color: '#ff4d4f' }}>Delete Order</h3>
-            <p>Are you sure you want to delete this order? This action cannot be undone.</p>
+            <p>Are you sure you want to delete this order?</p>
             <div className="modal-actions">
-              <button 
-                className="btn-confirm" 
-                style={{ backgroundColor: '#ff4d4f' }} 
-                onClick={confirmDelete}
-                disabled={actionLoading}
-              >
+              <button className="btn-confirm" style={{ backgroundColor: '#ff4d4f' }} onClick={confirmDelete} disabled={actionLoading}>
                 {actionLoading ? 'Deleting...' : 'Yes, Delete Order'}
               </button>
               <button className="btn-no" onClick={() => setShowDeleteModal(false)}>No</button>
@@ -522,11 +499,21 @@ const OrderList = () => {
       )}
 
       <style>{`
-        .admin-modal { max-width: 400px; padding: 2rem; border-radius: 1rem; }
+        .admin-modal { max-width: 400px; padding: 2rem; border-radius: 1rem; background: white; }
         .form-group-admin { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .form-group-admin label { font-weight: 600; font-size: 0.85rem; color: #6f767e; }
         .form-group-admin select { padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #efefef; background: #f4f7f9; }
-        .modal-overlay { z-index: 2000; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-actions { display: flex; gap: 1rem; margin-top: 1rem; }
+        .btn-confirm { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: #2874f0; color: white; cursor: pointer; }
+        .btn-no { flex: 1; padding: 0.75rem; border: 1px solid #efefef; border-radius: 0.5rem; background: white; cursor: pointer; }
+        .return-management-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #f1f5f9; }
+        .return-info-box { background: #f8fafc; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e2e8f0; }
+        .return-info-box p { font-size: 0.85rem; margin-bottom: 0.5rem; color: #475569; }
+        .return-action-btns { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .btn-green-sm { background: #16a34a; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 0.3rem; font-size: 0.75rem; cursor: pointer; }
+        .btn-red-sm { background: #dc2626; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 0.3rem; font-size: 0.75rem; cursor: pointer; }
+        .btn-blue-sm { background: #2563eb; color: white; border: none; width: 100%; padding: 0.5rem; border-radius: 0.3rem; font-size: 0.75rem; cursor: pointer; }
       `}</style>
     </AdminLayout>
   );

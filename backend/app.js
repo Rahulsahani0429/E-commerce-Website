@@ -34,13 +34,18 @@ import orderRoutes from "./routes/orderRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import shipmentRoutes from "./routes/shipmentRoutes.js";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/user/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin/settings", settingsRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/shipment", shipmentRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -53,7 +58,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 

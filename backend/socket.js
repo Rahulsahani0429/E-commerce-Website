@@ -64,6 +64,12 @@ export const initSocket = (server) => {
                     socket.emit("orderDetailsResponse", { success: false, message: "Server error" });
                 }
             });
+
+            // Join shipment room for live updates
+            socket.on("joinShipmentRoom", (orderId) => {
+                socket.join(`shipment_${orderId}`);
+                console.log(`Socket ${socket.id} joined shipment room: shipment_${orderId}`);
+            });
         }
 
         socket.on("disconnect", () => {

@@ -28,10 +28,12 @@ const NotificationIcon = ({ isAdmin = false }) => {
     if (isAdmin) {
       if (notification.type === "order") return "/admin/orders";
       if (notification.type === "stock") return "/admin/products";
-      if (notification.type === "payment") return "/admin/orders";
+      if (notification.type === "payment" || notification.type.startsWith("PAYMENT_") || notification.type === "RECEIPT_SENT" || notification.type.startsWith("RETURN_")) return "/admin/orders";
       return "/admin";
     } else {
-      if (notification.relatedId) return `/order-tracking/${notification.relatedId}`;
+      if (notification.meta && notification.meta.redirectUrl) return notification.meta.redirectUrl;
+      if (notification.type.startsWith("PAYMENT_") || notification.type === "RECEIPT_SENT" || notification.type.startsWith("RETURN_")) return `/orders/${notification.relatedId}`;
+      if (notification.relatedId) return `/orders/${notification.relatedId}`;
       return "/profile";
     }
   };
@@ -61,7 +63,13 @@ const NotificationIcon = ({ isAdmin = false }) => {
                   onClick={() => handleNotificationClick(n._id)}
                 >
                   <div className="notification-icon">
-                    {n.type === "order" ? "📦" : n.type === "payment" ? "💰" : n.type === "stock" ? "📉" : "ℹ️"}
+                    {n.type === "order" ? "📦" : 
+                     n.type === "payment" || n.type === "PAYMENT_SUCCESS" ? "💰" : 
+                     n.type === "PAYMENT_FAILED" ? "⚠️" :
+                     n.type === "PAYMENT_REFUNDED" ? "💵" :
+                     n.type === "RECEIPT_SENT" ? "🧾" :
+                     n.type.startsWith("RETURN_") ? "↩️" :
+                     n.type === "stock" ? "📉" : "ℹ️"}
                   </div>
                   <div className="notification-content">
                     <p className="notification-title">{n.title}</p>

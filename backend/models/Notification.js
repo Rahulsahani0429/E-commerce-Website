@@ -22,7 +22,7 @@ const notificationSchema = mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ["order", "payment", "stock", "system"],
+            enum: ["order", "payment", "stock", "system", "PAYMENT_FAILED", "PAYMENT_SUCCESS", "PAYMENT_REFUNDED", "RECEIPT_SENT", "RETURN_REQUESTED", "RETURN_STATUS_UPDATED"],
             required: true,
         },
         relatedId: {

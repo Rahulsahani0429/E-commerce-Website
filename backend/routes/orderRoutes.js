@@ -14,6 +14,8 @@ import {
   updateOrderPayment,
   generateInvoice,
   sendPaymentReminder,
+  requestOrderReturn,
+  updateReturnStatus,
 } from "../controllers/orderController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -25,6 +27,7 @@ router.route("/:id/invoice").get(protect, generateInvoice);
 router.route("/:id/reminder").post(protect, admin, sendPaymentReminder);
 router.route("/v1/admin/orders/:id/status").patch(protect, admin, updateOrderStatus);
 router.route("/v1/admin/orders/:id/payment").patch(protect, admin, updateOrderPayment);
+router.route("/:id/return-status").put(protect, admin, updateReturnStatus);
 router
   .route("/:id")
   .get(protect, getOrderById)
@@ -33,6 +36,7 @@ router.route("/:id/pay").put(protect, updateOrderToPaid);
 router.route("/:id/deliver").put(protect, admin, updateOrderToDelivered);
 router.route("/:id/process").put(protect, admin, updateOrderToProcessing);
 router.route("/:id/ship").put(protect, admin, updateOrderToShipped);
-router.route("/:id/cancel").put(protect, cancelOrder);
+router.route("/:id/cancel").post(protect, cancelOrder);
+router.route("/:id/return").post(protect, requestOrderReturn);
 
 export default router;

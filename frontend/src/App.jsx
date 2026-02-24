@@ -30,8 +30,13 @@ import Shipping from './pages/Shipping'
 import Payment from './pages/Payment'
 import PlaceOrder from './pages/PlaceOrder'
 import Success from './pages/Success'
+import TrackShipment from "./pages/TrackShipment";
 import OrderDetails from './pages/OrderDetails'
 import InfoPage from './pages/InfoPage'
+
+import UserLayout from './components/UserLayout'
+import ProtectedRoute from './components/ProtectedRoute'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
@@ -49,48 +54,53 @@ function App() {
 }
 
 function AppContent() {
-  const location = useLocation()
-  const isAdminPath = location.pathname.startsWith('/admin')
-
   return (
-    <>
-      {!isAdminPath && <Header />}
-      <main className={isAdminPath ? 'admin-main' : ''}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/orders" element={<MyOrders />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/products" element={<ProductList />} />
-          <Route path="/admin/product/:id/edit" element={<ProductEdit />} />
-          <Route path="/admin/users" element={<UserList />} />
-          <Route path="/admin/customers" element={<AdminCustomers />} />
-          <Route path="/admin/reports" element={<AdminReports />} />
-          <Route path="/admin/stats" element={<AdminStats />} />
-          <Route path="/admin/notifications" element={<AdminNotifications />} />
-          <Route path="/admin/help" element={<AdminHelp />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-          <Route path="/admin/orders" element={<OrderList />} />
-          <Route path="/admin/orders/:orderId" element={<OrderDetails />} />
-          <Route path="/admin/payments" element={<PaymentList />} />
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/placeorder" element={<PlaceOrder />} />
-          <Route path="/success/:id" element={<Success />} />
-          <Route path="/order/:orderId" element={<OrderDetails />} />
-          <Route path="/orders/:orderId" element={<OrderDetails />} />
-          <Route path="/info/:slug" element={<InfoPage />} />
-        </Routes>
-      </main>
-      {!isAdminPath && <Footer />}
-    </>
+    <Routes>
+      {/* User Interface routes wrapped in UserLayout */}
+      <Route element={<UserLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/orders" element={<MyOrders />} />
+        <Route path="/shipping" element={<Shipping />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/placeorder" element={<PlaceOrder />} />
+        <Route path="/success/:id" element={<Success />} />
+        <Route path="/track-shipment/:id" element={<TrackShipment />} />
+        <Route path="/order/:orderId" element={<OrderDetails />} />
+        <Route path="/orders/:orderId" element={<OrderDetails />} />
+        <Route path="/info/:slug" element={<InfoPage />} />
+      </Route>
+
+      {/* Admin Panel routes wrapped in ProtectedRoute */}
+      <Route element={<ProtectedRoute isAdmin={true} />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/products" element={<ProductList />} />
+        <Route path="/admin/product/:id/edit" element={<ProductEdit />} />
+        <Route path="/admin/users" element={<UserList />} />
+        <Route path="/admin/customers" element={<AdminCustomers />} />
+        <Route path="/admin/reports" element={<AdminReports />} />
+        <Route path="/admin/stats" element={<AdminStats />} />
+        <Route path="/admin/notifications" element={<AdminNotifications />} />
+        <Route path="/admin/help" element={<AdminHelp />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/orders" element={<OrderList />} />
+        <Route path="/admin/orders/:orderId" element={<OrderDetails />} />
+        <Route path="/admin/payments" element={<PaymentList />} />
+      </Route>
+
+      {/* 404 Fallback */}
+      <Route path="*" element={<UserLayout />}>
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   )
 }
 
 export default App
+

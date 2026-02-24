@@ -52,7 +52,7 @@ const Success = () => {
           <div className="thank-you-header">
             <h1>Thank you for your purchase!</h1>
             <p className="status-msg">
-              Your order will be processed within 24 hours during working days. We will notify you by email once your order has been shipped.
+              Your order has been placed successfully. <strong>Please check your email (${user?.email}) for the order confirmation.</strong>
             </p>
           </div>
 
