@@ -7,6 +7,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
+import { getStatusColor, getStatusLabel, normalizeStatus } from '../utils/statusConfig';
 import './AdminStats.css';
 
 const AdminStats = () => {
@@ -85,7 +86,23 @@ const AdminStats = () => {
         document.body.removeChild(link);
     };
 
-    const COLORS = ['#4338ca', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+    // Normalize order funnel data for unique per-bar colors from statusConfig
+    const buildFunnelData = (raw) => {
+        if (!raw || raw.length === 0) return [];
+        const merged = new Map();
+        raw.forEach(({ status, count }) => {
+            const key = normalizeStatus(status);
+            merged.set(key, (merged.get(key) || 0) + count);
+        });
+        return Array.from(merged.entries()).map(([key, count]) => ({
+            status: getStatusLabel(key),
+            count,
+            color: getStatusColor(key),
+        }));
+    };
+
+    // Distinct palette for payment methods
+    const PAYMENT_METHOD_COLORS = ['#4338ca', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
 
     if (loading && !data) return <AdminLayout pageTitle="Statistics"><div className="loader-container">Analyzing Data...</div></AdminLayout>;
     if (error) return <AdminLayout pageTitle="Statistics"><div className="error-container">{error}</div></AdminLayout>;
@@ -188,11 +205,25 @@ const AdminStats = () => {
                                 </div>
                                 <div className="h-400">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={data.charts.orderFunnel} layout="vertical">
+                                        <BarChart data={buildFunnelData(data.charts.orderFunnel)} layout="vertical" margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
                                             <XAxis type="number" hide />
-                                            <YAxis dataKey="status" type="category" axisLine={false} tickLine={false} width={100} tick={{ fontSize: 12 }} />
-                                            <Tooltip />
-                                            <Bar dataKey="count" fill="#4338ca" radius={[0, 4, 4, 0]} barSize={20} />
+                                            <YAxis
+                                                dataKey="status"
+                                                type="category"
+                                                axisLine={false}
+                                                tickLine={false}
+                                                width={90}
+                                                tick={{ fontSize: 11, fill: '#374151' }}
+                                            />
+                                            <Tooltip
+                                                contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12 }}
+                                                formatter={(value, name) => [value, 'Orders']}
+                                            />
+                                            <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={18}>
+                                                {buildFunnelData(data.charts.orderFunnel).map((entry, index) => (
+                                                    <Cell key={`bar-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Bar>
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -210,17 +241,22 @@ const AdminStats = () => {
                                             <Pie
                                                 data={data.charts.paymentMethods}
                                                 innerRadius={60}
-                                                outerRadius={80}
-                                                paddingAngle={5}
+                                                outerRadius={85}
+                                                paddingAngle={4}
                                                 dataKey="count"
                                                 nameKey="method"
                                             >
                                                 {data.charts.paymentMethods.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    <Cell key={`cell-${index}`} fill={PAYMENT_METHOD_COLORS[index % PAYMENT_METHOD_COLORS.length]} strokeWidth={0} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip />
-                                            <Legend verticalAlign="bottom" height={36} />
+                                            <Tooltip contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12 }} />
+                                            <Legend
+                                                verticalAlign="bottom"
+                                                height={36}
+                                                iconType="circle"
+                                                formatter={(v) => <span style={{ color: '#374151', fontSize: 12 }}>{v}</span>}
+                                            />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -266,8 +302,8 @@ const AdminStats = () => {
                                     <h3 className="table-title">Performance Summary</h3>
                                     <button onClick={() => exportCSV('daily')} style={{ background: 'none', border: 'none', color: '#4338ca', fontWeight: 600, cursor: 'pointer' }}>Download CSV</button>
                                 </div>
-                                <div className="table-responsive">
-                                    <table className="custom-table">
+                                <div className="table-scroll-container">
+                                    <table className="custom-table" style={{ minWidth: '560px' }}>
                                         <thead>
                                             <tr>
                                                 <th>Date</th>
@@ -280,9 +316,9 @@ const AdminStats = () => {
                                         <tbody>
                                             {data.tables.dailySummary.map((row, idx) => (
                                                 <tr key={idx}>
-                                                    <td>{row.date}</td>
+                                                    <td style={{ whiteSpace: 'nowrap' }}>{row.date}</td>
                                                     <td>{row.orders}</td>
-                                                    <td style={{ fontWeight: 700 }}>${row.revenue.toLocaleString()}</td>
+                                                    <td style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>${row.revenue.toLocaleString()}</td>
                                                     <td>{row.deliveredOrders}</td>
                                                     <td>{row.cancelledOrders}</td>
                                                 </tr>

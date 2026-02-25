@@ -1,52 +1,45 @@
-import { createContext, useState, useEffect, useContext } from "react";
+/**
+ * AuthContext
+ * Stores user info in localStorage and exposes login / register / logout.
+ */
+import { createContext, useState, useContext } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("userInfo")) || null,
-  );
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (userInfo) {
-      setUser(JSON.parse(userInfo));
+  const [user, setUser] = useState(() => {
+    try {
+      const raw = localStorage.getItem("userInfo");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
     }
-    setLoading(false);
-  }, []);
+  });
 
   const login = async (email, password) => {
-    try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
-        email,
-        password,
-      });
-      const userData = { ...data.user, token: data.token };
-      setUser(userData);
-      localStorage.setItem("userInfo", JSON.stringify(userData));
-    } catch (error) {
-      throw error;
-    }
+    const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      email,
+      password,
+    });
+    const userData = { ...data.user, token: data.token };
+    setUser(userData);
+    localStorage.setItem("userInfo", JSON.stringify(userData));
+    return userData;
   };
 
   const register = async (name, email, password, isAdmin = false) => {
-    try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/auth/register`, {
-        name,
-        email,
-        password,
-        isAdmin,
-      });
-      const userData = { ...data.user, token: data.token };
-      setUser(userData);
-      localStorage.setItem("userInfo", JSON.stringify(userData));
-    } catch (error) {
-      throw error;
-    }
+    const { data } = await axios.post(`${API_BASE_URL}/api/auth/register`, {
+      name,
+      email,
+      password,
+      isAdmin,
+    });
+    const userData = { ...data.user, token: data.token };
+    setUser(userData);
+    localStorage.setItem("userInfo", JSON.stringify(userData));
+    return userData;
   };
 
   const logout = () => {
@@ -60,9 +53,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, login, register, logout, updateUserInfo }}
-    >
+    <AuthContext.Provider value={{ user, login, register, logout, updateUserInfo }}>
       {children}
     </AuthContext.Provider>
   );

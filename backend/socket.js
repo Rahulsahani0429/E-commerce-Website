@@ -7,73 +7,85 @@ let io;
 export const initSocket = (server) => {
     io = new Server(server, {
         cors: {
-            origin: "*",
-            methods: ["GET", "POST"]
-        }
+            origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+            methods: ["GET", "POST"],
+            credentials: true,
+        },
+        // Only use websocket – avoids the 400 polling error
+        transports: ["websocket"],
     });
 
-    io.use(async (socket, next) => {
-        const token = socket.handshake.auth.token;
+    // ── Auth middleware ──────────────────────────────────────────────────────────
+    io.use((socket, next) => {
+        const token = socket.handshake.auth?.token;
+
         if (!token) {
-            console.error("Socket Auth: No token provided");
-            return next(new Error("Authentication error"));
+            return next(new Error("No token provided"));
         }
 
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             socket.user = decoded;
-            next();
+            return next();
         } catch (err) {
-            console.error("Socket Auth Error:", err.message);
-            next(new Error("Authentication error"));
+            console.error(`[Socket] Auth failed – ${err.message}`);
+            return next(new Error("Authentication failed"));
         }
     });
 
+    // ── Connection handler ───────────────────────────────────────────────────────
     io.on("connection", (socket) => {
-        console.log(`Socket connected: ${socket.id}`);
+        console.log(`[Socket] Connected: ${socket.id}`);
 
-        if (socket.user) {
-            // Join user room
-            socket.join(socket.user.id.toString());
-            console.log(`User ${socket.user.id} joined their room`);
+        // Join personal room
+        const userId = socket.user?.id?.toString();
+        if (userId) {
+            socket.join(userId);
 
-            // Join admin room if applicable
-            if (socket.user.isAdmin) {
+            // Join adminRoom if admin
+            if (socket.user?.isAdmin) {
                 socket.join("adminRoom");
-                console.log(`Admin ${socket.user.id} joined adminRoom`);
+                console.log(`[Socket] Admin ${userId} → adminRoom`);
             }
-
-            // Listen for order details request
-            socket.on("getOrderDetails", async (orderId) => {
-                try {
-                    const db = mongoose.connection.db;
-                    const order = await db.collection("orders").findOne({ _id: new mongoose.Types.ObjectId(orderId) });
-
-                    if (order) {
-                        // Check ownership
-                        if (order.user.toString() === socket.user.id.toString() || socket.user.isAdmin) {
-                            socket.emit("orderDetailsResponse", { success: true, data: order });
-                        } else {
-                            socket.emit("orderDetailsResponse", { success: false, message: "Not authorized" });
-                        }
-                    } else {
-                        socket.emit("orderDetailsResponse", { success: false, message: "Order not found" });
-                    }
-                } catch (error) {
-                    console.error("Socket fetch order error:", error);
-                    socket.emit("orderDetailsResponse", { success: false, message: "Server error" });
-                }
-            });
-
-            // Join shipment room for live updates
-            socket.on("joinShipmentRoom", (orderId) => {
-                socket.join(`shipment_${orderId}`);
-                console.log(`Socket ${socket.id} joined shipment room: shipment_${orderId}`);
-            });
         }
 
+        // Order details request
+        socket.on("getOrderDetails", async (orderId) => {
+            try {
+                const db = mongoose.connection.db;
+                const order = await db
+                    .collection("orders")
+                    .findOne({ _id: new mongoose.Types.ObjectId(orderId) });
+
+                if (!order) {
+                    return socket.emit("orderDetailsResponse", {
+                        success: false,
+                        message: "Order not found",
+                    });
+                }
+
+                const isOwner = order.user?.toString() === userId;
+                if (!isOwner && !socket.user?.isAdmin) {
+                    return socket.emit("orderDetailsResponse", {
+                        success: false,
+                        message: "Not authorized",
+                    });
+                }
+
+                socket.emit("orderDetailsResponse", { success: true, data: order });
+            } catch (error) {
+                console.error("[Socket] getOrderDetails error:", error);
+                socket.emit("orderDetailsResponse", { success: false, message: "Server error" });
+            }
+        });
+
+        // Shipment room
+        socket.on("joinShipmentRoom", (orderId) => {
+            socket.join(`shipment_${orderId}`);
+        });
+
         socket.on("disconnect", () => {
-            console.log(`Socket disconnected: ${socket.id}`);
+            console.log(`[Socket] Disconnected: ${socket.id}`);
         });
     });
 
@@ -81,8 +93,6 @@ export const initSocket = (server) => {
 };
 
 export const getIO = () => {
-    if (!io) {
-        throw new Error("Socket.io not initialized!");
-    }
+    if (!io) throw new Error("Socket.io not initialized!");
     return io;
 };

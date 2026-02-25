@@ -7,6 +7,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
+import { getStatusColor, getStatusLabel, normalizeStatus } from '../utils/statusConfig';
 import './AdminReports.css';
 
 const AdminReports = () => {
@@ -73,7 +74,23 @@ const AdminReports = () => {
         document.body.removeChild(link);
     };
 
-    const COLORS = ['#4338ca', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+    // Normalize & deduplicate order-status chart data using centralised statusConfig
+    const buildStatusChartData = (raw) => {
+        if (!raw || raw.length === 0) return [{ status: 'No Data', count: 1, color: '#e5e7eb' }];
+        const merged = new Map();
+        raw.forEach(({ status, count }) => {
+            const key = normalizeStatus(status);
+            merged.set(key, (merged.get(key) || 0) + count);
+        });
+        return Array.from(merged.entries()).map(([key, count]) => ({
+            status: getStatusLabel(key),
+            count,
+            color: getStatusColor(key),
+        }));
+    };
+
+    // Distinct palette for payment methods (not related to order status)
+    const PAYMENT_METHOD_COLORS = ['#4338ca', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
 
     if (loading && !data) return <AdminLayout pageTitle="Reports"><div className="loader-container">Generating Reports...</div></AdminLayout>;
     if (error) return <AdminLayout pageTitle="Reports"><div className="error-container">{error}</div></AdminLayout>;
@@ -153,7 +170,6 @@ const AdminReports = () => {
                             </div>
                         </div>
 
-                        {/* Main Charts */}
                         <div className="charts-grid">
                             <div className="chart-item">
                                 <div className="chart-header">
@@ -161,10 +177,13 @@ const AdminReports = () => {
                                 </div>
                                 <div className="h-400">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <LineChart data={data.charts.revenueTrend.labels.map((l, i) => ({ name: l, value: data.charts.revenueTrend.values[i] }))}>
+                                        <LineChart
+                                            data={data.charts.revenueTrend.labels.map((l, i) => ({ name: l, value: data.charts.revenueTrend.values[i] }))}
+                                            margin={{ top: 4, right: 16, bottom: 4, left: 0 }}
+                                        >
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                                            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} dy={10} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} width={55} />
                                             <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                                             <Line type="monotone" dataKey="value" stroke="#4338ca" strokeWidth={3} dot={{ r: 4, fill: '#4338ca' }} activeDot={{ r: 6 }} />
                                         </LineChart>
@@ -176,23 +195,34 @@ const AdminReports = () => {
                                 <div className="chart-header">
                                     <h3 className="chart-title">Order Status</h3>
                                 </div>
-                                <div className="h-400">
+                                <div className="h-donut">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
+                                        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                                             <Pie
-                                                data={data.charts.ordersByStatus}
-                                                innerRadius={80}
-                                                outerRadius={100}
-                                                paddingAngle={5}
+                                                data={buildStatusChartData(data.charts.ordersByStatus)}
+                                                innerRadius={55}
+                                                outerRadius={80}
+                                                paddingAngle={4}
                                                 dataKey="count"
                                                 nameKey="status"
+                                                cy="40%"
                                             >
-                                                {data.charts.ordersByStatus.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                {buildStatusChartData(data.charts.ordersByStatus).map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip />
-                                            <Legend verticalAlign="bottom" height={36} />
+                                            <Tooltip
+                                                formatter={(value, name) => [value, name]}
+                                                contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12 }}
+                                            />
+                                            <Legend
+                                                verticalAlign="bottom"
+                                                height={80}
+                                                iconType="circle"
+                                                iconSize={8}
+                                                wrapperStyle={{ fontSize: '11px', lineHeight: '20px' }}
+                                                formatter={(value) => <span style={{ color: '#374151', fontSize: 11 }}>{value}</span>}
+                                            />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -207,20 +237,21 @@ const AdminReports = () => {
                                 </div>
                                 <div className="h-300">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
+                                        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                                             <Pie
                                                 data={data.charts.paymentMethods}
-                                                outerRadius={80}
-                                                paddingAngle={5}
+                                                outerRadius={65}
+                                                paddingAngle={4}
                                                 dataKey="count"
                                                 nameKey="method"
+                                                cy="45%"
                                             >
                                                 {data.charts.paymentMethods.map((entry, index) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    <Cell key={`cell-${index}`} fill={PAYMENT_METHOD_COLORS[index % PAYMENT_METHOD_COLORS.length]} strokeWidth={0} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip />
-                                            <Legend iconType="circle" />
+                                            <Tooltip contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12 }} />
+                                            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px' }} formatter={(v) => <span style={{ color: '#374151', fontSize: 11 }}>{v}</span>} />
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -235,10 +266,10 @@ const AdminReports = () => {
                                         <div className="product-rank-item" key={idx}>
                                             <span className="rank-number">{idx + 1}</span>
                                             <div className="product-info">
-                                                <span className="product-name">{prod.name}</span>
+                                                <span className="product-name" title={prod.name}>{prod.name}</span>
                                                 <span className="product-meta">{prod.soldQty} units sold</span>
                                             </div>
-                                            <span className="product-revenue">${prod.revenue.toLocaleString()}</span>
+                                            <span className="product-revenue" style={{ whiteSpace: 'nowrap' }}>${prod.revenue.toLocaleString()}</span>
                                         </div>
                                     ))}
                                     {data.charts.topProducts.length === 0 && <p className="text-center py-4">No product data</p>}

@@ -32,6 +32,8 @@ import PlaceOrder from './pages/PlaceOrder'
 import Success from './pages/Success'
 import TrackShipment from "./pages/TrackShipment";
 import OrderDetails from './pages/OrderDetails'
+import AdminOrderDetail from './pages/AdminOrderDetail'
+import AdminCustomerProfile from './pages/AdminCustomerProfile'
 import InfoPage from './pages/InfoPage'
 
 import UserLayout from './components/UserLayout'
@@ -90,7 +92,8 @@ function AppContent() {
         <Route path="/admin/help" element={<AdminHelp />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/orders" element={<OrderList />} />
-        <Route path="/admin/orders/:orderId" element={<OrderDetails />} />
+        <Route path="/admin/orders/:orderId" element={<AdminOrderDetail />} />
+        <Route path="/admin/customers/:customerId" element={<AdminCustomerProfile />} />
         <Route path="/admin/payments" element={<PaymentList />} />
       </Route>
 

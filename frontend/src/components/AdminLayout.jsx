@@ -1,11 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { API_BASE_URL } from "../config";
-import { connectSocket } from "../utils/socket.js";
+import api from "../utils/api.js";
+import { connectSocket, disconnectSocket } from "../utils/socket.js";
 import "./AdminLayout.css";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import SearchModal from "./SearchModal";
 
 const AdminLayout = ({
   children,
@@ -17,37 +16,31 @@ const AdminLayout = ({
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
-    // Auth check is now handled by ProtectedRoute, but we keep this for defense in depth
     if (!user || !user.isAdmin) {
       navigate("/");
-    } else {
-      // Fetch initial unread count
-      const fetchUnread = async () => {
-        try {
-          const { data } = await axios.get(
-            `${API_BASE_URL}/api/notifications/admin`,
-            {
-              headers: { Authorization: `Bearer ${user.token}` },
-              params: { status: "unread", limit: 1 },
-            },
-          );
-          setUnreadCount(data.unreadCount);
-        } catch (err) {
-          console.error("Error fetching unread count:", err);
-        }
-      };
-
-      fetchUnread();
-
-      // Listen for socket events
-      const socket = connectSocket(user.token);
-      socket.on("notification:new", () => {
-        setUnreadCount((prev) => prev + 1);
-      });
+      return;
     }
-  }, [user, navigate]);
+
+    // Fetch unread count once
+    api.get("/notifications/admin", { params: { status: "unread", limit: 1 } })
+      .then(({ data }) => setUnreadCount(data.unreadCount ?? 0))
+      .catch((err) => console.error("[AdminLayout] Unread count fetch failed:", err.message));
+
+    // Connect socket (singleton – safe to call multiple times)
+    const socket = connectSocket(user.token);
+
+    const handleNewNotification = () => setUnreadCount((prev) => prev + 1);
+    socket.on("notification:new", handleNewNotification);
+
+    // Cleanup: remove only OUR handler, don't disconnect the shared socket
+    return () => {
+      socket.off("notification:new", handleNewNotification);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?._id]); // run once per user, not on every token refresh
 
   if (!user || !user.isAdmin) return null;
 
@@ -155,7 +148,11 @@ const AdminLayout = ({
 
           <div className="top-header-actions">
             <div className="header-search-box">
-              <button className="square-icon-btn">
+              <button 
+                className="square-icon-btn" 
+                onClick={() => setIsSearchOpen(true)}
+                title="Search (Ctrl+K)"
+              >
                 <svg
                   width="20"
                   height="20"
@@ -223,6 +220,12 @@ const AdminLayout = ({
         {/* Page Main Content */}
         <section className="admin-page-main">{children}</section>
       </main>
+
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        userToken={user.token}
+      />
     </div>
   );
 };

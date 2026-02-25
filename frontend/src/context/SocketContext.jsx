@@ -13,10 +13,12 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user && user.token) {
-            const newSocket = io(API_BASE_URL.replace('/api', ''), {
-                auth: {
-                    token: user.token
-                }
+            const newSocket = io(API_BASE_URL, {
+                auth: { token: user.token },
+                transports: ['websocket'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
             });
 
             setSocket(newSocket);

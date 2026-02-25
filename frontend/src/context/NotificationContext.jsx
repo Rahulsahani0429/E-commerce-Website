@@ -28,8 +28,8 @@ export const NotificationProvider = ({ children }) => {
         : `${API_BASE_URL}/api/notifications`;
 
       const { data } = await axios.get(url, config);
-      // Backend returns { items, unreadCount, total, ... }
-      const notificationList = Array.isArray(data) ? data : (data.items || []);
+      // Backend returns { notifications: [...], unreadCount, ... }
+      const notificationList = Array.isArray(data) ? data : (data.notifications || data.items || []);
       setNotifications(notificationList);
       setUnreadCount(data.unreadCount !== undefined ? data.unreadCount : notificationList.filter((n) => !n.isRead).length);
     } catch (error) {

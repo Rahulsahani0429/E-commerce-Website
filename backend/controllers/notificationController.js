@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
  */
 const getAdminNotifications = async (req, res) => {
     try {
-        const { status, page = 1, limit = 20 } = req.query;
+        const { status, page = 1, limit = 10 } = req.query;
         const db = mongoose.connection.db;
 
         const query = {};
@@ -18,24 +18,29 @@ const getAdminNotifications = async (req, res) => {
             query.isRead = true;
         }
 
-        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const p = Math.max(1, parseInt(page));
+        const l = Math.max(1, parseInt(limit));
+        const skip = (p - 1) * l;
 
         const notifications = await db.collection("notifications")
             .find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(parseInt(limit))
+            .limit(l)
             .toArray();
 
-        const total = await db.collection("notifications").countDocuments(query);
+        const totalNotifications = await db.collection("notifications").countDocuments(query);
         const unreadCount = await db.collection("notifications").countDocuments({ isRead: false });
+        const totalPages = Math.ceil(totalNotifications / l);
+        const hasMore = p < totalPages;
 
         res.json({
-            items: notifications,
-            page: parseInt(page),
-            limit: parseInt(limit),
-            total,
-            unreadCount
+            notifications,
+            currentPage: p,
+            totalPages,
+            totalNotifications,
+            unreadCount,
+            hasMore
         });
     } catch (error) {
         console.error("Get Notifications Error:", error);
@@ -50,7 +55,7 @@ const getAdminNotifications = async (req, res) => {
  */
 const getUserNotifications = async (req, res) => {
     try {
-        const { page = 1, limit = 20 } = req.query;
+        const { page = 1, limit = 10 } = req.query;
         const db = mongoose.connection.db;
 
         // Query: specifically for this user OR broadcasted to all users
@@ -61,24 +66,29 @@ const getUserNotifications = async (req, res) => {
             ]
         };
 
-        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const p = Math.max(1, parseInt(page));
+        const l = Math.max(1, parseInt(limit));
+        const skip = (p - 1) * l;
 
         const notifications = await db.collection("notifications")
             .find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(parseInt(limit))
+            .limit(l)
             .toArray();
 
-        const total = await db.collection("notifications").countDocuments(query);
+        const totalNotifications = await db.collection("notifications").countDocuments(query);
         const unreadCount = await db.collection("notifications").countDocuments({ ...query, isRead: false });
+        const totalPages = Math.ceil(totalNotifications / l);
+        const hasMore = p < totalPages;
 
         res.json({
-            items: notifications,
-            page: parseInt(page),
-            limit: parseInt(limit),
-            total,
-            unreadCount
+            notifications,
+            currentPage: p,
+            totalPages,
+            totalNotifications,
+            unreadCount,
+            hasMore
         });
     } catch (error) {
         console.error("Get User Notifications Error:", error);
@@ -144,9 +154,55 @@ const markAllRead = async (req, res) => {
     }
 };
 
+/**
+ * @desc    Admin sends a notification to a user or broadcasts to all users
+ * @route   POST /api/notifications/send
+ * @access  Private/Admin
+ */
+const sendNotification = async (req, res) => {
+    try {
+        const { title, message, type = "system", recipientId = null } = req.body;
+        const db = mongoose.connection.db;
+
+        if (!title || !message) {
+            return res.status(400).json({ message: "Title and message are required" });
+        }
+
+        const notif = {
+            title,
+            message,
+            type,
+            role: "user",
+            recipient: recipientId ? new mongoose.Types.ObjectId(recipientId) : null,
+            isRead: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        const result = await db.collection("notifications").insertOne(notif);
+        const saved = { ...notif, _id: result.insertedId };
+
+        // Emit via socket if available
+        const io = req.app.get("io");
+        if (io) {
+            if (recipientId) {
+                io.to(`user_${recipientId}`).emit("notification:new", saved);
+            } else {
+                io.emit("notification:new", saved);
+            }
+        }
+
+        res.status(201).json({ message: "Notification sent", notification: saved });
+    } catch (error) {
+        console.error("Send Notification Error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 export {
     getAdminNotifications,
     getUserNotifications,
     markAsRead,
-    markAllRead
+    markAllRead,
+    sendNotification
 };

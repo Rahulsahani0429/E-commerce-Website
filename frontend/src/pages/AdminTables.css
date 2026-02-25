@@ -204,3 +204,55 @@
 
 .btn-pulse-dark { background: #111315; color: #fff; }
 .btn-pulse-light { background: #fff6e0; color: #b45309; }
+
+/* ═══ Responsive: Shared Table Styles ═══ */
+
+@media (max-width: 1200px) {
+  .master-detail-wrapper {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .detail-pane {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--admin-border);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .admin-page-title-row h1 {
+    font-size: 1.4rem;
+  }
+
+  /* Make tables scroll horizontally */
+  .master-pane {
+    overflow-x: auto;
+  }
+
+  .profit-pulse-table {
+    min-width: 520px;
+  }
+
+  .profit-pulse-table th,
+  .profit-pulse-table td {
+    padding: 0.875rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page-title-row {
+    margin-bottom: 1rem;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+  }
+}

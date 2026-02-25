@@ -1,33 +1,11 @@
+import "./env.js";
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import http from "http";
 import connectDB from "./config/db.js";
 import { initSocket } from "./socket.js";
-
-// Load env vars
-dotenv.config();
-
-// Connect to database
-connectDB();
-
-const app = express();
-const server = http.createServer(app);
-
-// Initialize Socket.IO
-initSocket(server);
-
-// Body parser
-app.use(express.json());
-
-// Enable CORS
-app.use(cors());
-
-// Basic route
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
+import { globalSearch } from "./controllers/searchController.js";
+import { protect, admin } from "./middleware/authMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
@@ -37,6 +15,33 @@ import settingsRoutes from "./routes/settingsRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import shipmentRoutes from "./routes/shipmentRoutes.js";
 
+// Connect to database
+connectDB();
+
+const app = express();
+const server = http.createServer(app);
+
+// Initialize Socket.IO (must be before routes)
+initSocket(server);
+
+// ── Middleware ────────────────────────────────────────────────────────────────
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// CORS – allow local Vite dev server
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// ── Health check ──────────────────────────────────────────────────────────────
+app.get("/", (_req, res) => res.send("API is running..."));
+
+// ── Routes  ───────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
@@ -47,8 +52,12 @@ app.use("/api/admin/settings", settingsRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/shipment", shipmentRoutes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
+// Global search (admin-protected)
+app.get("/api/search", protect, admin, (req, res) => globalSearch(req, res));
+
+// ── Global error handler ──────────────────────────────────────────────────────
+app.use((err, _req, res, _next) => {
+  console.error("Unhandled error:", err.message);
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode).json({
     message: err.message,
@@ -56,10 +65,11 @@ app.use((err, req, res, next) => {
   });
 });
 
+// ── Start server  ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  console.log(`\n✅ Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  console.log(`🔑 JWT_SECRET loaded: ${process.env.JWT_SECRET ? "YES (len=" + process.env.JWT_SECRET.length + ")" : "❌ MISSING"}`);
 });
 
 export default app;

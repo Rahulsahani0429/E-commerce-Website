@@ -225,13 +225,103 @@
     background-repeat: no-repeat;
 }
 
+/* ═══ Responsive: Orders Page ═══ */
+
 @media (max-width: 1200px) {
+    /* Detail pane: fixed floating panel */
     .detail-pane {
         position: fixed;
         right: 1rem;
-        top: 100px;
+        top: 80px;
         width: 360px;
         z-index: 1001;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+
+    /* Force single column on master-detail */
+    .orders-master-detail.has-selection {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .orders-dashboard {
+        gap: 0.75rem;
+    }
+
+    /* Table wraps horizontally so row data is never clipped */
+    .orders-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .orders-table {
+        min-width: 560px;
+    }
+
+    /* Filter row becomes wrapping flex */
+    .table-header-filters {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .filter-select {
+        flex: 1 1 140px;
+    }
+
+    /* Detail pane: full-width bottom sheet on mobile */
+    .detail-pane {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        max-height: 80vh;
+        border-radius: 24px 24px 0 0;
+        z-index: 1005;
+        overflow-y: auto;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+    }
+
+    /* Footer action grid: single column on very small */
+    .footer-actions-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary,
+    .btn-primary,
+    .btn-danger {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .table-header-filters {
+        gap: 0.5rem;
+    }
+
+    .filter-select {
+        width: 100%;
     }
 }
 

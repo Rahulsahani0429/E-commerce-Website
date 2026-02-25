@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import api from '../utils/api.js';
 import { useSocket } from '../context/SocketContext';
 import { toast } from 'react-toastify';
 import AdminLayout from '../components/AdminLayout';
@@ -29,7 +28,7 @@ const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null); // used only for edit/delete modals
   const [selectedOrderIds, setSelectedOrderIds] = useState([]);
   const [filterStatus, setFilterStatus] = useState('All');
   const [showEditModal, setShowEditModal] = useState(false);
@@ -72,16 +71,8 @@ const OrderList = () => {
 
   const fetchOrders = async () => {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.get(`${API_BASE_URL}/api/orders`, config);
+      const { data } = await api.get('/orders');
       setOrders(data);
-      if (data.length > 0 && !selectedOrder) {
-        setSelectedOrder(data[0]);
-      }
       setLoading(false);
     } catch (error) {
       setError(error.response?.data?.message || error.message);
@@ -111,13 +102,7 @@ const OrderList = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${orderId}/status`, { status: newStatus }, config);
+      await api.put(`/admin/orders/${orderId}/status`, { orderStatus: newStatus });
       fetchOrders();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update status');
@@ -126,13 +111,7 @@ const OrderList = () => {
 
   const handlePaymentChange = async (orderId, newPaymentStatus) => {
     try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${orderId}/payment`, { paymentStatus: newPaymentStatus }, config);
+      await api.patch(`/orders/v1/admin/orders/${orderId}/payment`, { paymentStatus: newPaymentStatus });
       fetchOrders();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update payment status');
@@ -159,9 +138,12 @@ const OrderList = () => {
   };
 
   const handleAction = async (actionId, order) => {
-    setSelectedOrder(order);
     if (actionId === 'view') {
       navigate(`/admin/orders/${order._id}`);
+      return;
+    }
+    setSelectedOrder(order);
+    if (false) {
     } else if (actionId === 'edit') {
       setEditData({
         status: order.orderStatus || 'ORDER_CONFIRMED',
@@ -175,8 +157,7 @@ const OrderList = () => {
     } else if (actionId === 'reminder') {
       try {
         setActionLoading(true);
-        const config = { headers: { Authorization: `Bearer ${user.token}` } };
-        await axios.post(`${API_BASE_URL}/api/orders/${order._id}/reminder`, {}, config);
+        await api.post(`/orders/${order._id}/reminder`, {});
         toast.success("Payment reminder sent successfully.");
       } catch (err) {
         toast.error(err.response?.data?.message || "Failed to send reminder");
@@ -186,11 +167,7 @@ const OrderList = () => {
     } else if (actionId === 'invoice') {
       try {
         setActionLoading(true);
-        const config = { 
-          headers: { Authorization: `Bearer ${user.token}` },
-          responseType: 'blob'
-        };
-        const { data } = await axios.get(`${API_BASE_URL}/api/orders/${order._id}/invoice`, config);
+        const { data } = await api.get(`/orders/${order._id}/invoice`, { responseType: 'blob' });
         const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
@@ -209,19 +186,18 @@ const OrderList = () => {
   const submitEdit = async () => {
     try {
       setActionLoading(true);
-      const config = { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}` } };
-      
+
       if (editData.status !== selectedOrder.orderStatus) {
-        await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${selectedOrder._id}/status`, { status: editData.status }, config);
+        await api.put(`/admin/orders/${selectedOrder._id}/status`, { orderStatus: editData.status });
       }
-      
+
       const currentPay = selectedOrder.paymentStatus || (selectedOrder.isPaid ? 'SUCCESS' : 'PENDING');
       if (editData.payment !== currentPay) {
-        await axios.patch(`${API_BASE_URL}/api/orders/v1/admin/orders/${selectedOrder._id}/payment`, { paymentStatus: editData.payment }, config);
+        await api.patch(`/orders/v1/admin/orders/${selectedOrder._id}/payment`, { paymentStatus: editData.payment });
       }
 
       if (editData.returnStatus !== selectedOrder.returnStatus) {
-        await axios.put(`${API_BASE_URL}/api/orders/${selectedOrder._id}/return-status`, { status: editData.returnStatus }, config);
+        await api.put(`/orders/${selectedOrder._id}/return-status`, { status: editData.returnStatus });
       }
 
       toast.success("Order updated successfully");
@@ -286,8 +262,8 @@ const OrderList = () => {
           </select>
         </div>
 
-        <div className={`orders-master-detail ${selectedOrder ? 'has-selection' : ''}`}>
-          <div className="master-pane">
+        <div className="orders-master-detail">
+          <div className="master-pane" style={{ width: '100%' }}>
             <table className="orders-table">
               <thead>
                 <tr>
@@ -298,20 +274,19 @@ const OrderList = () => {
                   <th>Payment</th>
                   <th>Total</th>
                   <th>Date</th>
-                  <th></th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOrders.map((order) => {
                   const oBadge = getOrderStatusBadge(order);
                   const pBadge = getPaymentStatusBadge(order);
-                  const isSelected = selectedOrder?._id === order._id;
 
                   return (
                     <tr
                       key={order._id}
-                      className={isSelected ? 'selected' : ''}
-                      onClick={() => handleSelectOrder(order)}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => navigate(`/admin/orders/${order._id}`)}
                     >
                       <td>
                         <input
@@ -359,7 +334,7 @@ const OrderList = () => {
                       <td style={{ color: '#9a9fa5' }}>
                         {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </td>
-                      <td>
+                      <td onClick={(e) => e.stopPropagation()}>
                         <ActionDropdown order={order} onAction={handleAction} />
                       </td>
                     </tr>
@@ -368,78 +343,6 @@ const OrderList = () => {
               </tbody>
             </table>
           </div>
-
-          {selectedOrder && (
-            <aside className="detail-pane">
-              <div className="detail-header-refined">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <h2 style={{ fontSize: '1.2rem', fontWeight: 800 }}>Order #{selectedOrder._id.substring(selectedOrder._id.length - 6).toUpperCase()}</h2>
-                  <span className={`status-badge-flat ${getOrderStatusBadge(selectedOrder).class}`} style={{ padding: '0.2rem 0.5rem' }}>
-                    {getOrderStatusBadge(selectedOrder).label}
-                  </span>
-                </div>
-                <button className="close-btn" onClick={() => setSelectedOrder(null)}>✕</button>
-              </div>
-
-              <div className="detail-body-refined">
-                <div className="profile-section-centered">
-                  <img src={selectedOrder.user?.avatar || `https://i.pravatar.cc/150?u=${selectedOrder.user?.email}`} alt="" className="profile-avatar-lg" />
-                  <span className="profile-name-lg">{selectedOrder.user?.name}</span>
-                </div>
-
-                <div className="items-section">
-                  <span className="section-title-sm">Order items</span>
-                  <div className="order-items-refined">
-                    {selectedOrder.orderItems.map((item, idx) => (
-                      <div key={idx} className="item-row-rect">
-                        <img src={item.image} alt="" className="item-img-box" />
-                        <div className="item-info-flex">
-                          <span className="item-name-tiny">{item.name}</span>
-                          <span className="item-price-tiny">${item.price.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {selectedOrder.returnStatus !== 'NONE' && (
-                  <div className="return-management-section">
-                    <span className="section-title-sm">Return Request</span>
-                    <div className="return-info-box">
-                      <p><strong>Status:</strong> {selectedOrder.returnStatus}</p>
-                      <p><strong>Reason:</strong> {selectedOrder.returnReason}</p>
-                      <div className="return-action-btns">
-                        {selectedOrder.returnStatus === 'REQUESTED' && (
-                          <>
-                            <button className="btn-green-sm" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'APPROVED')}>Approve</button>
-                            <button className="btn-red-sm" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'REJECTED')}>Reject</button>
-                          </>
-                        )}
-                        {selectedOrder.returnStatus === 'APPROVED' && (
-                          <button className="btn-blue-sm" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'COMPLETED')}>Complete & Refund</button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="detail-footer-refined">
-                <div className="total-summary-row">
-                  <span className="total-label-sm">Total</span>
-                  <span className="total-value-lg">${selectedOrder.totalPrice.toFixed(2)}</span>
-                </div>
-                <div className="footer-actions-grid">
-                  <button className="btn-black" onClick={() => navigate(`/order/${selectedOrder._id}`)}>
-                    Track
-                  </button>
-                  <button className="btn-yellow" onClick={() => handleReturnStatusUpdate(selectedOrder._id, 'COMPLETED')}>
-                    Refund
-                  </button>
-                </div>
-              </div>
-            </aside>
-          )}
         </div>
       </div>
 

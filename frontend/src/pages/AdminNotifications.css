@@ -199,15 +199,58 @@
     background: #f5f3ff;
 }
 
-@media (max-width: 640px) {
+/* ═══ Responsive: Notifications Page ═══ */
+
+@media (max-width: 768px) {
+    .notifications-container {
+        gap: 1rem;
+    }
+
     .notif-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
+        padding: 1rem;
     }
 
     .notif-actions {
         width: 100%;
         justify-content: space-between;
+    }
+
+    .notif-tabs {
+        width: 100%;
+    }
+
+    .tab-btn {
+        flex: 1;
+        text-align: center;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .notif-item {
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .notif-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+
+    .notif-title {
+        font-size: 0.875rem;
+    }
+
+    .notif-message {
+        font-size: 0.8125rem;
+    }
+
+    .item-actions {
+        flex-shrink: 0;
     }
 }

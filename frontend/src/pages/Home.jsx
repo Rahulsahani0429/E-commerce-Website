@@ -139,45 +139,44 @@ const Home = () => {
         </div>
       </div>
       <style>{`
-        .home-page { padding-bottom: 3rem; background: #f1f3f6; min-height: 100vh; }
+        .home-page { padding-bottom: 3rem; background: #f1f3f6; min-height: 100vh; overflow-x: hidden; width: 100%; max-width: 100vw; }
         
         /* Category Bar - Flipkart Style */
-        .category-bar { background: white; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); padding: 0.75rem 0; margin-bottom: 0.75rem; }
-        .cat-container { display: flex; justify-content: space-around; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; }
+        .category-bar { background: white; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); padding: 0.75rem 0; margin-bottom: 0.75rem; width: 100%; overflow: hidden; }
+        .cat-container { display: flex; justify-content: flex-start; gap: 8.5rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
         .cat-container::-webkit-scrollbar { display: none; }
-        .category-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 70px; flex-shrink: 0; padding: 0.5rem; transition: transform 0.2s; text-decoration: none; }
+        .category-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; flex-shrink: 0; padding: 0.5rem; transition: transform 0.2s; text-decoration: none; }
         .category-item:hover { transform: translateY(-2px); }
-        .cat-icon { font-size: 2.5rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-        .cat-name { font-size: 0.8rem; font-weight: 600; color: #212121; text-align: center; line-height: 1.2; }
+        .cat-icon { font-size: 2.2rem; margin-bottom: 0.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .cat-name { font-size: 0.75rem; font-weight: 600; color: #212121; text-align: center; line-height: 1.2; }
 
-        /* Hero Slider - Larger and More Prominent */
-        .hero-slider { margin-bottom: 0.75rem; height: 280px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); border-radius: 0; overflow: hidden; position: relative; background: white; }
-        .slider-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; }
-        .slider-wrapper img { min-width: 100%; height: 100%; object-fit: cover; }
+        /* Hero Slider */
+        .hero-slider { margin-bottom: 0.75rem; height: 280px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); border-radius: 0; overflow: hidden; position: relative; background: white; width: 100%; max-width: 100%; }
+        .slider-wrapper { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; will-change: transform; }
+        .slider-wrapper img { min-width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
         .slider-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.3s; border: 1px solid rgba(0,0,0,0.1); }
         .dot.active { background: white; width: 28px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* Deals Section - Flipkart Style */
-        .deals-section { background: white; padding: 1rem 1.25rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); border-radius: 0; margin-bottom: 0.75rem; }
+        /* Deals Section */
+        .deals-section { background: white; padding: 1rem 1.25rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,.1); border-radius: 0; margin-bottom: 0.75rem; overflow: hidden; width: 100%; }
         .deals-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 1rem; margin-bottom: 1.25rem; }
         .deals-title h2 { font-size: 1.4rem; color: #212121; margin: 0; font-weight: 500; }
         .deals-title p { color: #878787; font-size: 0.85rem; margin: 0.3rem 0 0; font-weight: 400; }
-        .view-all-btn { background: #2874f0; color: white !important; padding: 0.5rem 1.5rem; border-radius: 2px; font-weight: 600; text-decoration: none; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.2); transition: all 0.2s; }
+        .view-all-btn { background: #2874f0; color: white !important; padding: 0.5rem 1.5rem; border-radius: 2px; font-weight: 600; text-decoration: none; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 2px 0 rgba(0,0,0,.2); transition: all 0.2s; white-space: nowrap; }
         .view-all-btn:hover { background: #1c5bbf; box-shadow: 0 2px 4px 0 rgba(0,0,0,.3); }
 
-        .deals-body { display: block; }
+        .deals-body { display: block; width: 100%; }
+        .deals-main-content { width: 100%; min-width: 0; }
         
-        .deals-main-content { width: 100%; }
-        
-        /* Product Grid - Better Spacing */
-        .deals-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; }
-        @media (min-width: 480px) { .deals-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
-        @media (min-width: 768px) { .deals-grid { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
-        @media (min-width: 1024px) { .deals-grid { grid-template-columns: repeat(5, 1fr); gap: 1rem; } }
-        @media (min-width: 1280px) { .deals-grid { grid-template-columns: repeat(6, 1fr); gap: 1rem; } }
-        @media (min-width: 1440px) { .deals-grid { grid-template-columns: repeat(7, 1fr); gap: 1rem; } }
-        @media (min-width: 1600px) { .deals-grid { grid-template-columns: repeat(8, 1fr); gap: 1rem; } }
+        /* Product Grid */
+        .deals-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; width: 100%; max-width: 100%; box-sizing: border-box; }
+        @media (min-width: 480px) { .deals-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) { .deals-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1024px) { .deals-grid { grid-template-columns: repeat(5, 1fr); } }
+        @media (min-width: 1280px) { .deals-grid { grid-template-columns: repeat(6, 1fr); } }
+        @media (min-width: 1440px) { .deals-grid { grid-template-columns: repeat(7, 1fr); } }
+        @media (min-width: 1600px) { .deals-grid { grid-template-columns: repeat(8, 1fr); } }
 
         /* Product Cards - Enhanced Design */
         .deal-card { 

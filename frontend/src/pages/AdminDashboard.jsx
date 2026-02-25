@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
@@ -9,6 +8,8 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
 import { useSocket } from '../context/SocketContext';
+import { getStatusColor, getStatusLabel, normalizeStatus } from '../utils/statusConfig';
+import axios from 'axios';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -61,22 +62,39 @@ const AdminDashboard = () => {
     }
   }, [user, fetchDashboardData, socket]);
 
-  const COLORS = ['#4338ca', '#3b82f6', '#06b6d4', '#10b981', '#94a3b8'];
+  // Normalize & deduplicate status chart data (client-side safety net)
+  // Groups any residual duplicates coming from backend into a Map keyed by
+  // canonical normalized status, then picks unique colors from statusConfig.
+  const buildChartData = (rawStats) => {
+    if (!rawStats || rawStats.length === 0) return [{ name: 'No Data', value: 1, color: '#e5e7eb' }];
+    const merged = new Map();
+    rawStats.forEach(({ name, value }) => {
+      const canonical = normalizeStatus(name);
+      merged.set(canonical, (merged.get(canonical) || 0) + value);
+    });
+    return Array.from(merged.entries()).map(([status, count]) => ({
+      name: getStatusLabel(status),
+      value: count,
+      color: getStatusColor(status),
+    }));
+  };
 
   const getStatusBadgeClass = (status) => {
     if (!status) return '';
-    switch (status.toLowerCase()) {
-      case 'paid': return 'badge-paid';
-      case 'unpaid': return 'badge-unpaid';
-      case 'not_paid': return 'badge-unpaid';
-      case 'delivered': return 'badge-delivered';
-      case 'processing': return 'badge-processing';
-      case 'cancelled': return 'badge-cancelled';
-      case 'placed': return 'badge-processing';
-      case 'order placed': return 'badge-processing';
-      case 'shipped': return 'badge-delivered';
-      default: return '';
-    }
+    const s = normalizeStatus(status);
+    const map = {
+      ORDER_PLACED:     'badge-processing',
+      ORDER_CONFIRMED:  'badge-processing',
+      PROCESSING:       'badge-processing',
+      SHIPPED:          'badge-delivered',
+      OUT_FOR_DELIVERY: 'badge-delivered',
+      DELIVERED:        'badge-delivered',
+      CANCELLED:        'badge-cancelled',
+      RETURN_REQUESTED: 'badge-processing',
+      RETURNED:         'badge-cancelled',
+      REFUNDED:         'badge-paid',
+    };
+    return map[s] || '';
   };
 
   if (loading) return <AdminLayout><div className="loader-container">Loading...</div></AdminLayout>;
@@ -159,18 +177,26 @@ const AdminDashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={data.orderStatusStats.length > 0 ? data.orderStatusStats : [{ name: 'No data', value: 1 }]}
+                    data={buildChartData(data.orderStatusStats)}
                     innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
+                    outerRadius={90}
+                    paddingAngle={4}
                     dataKey="value"
+                    nameKey="name"
                   >
-                    {data.orderStatusStats.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    {buildChartData(data.orderStatusStats).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
                     ))}
                   </Pie>
-                  <Tooltip />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+                  <Tooltip
+                    formatter={(value, name) => [value, name]}
+                    contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: 12 }}
+                  />
+                  <Legend
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: '12px' }}
+                    formatter={(value) => <span style={{ color: '#374151' }}>{value}</span>}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -182,7 +208,7 @@ const AdminDashboard = () => {
           <div className="section-header">
             <h3 className="section-title">Recent Orders</h3>
           </div>
-          <div className="table-responsive">
+          <div className="table-scroll-container">
             <table className="custom-table">
               <thead>
                 <tr>
@@ -200,8 +226,8 @@ const AdminDashboard = () => {
                   <tr key={order._id}>
                     <td className="order-id">#{order._id.substring(order._id.length - 8).toUpperCase()}</td>
                     <td className="customer-info">{order.user?.name || 'Guest'}</td>
-                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td>${order.totalPrice.toFixed(2)}</td>
+                    <td className="date-cell">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="amount-cell">${order.totalPrice.toFixed(2)}</td>
                     <td>
                       <span className={`badge ${getStatusBadgeClass(order.paymentStatus)}`}>
                         {order.isPaid ? 'Paid' : 'Unpaid'}
@@ -209,11 +235,11 @@ const AdminDashboard = () => {
                     </td>
                     <td>
                       <span className={`badge ${getStatusBadgeClass(order.orderStatus)}`}>
-                        {order.orderStatus}
+                        {getStatusLabel(normalizeStatus(order.orderStatus))}
                       </span>
                     </td>
                     <td>
-                      <Link to={`/admin/orders`} className="btn-view">View</Link>
+                      <Link to={`/admin/orders/${order._id}`} className="btn-view">View</Link>
                     </td>
                   </tr>
                 ))}

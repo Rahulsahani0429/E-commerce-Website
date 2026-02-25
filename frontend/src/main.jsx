@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { CartProvider } from './context/CartContext'
 import { AuthProvider } from './context/AuthContext'
@@ -7,16 +6,16 @@ import { NotificationProvider } from './context/NotificationContext'
 import './index.css'
 import App from './App.jsx'
 
+// NOTE: StrictMode is intentionally disabled to prevent double socket connections.
+// Re-enable once socket lifecycle is managed via a Context provider with useRef.
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AuthProvider>
-      <ThemeProvider>
-        <NotificationProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </NotificationProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  </StrictMode>,
+  <AuthProvider>
+    <ThemeProvider>
+      <NotificationProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </NotificationProvider>
+    </ThemeProvider>
+  </AuthProvider>,
 )

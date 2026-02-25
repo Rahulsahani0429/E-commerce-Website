@@ -6,6 +6,7 @@ import { useSocket } from '../context/SocketContext';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { normalizeStatus, getStatusLabel, STATUS_COLORS } from '../utils/statusConfig';
 import './TrackShipment.css';
 
 // Fix Leaflet marker icons in Vite
@@ -151,16 +152,23 @@ const TrackShipment = () => {
         );
     }
 
+    // Steps array — must match the FORWARD_STEPS in OrderTracker.jsx exactly
+    // so both pages show the same step highlighted for the same order status.
     const steps = [
-        { key: 'ORDER_CONFIRMED', label: 'Order Confirmed' },
-        { key: 'PROCESSING', label: 'Processing' },
-        { key: 'SHIPPED', label: 'Shipped' },
+        { key: 'ORDER_PLACED',     label: 'Order Placed' },
+        { key: 'ORDER_CONFIRMED',  label: 'Order Confirmed' },
+        { key: 'PROCESSING',       label: 'Processing' },
+        { key: 'SHIPPED',          label: 'Shipped' },
         { key: 'OUT_FOR_DELIVERY', label: 'Out for Delivery' },
-        { key: 'DELIVERED', label: 'Delivered' }
+        { key: 'DELIVERED',        label: 'Delivered' }
     ];
 
-    const getStatusIndex = (status) => steps.findIndex(s => s.key === status);
-    const currentIndex = order?.orderStatus ? getStatusIndex(order.orderStatus) : 0;
+    // Normalize the raw status from the API to a canonical ENUM key
+    const canonicalStatus = normalizeStatus(order?.orderStatus);
+    const currentIndex = steps.findIndex(s => s.key === canonicalStatus);
+    // If status not in forward steps (e.g. CANCELLED) default to 0
+    const safeIndex = currentIndex === -1 ? 0 : currentIndex;
+
     const mapPosition = [shipment?.currentLocation?.lat || 28.6139, shipment?.currentLocation?.lng || 77.2090];
 
     return (
@@ -215,8 +223,8 @@ const TrackShipment = () => {
                         </div>
                         <div className="grid-item">
                             <span className="label">Current Status</span>
-                            <span className="value" style={{ color: order?.orderStatus === 'DELIVERED' ? '#388e3c' : '#2874f0' }}>
-                                {order?.orderStatus?.replace(/_/g, ' ') || 'Processing'}
+                            <span className="value" style={{ color: STATUS_COLORS[canonicalStatus] || '#2874f0', fontWeight: 600 }}>
+                                {getStatusLabel(canonicalStatus)}
                             </span>
                         </div>
                         {shipment?.deliveryAgent && (
@@ -239,9 +247,9 @@ const TrackShipment = () => {
                     <div className="vertical-timeline">
                         <div className="timeline-line"></div>
                         {steps.map((step, idx) => {
-                            const historyItem = shipment?.trackingHistory?.find(h => h.status === step.key);
-                            const isCompleted = idx <= currentIndex;
-                            const isActive = idx === currentIndex && order?.orderStatus !== 'DELIVERED';
+                            const historyItem = shipment?.trackingHistory?.find(h => normalizeStatus(h.status) === step.key);
+                            const isCompleted = idx < safeIndex;
+                            const isActive    = idx === safeIndex && canonicalStatus !== 'DELIVERED';
                             
                             return (
                                 <div key={step.key} className={`timeline-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}>

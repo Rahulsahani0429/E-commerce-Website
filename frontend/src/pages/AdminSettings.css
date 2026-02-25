@@ -282,4 +282,37 @@
     .reset-btn {
         width: 100%;
     }
+
+    .settings-content-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .settings-tabs {
+        gap: 4px;
+        padding: 4px;
+    }
+
+    .tab-link {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .settings-content-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .settings-toast {
+        bottom: 16px;
+        right: 12px;
+        left: 12px;
+        font-size: 0.875rem;
+    }
 }

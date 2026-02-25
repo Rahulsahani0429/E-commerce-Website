@@ -6,7 +6,9 @@ import { API_BASE_URL } from '../config';
 import OrderTracker from '../components/OrderTracker';
 import { useSocket } from '../context/SocketContext';
 import { toast } from 'react-toastify';
+import { getStatusLabel, normalizeStatus } from '../utils/statusConfig';
 import './OrderDetails.css';
+
 
 const OrderDetails = () => {
     const { orderId } = useParams();
@@ -222,10 +224,14 @@ const OrderDetails = () => {
                         <div className="details-card tracker-card">
                             <div className="card-header">
                                 <h3 className="delivery-status">
-                                    {order.orderStatus === 'CANCELLED' ? (
+                                    {order.orderStatus === 'CANCELLED' || normalizeStatus(order.orderStatus) === 'CANCELLED' ? (
                                         <span className="cancelled-text">Status: Cancelled</span>
+                                    ) : normalizeStatus(order.orderStatus) === 'DELIVERED' ? (
+                                        `Expected Delivery: Delivered ✓`
+                                    ) : order.expectedDelivery ? (
+                                        `Expected Delivery: ${new Date(order.expectedDelivery).toLocaleDateString('en-GB')}`
                                     ) : (
-                                        `Expected Delivery: ${order.orderStatus === 'DELIVERED' ? 'Delivered' : (order.expectedDelivery ? new Date(order.expectedDelivery).toLocaleDateString('en-GB') : 'Processing')}`
+                                        `Status: ${getStatusLabel(normalizeStatus(order.orderStatus))}`
                                     )}
                                 </h3>
                                 <div className="order-id-capsule">

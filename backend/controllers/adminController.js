@@ -29,10 +29,19 @@ const getDashboardStats = async (req, res) => {
             .populate("user", "name email");
 
         // Order Status Distribution (for Donut Chart)
+        // Normalize all status values to UPPER_CASE before grouping to eliminate
+        // duplicates caused by mixed casing (e.g. "Delivered" vs "DELIVERED").
         const orderStatusStats = await Order.aggregate([
             {
+                $addFields: {
+                    normalizedStatus: {
+                        $toUpper: { $trim: { input: "$orderStatus" } }
+                    }
+                }
+            },
+            {
                 $group: {
-                    _id: "$orderStatus",
+                    _id: "$normalizedStatus",
                     value: { $sum: 1 }
                 }
             },
@@ -42,7 +51,8 @@ const getDashboardStats = async (req, res) => {
                     value: 1,
                     _id: 0
                 }
-            }
+            },
+            { $sort: { value: -1 } }
         ]);
 
         // Revenue Overview (Last 7 Days for Line Chart)
@@ -223,11 +233,13 @@ const getReports = async (req, res) => {
             { $sort: { _id: 1 } }
         ]).toArray();
 
-        // 3. Orders By Status
+        // 3. Orders By Status — normalize to UPPER_CASE before grouping
         const ordersByStatus = await db.collection("orders").aggregate([
             { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
-            { $group: { _id: "$orderStatus", count: { $sum: 1 } } },
-            { $project: { status: "$_id", count: 1, _id: 0 } }
+            { $addFields: { normalizedStatus: { $toUpper: { $trim: { input: "$orderStatus" } } } } },
+            { $group: { _id: "$normalizedStatus", count: { $sum: 1 } } },
+            { $project: { status: "$_id", count: 1, _id: 0 } },
+            { $sort: { count: -1 } }
         ]).toArray();
 
         // 4. Payment Methods
@@ -324,16 +336,21 @@ const getAdminStats = async (req, res) => {
 
         const db = mongoose.connection.db;
 
-        // 1. KPIs Aggregation
+        // 1. KPIs Aggregation — compare normalised uppercase status values
         const kpisArr = await db.collection("orders").aggregate([
             { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
+            {
+                $addFields: {
+                    normalizedStatus: { $toUpper: { $trim: { input: "$orderStatus" } } }
+                }
+            },
             {
                 $group: {
                     _id: null,
                     totalOrders: { $sum: 1 },
                     paidOrders: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, 1, 0] } },
-                    deliveredOrders: { $sum: { $cond: [{ $eq: ["$orderStatus", "Delivered"] }, 1, 0] } },
-                    cancelledOrders: { $sum: { $cond: [{ $eq: ["$orderStatus", "Cancelled"] }, 1, 0] } },
+                    deliveredOrders: { $sum: { $cond: [{ $eq: ["$normalizedStatus", "DELIVERED"] }, 1, 0] } },
+                    cancelledOrders: { $sum: { $cond: [{ $eq: ["$normalizedStatus", "CANCELLED"] }, 1, 0] } },
                     totalRevenue: { $sum: { $cond: [{ $eq: ["$isPaid", true] }, "$totalPrice", 0] } }
                 }
             }
@@ -365,11 +382,13 @@ const getAdminStats = async (req, res) => {
             { $sort: { _id: 1 } }
         ]).toArray();
 
-        // 3. Order Funnel
+        // 3. Order Funnel — normalize status before grouping
         const orderFunnel = await db.collection("orders").aggregate([
             { $match: { createdAt: { $gte: startDate, $lte: endDate } } },
-            { $group: { _id: "$orderStatus", count: { $sum: 1 } } },
-            { $project: { status: "$_id", count: 1, _id: 0 } }
+            { $addFields: { normalizedStatus: { $toUpper: { $trim: { input: "$orderStatus" } } } } },
+            { $group: { _id: "$normalizedStatus", count: { $sum: 1 } } },
+            { $project: { status: "$_id", count: 1, _id: 0 } },
+            { $sort: { count: -1 } }
         ]).toArray();
 
         // 4. Payment Methods
@@ -535,6 +554,86 @@ const updateUserByAdmin = async (req, res) => {
 };
 
 /**
+ * @desc    Get single order by ID (admin)
+ * @route   GET /api/admin/orders/:id
+ * @access  Private/Admin
+ */
+const getAdminOrderById = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id)
+            .populate("user", "name email avatar phone createdAt")
+            .populate("orderItems.product", "name sku images");
+
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        // Attach customer lifetime stats (user may have been deleted)
+        let customerStats = { totalOrders: 0, lifetimeSpend: 0 };
+        if (order.user && order.user._id) {
+            const customerOrders = await Order.find({ user: order.user._id });
+            const lifetimeSpend = customerOrders
+                .filter((o) => o.isPaid)
+                .reduce((sum, o) => sum + o.totalPrice, 0);
+            customerStats = { totalOrders: customerOrders.length, lifetimeSpend };
+        }
+
+        return res.status(200).json({
+            order,
+            customerStats,
+        });
+    } catch (error) {
+        console.error("Get Admin Order Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
+ * @desc    Update order status by admin
+ * @route   PUT /api/admin/orders/:id/status
+ * @access  Private/Admin
+ */
+const updateAdminOrderStatus = async (req, res) => {
+    try {
+        const { orderStatus } = req.body;
+        const validStatuses = ["ORDER_CONFIRMED", "PROCESSING", "SHIPPED", "OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED"];
+
+        if (!validStatuses.includes(orderStatus)) {
+            return res.status(400).json({ message: "Invalid order status" });
+        }
+
+        const order = await Order.findById(req.params.id);
+        if (!order) return res.status(404).json({ message: "Order not found" });
+
+        order.orderStatus = orderStatus;
+        if (orderStatus === "DELIVERED") {
+            order.isDelivered = true;
+            order.deliveredAt = new Date();
+        }
+        if (orderStatus === "CANCELLED") {
+            order.isCancelled = true;
+            order.cancelledAt = new Date();
+        }
+
+        const updated = await order.save();
+
+        // Real-time push to user's browser
+        try {
+            const io = getIO();
+            io.to(updated.user.toString()).emit("orderStatusUpdated", {
+                orderId: updated._id,
+                orderStatus: updated.orderStatus,
+            });
+        } catch (_) { }
+
+        return res.status(200).json(updated);
+    } catch (error) {
+        console.error("Update Admin Order Status Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
  * @desc    Delete user by admin
  * @route   DELETE /api/admin/customers/:id
  * @access  Private/Admin
@@ -573,4 +672,89 @@ const deleteUserByAdmin = async (req, res) => {
     }
 };
 
-export { getDashboardStats, getCustomers, getReports, getAdminStats, updateUserByAdmin, deleteUserByAdmin };
+/**
+ * @desc    Get full customer profile by ID (admin)
+ * @route   GET /api/admin/customers/:id
+ * @access  Private/Admin
+ */
+const getAdminCustomerById = async (req, res) => {
+    try {
+        const customer = await User.findById(req.params.id).select("-password");
+        if (!customer) {
+            return res.status(404).json({ message: "Customer not found" });
+        }
+
+        const customerId = customer._id;
+
+        // Aggregate order statistics
+        const statsAgg = await Order.aggregate([
+            { $match: { user: customerId } },
+            {
+                $group: {
+                    _id: null,
+                    totalOrders: { $sum: 1 },
+                    totalSpend: { $sum: { $cond: ["$isPaid", "$totalPrice", 0] } },
+                    cancelledOrders: { $sum: { $cond: ["$isCancelled", 1, 0] } },
+                    returnedOrders: {
+                        $sum: {
+                            $cond: [{ $ne: ["$returnStatus", "NONE"] }, 1, 0],
+                        },
+                    },
+                },
+            },
+        ]);
+
+        const raw = statsAgg[0] || { totalOrders: 0, totalSpend: 0, cancelledOrders: 0, returnedOrders: 0 };
+        const avgOrderValue = raw.totalOrders > 0 ? raw.totalSpend / raw.totalOrders : 0;
+
+        // Recent orders (last 20)
+        const orders = await Order.find({ user: customerId })
+            .sort({ createdAt: -1 })
+            .limit(20)
+            .select("_id orderStatus paymentStatus isPaid totalPrice createdAt shippingAddress orderItems");
+
+        // Extract unique shipping addresses from order history
+        const addressMap = new Map();
+        orders.forEach((o) => {
+            if (o.shippingAddress?.address) {
+                const key = `${o.shippingAddress.address}|${o.shippingAddress.city}`;
+                if (!addressMap.has(key)) addressMap.set(key, o.shippingAddress);
+            }
+        });
+        const addresses = Array.from(addressMap.values());
+
+        // Build activity timeline
+        const timeline = [];
+        timeline.push({ type: "account_created", label: "Account Created", date: customer.createdAt });
+        orders.forEach((o) => {
+            timeline.push({ type: "order_placed", label: `Order #${o._id.toString().slice(-6).toUpperCase()} placed`, date: o.createdAt, orderId: o._id });
+            if (o.isPaid) {
+                timeline.push({ type: "payment", label: `Payment received for #${o._id.toString().slice(-6).toUpperCase()}`, date: o.paidAt || o.updatedAt, orderId: o._id });
+            }
+            if (o.returnStatus && o.returnStatus !== "NONE") {
+                timeline.push({ type: "return", label: `Return requested for #${o._id.toString().slice(-6).toUpperCase()}`, date: o.returnRequestedAt || o.updatedAt, orderId: o._id });
+            }
+        });
+        timeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        return res.status(200).json({
+            customer,
+            stats: {
+                totalOrders: raw.totalOrders,
+                totalSpend: raw.totalSpend,
+                cancelledOrders: raw.cancelledOrders,
+                returnedOrders: raw.returnedOrders,
+                avgOrderValue,
+            },
+            orders,
+            addresses,
+            timeline: timeline.slice(0, 30),
+        });
+    } catch (error) {
+        console.error("Get Admin Customer Error:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export { getDashboardStats, getCustomers, getReports, getAdminStats, updateUserByAdmin, deleteUserByAdmin, getAdminOrderById, updateAdminOrderStatus, getAdminCustomerById };
+

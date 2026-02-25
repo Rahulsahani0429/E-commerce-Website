@@ -7,7 +7,7 @@ const UserLayout = () => {
   return (
     <>
       <Header />
-      <main>
+      <main style={{ overflowX: 'hidden', maxWidth: '100vw', width: '100%' }}>
         <Outlet />
       </main>
       <Footer />
