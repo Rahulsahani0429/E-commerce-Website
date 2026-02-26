@@ -10,8 +10,6 @@ import {
   cancelOrder,
   updateOrderToProcessing,
   updateOrderToShipped,
-  updateOrderStatus,
-  updateOrderPayment,
   generateInvoice,
   sendPaymentReminder,
   requestOrderReturn,
@@ -25,8 +23,6 @@ router.route("/").post(protect, addOrderItems).get(protect, admin, getOrders);
 router.route("/myorders").get(protect, getMyOrders);
 router.route("/:id/invoice").get(protect, generateInvoice);
 router.route("/:id/reminder").post(protect, admin, sendPaymentReminder);
-router.route("/v1/admin/orders/:id/status").patch(protect, admin, updateOrderStatus);
-router.route("/v1/admin/orders/:id/payment").patch(protect, admin, updateOrderPayment);
 router.route("/:id/return-status").put(protect, admin, updateReturnStatus);
 router
   .route("/:id")

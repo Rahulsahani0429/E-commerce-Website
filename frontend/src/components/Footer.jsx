@@ -1,170 +1,165 @@
 import { Link } from 'react-router-dom';
+import './Footer.css';
 
 const Footer = () => {
-  const footerStyle = {
-    background: '#172337',
-    color: '#fff',
-    padding: '40px 0 0 0',
-    fontFamily: 'Inter, sans-serif',
-    fontSize: '12px',
-    marginTop: '40px'
-  };
-
-  const containerStyle = {
-    maxWidth: '1248px',
-    margin: '0 auto',
-    padding: '0 10px',
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between'
-  };
-
-  const sectionStyle = {
-    flex: '1',
-    minWidth: '150px',
-    marginBottom: '20px',
-    padding: '0 10px'
-  };
-
-  const headingStyle = {
-    color: '#878787',
-    fontSize: '12px',
-    fontWeight: '400',
-    marginBottom: '10px',
-    textTransform: 'uppercase'
-  };
-
-  const listStyle = {
-    listStyle: 'none',
-    padding: 0,
-    margin: 0
-  };
-
-  const listItemStyle = {
-    marginBottom: '5px'
-  };
-
-  const linkStyle = {
-    color: '#fff',
-    textDecoration: 'none',
-    fontWeight: '500'
-  };
-
-  const bottomBarStyle = {
-    borderTop: '1px solid #454d5e',
-    padding: '25px 0',
-    marginTop: '40px',
-    background: '#172337'
-  };
-
-  const bottomContainerStyle = {
-    maxWidth: '1248px',
-    margin: '0 auto',
-    padding: '0 10px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  };
-
   return (
-    <footer style={footerStyle}>
-      <div style={containerStyle}>
-        <div style={sectionStyle}>
-          <h4 style={headingStyle}>ABOUT</h4>
-          <ul style={listStyle}>
-            <li style={listItemStyle}><Link to="/info/contact-us" style={linkStyle}>Contact Us</Link></li>
-            <li style={listItemStyle}><Link to="/info/about-us" style={linkStyle}>About Us</Link></li>
-            <li style={listItemStyle}><Link to="/info/careers" style={linkStyle}>Careers</Link></li>
-            <li style={listItemStyle}><Link to="/info/flipkart-stories" style={linkStyle}>Flipkart Stories</Link></li>
-            <li style={listItemStyle}><Link to="/info/press" style={linkStyle}>Press</Link></li>
-            <li style={listItemStyle}><Link to="/info/corporate-information" style={linkStyle}>Corporate Information</Link></li>
-          </ul>
-        </div>
+    <footer className="fk-footer">
+      {/* ═══ Main body ═══ */}
+      <div className="fk-footer-body">
+        <div className="fk-footer-inner">
 
-        <div style={sectionStyle}>
-          <h4 style={headingStyle}>HELP</h4>
-          <ul style={listStyle}>
-            <li style={listItemStyle}><Link to="/info/payments" style={linkStyle}>Payments</Link></li>
-            <li style={listItemStyle}><Link to="/info/shipping" style={linkStyle}>Shipping</Link></li>
-            <li style={listItemStyle}><Link to="/info/returns" style={linkStyle}>Cancellation & Returns</Link></li>
-            <li style={listItemStyle}><Link to="/info/faq" style={linkStyle}>FAQ</Link></li>
-          </ul>
-        </div>
+          {/* Col 1 – About */}
+          <div className="fk-col">
+            <h4 className="fk-col-title">ABOUT</h4>
+            <ul className="fk-links">
+              <li><Link to="/info/contact">Contact Us</Link></li>
+              <li><Link to="/info/about">About Us</Link></li>
+              <li><Link to="/info/careers">Careers</Link></li>
+              <li><Link to="/info/press">Press</Link></li>
+              <li><Link to="/info/corporate-information">Corporate Information</Link></li>
+            </ul>
+          </div>
 
-        <div style={sectionStyle}>
-          <h4 style={headingStyle}>CONSUMER POLICY</h4>
-          <ul style={listStyle}>
-            <li style={listItemStyle}><Link to="/info/returns" style={linkStyle}>Cancellation & Returns</Link></li>
-            <li style={listItemStyle}><Link to="/info/terms-of-use" style={linkStyle}>Terms Of Use</Link></li>
-            <li style={listItemStyle}><Link to="/info/security" style={linkStyle}>Security</Link></li>
-            <li style={listItemStyle}><Link to="/info/privacy-policy" style={linkStyle}>Privacy</Link></li>
-            <li style={listItemStyle}><Link to="/info/sitemap" style={linkStyle}>Sitemap</Link></li>
-            <li style={listItemStyle}><Link to="/info/grievance-redressal" style={linkStyle}>Grievance Redressal</Link></li>
-          </ul>
-        </div>
+          {/* Col 2 – Group Companies */}
+          <div className="fk-col">
+            <h4 className="fk-col-title">GROUP COMPANIES</h4>
+            <ul className="fk-links">
+              <li><a href="https://www.myntra.com" target="_blank" rel="noopener noreferrer">Myntra</a></li>
+              <li><a href="https://www.cleartrip.com" target="_blank" rel="noopener noreferrer">Cleartrip</a></li>
+              <li><a href="https://www.shopsy.in" target="_blank" rel="noopener noreferrer">Shopsy</a></li>
+            </ul>
+          </div>
 
-        <div style={sectionStyle}>
-          <h4 style={headingStyle}>GROUP COMPANIES</h4>
-          <ul style={listStyle}>
-            <li style={listItemStyle}><a href="https://www.myntra.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Myntra</a></li>
-            <li style={listItemStyle}><a href="https://www.cleartrip.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Cleartrip</a></li>
-            <li style={listItemStyle}><a href="https://www.shopsy.in" target="_blank" rel="noopener noreferrer" style={linkStyle}>Shopsy</a></li>
-          </ul>
-        </div>
+          {/* Col 3 – Help */}
+          <div className="fk-col">
+            <h4 className="fk-col-title">HELP</h4>
+            <ul className="fk-links">
+              <li><Link to="/info/payments">Payments</Link></li>
+              <li><Link to="/info/shipping">Shipping</Link></li>
+              <li><Link to="/info/cancellation-returns" className="fk-link-ul">Cancellation &amp; Returns</Link></li>
+              <li><Link to="/info/faq">FAQ</Link></li>
+            </ul>
+          </div>
 
-        <div style={{ ...sectionStyle, borderLeft: '1px solid #454d5e', paddingLeft: '25px', flex: '1.5' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ flex: 1 }}>
-              <h4 style={headingStyle}>Mail Us:</h4>
-              <p style={{ color: '#fff', lineHeight: '1.4' }}>
-                Flipkart Internet Private Limited,<br />
-                Buildings Alyssa, Begonia &<br />
-                Clove Embassy Tech Village,<br />
-                Outer Ring Road, Devarabeesanahalli Village,<br />
-                Bengaluru, 560103,<br />
-                Karnataka, India
-              </p>
-            </div>
-            <div style={{ flex: 1, marginLeft: '20px' }}>
-              <h4 style={headingStyle}>Registered Office Address:</h4>
-              <p style={{ color: '#fff', lineHeight: '1.4' }}>
-                Flipkart Internet Private Limited,<br />
-                Buildings Alyssa, Begonia &<br />
-                Clove Embassy Tech Village,<br />
-                Outer Ring Road, Devarabeesanahalli Village,<br />
-                Bengaluru, 560103,<br />
-                Karnataka, India<br />
-                CIN : U51109KA2012PTC066107<br />
-                Telephone: <span style={{ color: '#2874f0' }}>044-45614700</span> / <span style={{ color: '#2874f0' }}>044-67415800</span>
-              </p>
+          {/* Col 4 – Consumer Policy */}
+          <div className="fk-col">
+            <h4 className="fk-col-title">CONSUMER POLICY</h4>
+            <ul className="fk-links">
+              <li><Link to="/info/cancellation-returns" className="fk-link-ul">Cancellation &amp; Returns</Link></li>
+              <li><Link to="/info/terms-of-use">Terms Of Use</Link></li>
+              <li><Link to="/info/security">Security</Link></li>
+              <li><Link to="/info/privacy">Privacy</Link></li>
+              <li><Link to="/info/sitemap">Sitemap</Link></li>
+              <li><Link to="/info/grievance-redressal">Grievance Redressal</Link></li>
+              <li><Link to="/info/epr-compliance">EPR Compliance</Link></li>
+            </ul>
+          </div>
+
+          {/* Vertical divider */}
+          <div className="fk-vdivider" />
+
+          {/* Col 5 – Mail Us */}
+          <div className="fk-col fk-col-mail">
+            <h4 className="fk-col-title">MAIL US</h4>
+            <address className="fk-address">
+              Flipkart Internet Private Limited,<br />
+              Buildings Alyssa, Begonia &amp;<br />
+              Cove Embassy Tech Village,<br />
+              Outer Ring Road, Devarabeesanahalli Village,<br />
+              Bengaluru, 560103,<br />
+              Karnataka, India
+            </address>
+
+            <div className="fk-social-row">
+              <span className="fk-social-label">Social:</span>
+              <div className="fk-socials">
+                {/* Facebook */}
+                <a href="https://facebook.com" className="fk-social-icon" target="_blank" rel="noreferrer" aria-label="Facebook">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                  </svg>
+                </a>
+                {/* X / Twitter */}
+                <a href="https://twitter.com" className="fk-social-icon" target="_blank" rel="noreferrer" aria-label="X">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+                {/* YouTube */}
+                <a href="https://youtube.com" className="fk-social-icon" target="_blank" rel="noreferrer" aria-label="YouTube">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+                    <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+                  </svg>
+                </a>
+                {/* Instagram */}
+                <a href="https://instagram.com" className="fk-social-icon" target="_blank" rel="noreferrer" aria-label="Instagram">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
+
+          {/* Col 6 – Registered Office */}
+          <div className="fk-col fk-col-office">
+            <h4 className="fk-col-title">REGISTERED OFFICE ADDRESS</h4>
+            <address className="fk-address">
+              Flipkart Internet Private Limited,<br />
+              Buildings Alyssa, Begonia &amp;<br />
+              Cove Embassy Tech Village,<br />
+              Outer Ring Road, Devarabeesanahalli Village,<br />
+              Bengaluru, 560103,<br />
+              Karnataka, India<br />
+              <br />
+              <span className="fk-cin">CIN</span> : U51109KA2012PTC066107<br />
+              <span className="fk-addr-phone">
+                Telephone: <a href="tel:04445614700">044-45614700</a> / <a href="tel:04445614800">044-67413800</a>
+              </span>
+            </address>
+          </div>
+
         </div>
       </div>
 
-      <div style={bottomBarStyle}>
-        <div style={bottomContainerStyle}>
-          <div style={{ display: 'flex', gap: '25px' }}>
-            <Link to="/info/seller" style={{ ...linkStyle, display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <span style={{ color: '#ffc200' }}>⭐</span> Become a Seller
+      {/* ═══ Bottom bar ═══ */}
+      <div className="fk-footer-bottom">
+        <div className="fk-footer-inner fk-bottom-inner">
+
+          {/* Left – quick links */}
+          <div className="fk-bottom-links">
+            <Link to="/info/seller-info" className="fk-blink">
+              <span className="fk-blink-icon">⭐</span> Become a Seller
             </Link>
-            <Link to="/info/advertise" style={{ ...linkStyle, display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <span style={{ color: '#ffc200' }}>⭐</span> Advertise
+            <span className="fk-bsep">|</span>
+            <Link to="/info/advertise" className="fk-blink">
+              <span className="fk-blink-icon">📢</span> Advertise
             </Link>
-            <Link to="/info/gift-cards" style={{ ...linkStyle, display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <span style={{ color: '#ffc200' }}>🎁</span> Gift Cards
+            <span className="fk-bsep">|</span>
+            <Link to="/info/gift-cards" className="fk-blink">
+              <span className="fk-blink-icon">🎁</span> Gift Cards
             </Link>
-            <Link to="/info/help-center" style={{ ...linkStyle, display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <span style={{ color: '#ffc200' }}>❓</span> Help Center
+            <span className="fk-bsep">|</span>
+            <Link to="/info/contact" className="fk-blink">
+              <span className="fk-blink-icon">❓</span> Help Center
             </Link>
           </div>
-          <div>
-            &copy; 2007-2026 Flipkart.com
+
+          {/* Center – copyright */}
+          <div className="fk-copyright">
+            &copy; 2007–2026 Flipkart.com
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/payment-method-69e7ec.svg" style={{ height: '20px' }} />
+
+          {/* Right – payment icons */}
+          <div className="fk-payments">
+            {['VISA','MC','RuPay','NetBanking','UPI','EMI','COD'].map(m => (
+              <span key={m} className="fk-pay-badge">{m}</span>
+            ))}
           </div>
+
         </div>
       </div>
     </footer>

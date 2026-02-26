@@ -14,6 +14,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import shipmentRoutes from "./routes/shipmentRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
 
 // Connect to database
 connectDB();
@@ -51,6 +52,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin/settings", settingsRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/shipment", shipmentRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Global search (admin-protected)
 app.get("/api/search", protect, admin, (req, res) => globalSearch(req, res));

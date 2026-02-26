@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
@@ -46,6 +47,7 @@ function App() {
       <CartProvider>
         <SocketProvider>
           <Router>
+            <ScrollToTop />
             <ToastContainer position="top-right" autoClose={3000} />
             <AppContent />
           </Router>
@@ -62,6 +64,8 @@ function AppContent() {
       <Route element={<UserLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/category/:categoryName" element={<Shop />} />
+        <Route path="/shop/brand/:brandName" element={<Shop />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
@@ -76,6 +80,10 @@ function AppContent() {
         <Route path="/order/:orderId" element={<OrderDetails />} />
         <Route path="/orders/:orderId" element={<OrderDetails />} />
         <Route path="/info/:slug" element={<InfoPage />} />
+        
+        {/* Helper aliases for common paths if needed directly */}
+        <Route path="/about" element={<InfoPage />} />
+        <Route path="/contact" element={<InfoPage />} />
       </Route>
 
       {/* Admin Panel routes wrapped in ProtectedRoute */}

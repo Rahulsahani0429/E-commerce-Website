@@ -41,7 +41,11 @@ const AdminLayout = ({
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?._id]); // run once per user, not on every token refresh
-
+  
+  // Trigger resize event whenever sidebar toggles to refresh Recharts dimensions
+  useEffect(() => {
+    window.dispatchEvent(new Event("resize"));
+  }, [sidebarOpen]);
   if (!user || !user.isAdmin) return null;
 
   const isActive = (path) => location.pathname === path;
@@ -147,26 +151,19 @@ const AdminLayout = ({
           </div>
 
           <div className="top-header-actions">
-            <div className="header-search-box">
-              <button 
-                className="square-icon-btn" 
-                onClick={() => setIsSearchOpen(true)}
+            {/* Search box — dropdown anchors to this container */}
+            <div className="header-search-box" style={{ position: 'relative' }}>
+              <button
+                className="square-icon-btn"
+                onClick={() => setIsSearchOpen((prev) => !prev)}
                 title="Search (Ctrl+K)"
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
               </button>
+              <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
             </div>
 
             <Link
@@ -220,12 +217,6 @@ const AdminLayout = ({
         {/* Page Main Content */}
         <section className="admin-page-main">{children}</section>
       </main>
-
-      <SearchModal 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
-        userToken={user.token}
-      />
     </div>
   );
 };

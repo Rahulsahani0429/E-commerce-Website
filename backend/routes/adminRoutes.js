@@ -1,4 +1,8 @@
 import { getDashboardStats, getCustomers, getReports, getAdminStats, updateUserByAdmin, deleteUserByAdmin, getAdminOrderById, updateAdminOrderStatus, getAdminCustomerById } from "../controllers/adminController.js";
+import {
+    updateOrderStatus,
+    updateOrderPayment
+} from "../controllers/orderController.js";
 import { globalSearch } from "../controllers/searchController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 import express from "express";
@@ -26,7 +30,10 @@ router.route("/stats").get(protect, admin, getAdminStats);
 
 // Admin Order Routes
 router.route("/orders/:id").get(protect, admin, getAdminOrderById);
-router.route("/orders/:id/status").put(protect, admin, updateAdminOrderStatus);
+router.route("/orders/:id/status")
+    .put(protect, admin, updateAdminOrderStatus)
+    .patch(protect, admin, updateOrderStatus);
+router.route("/orders/:id/payment").patch(protect, admin, updateOrderPayment);
 
 // Payment Routes
 router.route("/payments/:id")

@@ -8,17 +8,26 @@ import { API_BASE_URL, RAZORPAY_KEY_ID } from '../config';
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
-  const { cartItems, clearCart } = useCart();
+  const { cartItems, removeMultipleFromCart } = useCart();
+
+  // Only the items the user selected on the Cart page
+  const selectedIds = (() => {
+    try { return JSON.parse(localStorage.getItem('selectedCartItemIds')) || []; }
+    catch { return []; }
+  })();
+  const orderItems = selectedIds.length > 0
+    ? cartItems.filter(i => selectedIds.includes(i.product))
+    : cartItems;
   const { user } = useAuth();
 
   const shippingAddress = JSON.parse(localStorage.getItem('shippingAddress')) || {};
   const paymentMethod = JSON.parse(localStorage.getItem('paymentMethod')) || 'PayPal';
 
-  // Calculate prices
-  const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+  // Calculate prices from SELECTED items only
+  const itemsPrice    = orderItems.reduce((acc, item) => acc + item.price * item.qty, 0);
   const shippingPrice = itemsPrice > 1000 ? 0 : 40;
-  const taxPrice = Number((0.15 * itemsPrice).toFixed(2));
-  const totalPrice = itemsPrice + shippingPrice + taxPrice;
+  const taxPrice      = Number((0.15 * itemsPrice).toFixed(2));
+  const totalPrice    = itemsPrice + shippingPrice + taxPrice;
 
   useEffect(() => {
     if (!shippingAddress.address) {
@@ -41,7 +50,7 @@ const PlaceOrder = () => {
       const { data: orderResponse } = await axios.post(
         `${API_BASE_URL}/api/orders`,
         {
-          orderItems: cartItems,
+          orderItems: orderItems,
           shippingAddress,
           paymentMethod,
           itemsPrice,
@@ -84,7 +93,8 @@ const PlaceOrder = () => {
               );
 
               if (verifyData.order.paymentStatus === 'SUCCESS') {
-                clearCart();
+                removeMultipleFromCart(selectedIds);
+                localStorage.removeItem('selectedCartItemIds');
                 navigate(`/success/${orderId}`);
               } else {
                 alert('Payment verification failed');
@@ -107,7 +117,8 @@ const PlaceOrder = () => {
         rzp.open();
       } else {
         // For COD or others
-        clearCart();
+        removeMultipleFromCart(selectedIds);
+        localStorage.removeItem('selectedCartItemIds');
         navigate(`/success/${orderId}`);
       }
     } catch (error) {
@@ -140,18 +151,16 @@ const PlaceOrder = () => {
 
           <div className="info-section">
             <h2>Order Items</h2>
-            {cartItems.length === 0 ? (
-              <p>Your cart is empty</p>
+            {orderItems.length === 0 ? (
+              <p>No items selected. <Link to="/cart">Go back to cart</Link></p>
             ) : (
               <div className="order-items-list">
-                {cartItems.map((item, index) => (
+                {orderItems.map((item, index) => (
                   <div key={index} className="order-item">
                     <img src={item.image} alt={item.name} />
                     <div className="item-details">
                       <Link to={`/product/${item.product}`}>{item.name}</Link>
-                      <p>
-                        {item.qty} x ₹{item.price} = ₹{item.qty * item.price}
-                      </p>
+                      <p>{item.qty} × ₹{item.price?.toLocaleString('en-IN')} = ₹{(item.qty * item.price).toLocaleString('en-IN')}</p>
                     </div>
                   </div>
                 ))}
@@ -182,7 +191,7 @@ const PlaceOrder = () => {
             <button
               type="button"
               className="place-order-btn"
-              disabled={cartItems.length === 0}
+              disabled={orderItems.length === 0}
               onClick={placeOrderHandler}
             >
               PLACE ORDER

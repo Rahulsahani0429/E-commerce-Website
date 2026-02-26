@@ -328,7 +328,7 @@ const Header = () => {
       ></div>
 
       <style>{`
-        .main-header { position: sticky; top: 0; z-index: 1000; background: var(--primary); padding: 0.5rem 0 0; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .main-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--primary); padding: 0.5rem 0 0; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-top { display: flex; align-items: center; gap: 1.5rem; justify-content: space-between; height: 50px; margin-bottom: 0.5rem; }
         
         .flipkart-logo { display: flex; flex-direction: column; color: white; font-style: italic; text-decoration: none; }

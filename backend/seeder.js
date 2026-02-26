@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+﻿import mongoose from "mongoose";
 import dotenv from "dotenv";
 import User from "./models/User.js";
 import Product from "./models/Product.js";
@@ -9,7 +9,7 @@ connectDB();
 
 const products = [
   {
-    "name": "Razer Electronics 553",
+    "name": "MSI Electronics 379",
     "image": "https://picsum.photos/seed/10/800/800",
     "images": [
       "https://picsum.photos/seed/10/800/800",
@@ -18,17 +18,17 @@ const products = [
       "https://picsum.photos/seed/13/800/800",
       "https://picsum.photos/seed/14/800/800"
     ],
-    "description": "High-quality electronics from Razer. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Razer",
+    "description": "High-quality electronics from MSI. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "MSI",
     "category": "Electronics",
-    "price": 160710,
-    "countInStock": 73,
-    "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 102
+    "price": 42014,
+    "countInStock": 19,
+    "isFeatured": true,
+    "rating": 4.5,
+    "numReviews": 649
   },
   {
-    "name": "Puma Fashion 718",
+    "name": "Adidas Fashion 932",
     "image": "https://picsum.photos/seed/15/800/800",
     "images": [
       "https://picsum.photos/seed/15/800/800",
@@ -37,17 +37,17 @@ const products = [
       "https://picsum.photos/seed/18/800/800",
       "https://picsum.photos/seed/19/800/800"
     ],
-    "description": "High-quality fashion from Puma. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Puma",
+    "description": "High-quality fashion from Adidas. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Adidas",
     "category": "Fashion",
-    "price": 8515,
-    "countInStock": 42,
-    "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 217
+    "price": 2232,
+    "countInStock": 37,
+    "isFeatured": true,
+    "rating": 3.4,
+    "numReviews": 615
   },
   {
-    "name": "Pepperfry Home & Furniture 134",
+    "name": "Sleepwell Home & Furniture 495",
     "image": "https://picsum.photos/seed/20/800/800",
     "images": [
       "https://picsum.photos/seed/20/800/800",
@@ -56,17 +56,17 @@ const products = [
       "https://picsum.photos/seed/23/800/800",
       "https://picsum.photos/seed/24/800/800"
     ],
-    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Pepperfry",
+    "description": "High-quality home & furniture from Sleepwell. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Sleepwell",
     "category": "Home & Furniture",
-    "price": 40321,
-    "countInStock": 61,
+    "price": 40036,
+    "countInStock": 57,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 745
+    "rating": 3.8,
+    "numReviews": 971
   },
   {
-    "name": "Whirlpool Appliances 276",
+    "name": "Prestige Appliances 52",
     "image": "https://picsum.photos/seed/25/800/800",
     "images": [
       "https://picsum.photos/seed/25/800/800",
@@ -75,17 +75,17 @@ const products = [
       "https://picsum.photos/seed/28/800/800",
       "https://picsum.photos/seed/29/800/800"
     ],
-    "description": "High-quality appliances from Whirlpool. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Whirlpool",
+    "description": "High-quality appliances from Prestige. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Prestige",
     "category": "Appliances",
-    "price": 24627,
-    "countInStock": 76,
+    "price": 20634,
+    "countInStock": 84,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 636
+    "rating": 3.2,
+    "numReviews": 589
   },
   {
-    "name": "Amul Grocery 136",
+    "name": "Organic India Grocery 427",
     "image": "https://picsum.photos/seed/30/800/800",
     "images": [
       "https://picsum.photos/seed/30/800/800",
@@ -94,17 +94,17 @@ const products = [
       "https://picsum.photos/seed/33/800/800",
       "https://picsum.photos/seed/34/800/800"
     ],
-    "description": "High-quality grocery from Amul. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Amul",
+    "description": "High-quality grocery from Organic India. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Organic India",
     "category": "Grocery",
-    "price": 285,
-    "countInStock": 74,
+    "price": 3189,
+    "countInStock": 7,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 151
+    "rating": 3.4,
+    "numReviews": 620
   },
   {
-    "name": "Maybelline Beauty 171",
+    "name": "MAC Beauty 575",
     "image": "https://picsum.photos/seed/35/800/800",
     "images": [
       "https://picsum.photos/seed/35/800/800",
@@ -113,17 +113,17 @@ const products = [
       "https://picsum.photos/seed/38/800/800",
       "https://picsum.photos/seed/39/800/800"
     ],
-    "description": "High-quality beauty from Maybelline. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Maybelline",
+    "description": "High-quality beauty from MAC. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "MAC",
     "category": "Beauty",
-    "price": 1732,
-    "countInStock": 9,
-    "isFeatured": true,
-    "rating": 3.2,
-    "numReviews": 215
+    "price": 1205,
+    "countInStock": 29,
+    "isFeatured": false,
+    "rating": 4.5,
+    "numReviews": 533
   },
   {
-    "name": "Samsung Wearables 831",
+    "name": "Noise Wearables 960",
     "image": "https://picsum.photos/seed/40/800/800",
     "images": [
       "https://picsum.photos/seed/40/800/800",
@@ -132,17 +132,17 @@ const products = [
       "https://picsum.photos/seed/43/800/800",
       "https://picsum.photos/seed/44/800/800"
     ],
-    "description": "High-quality wearables from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality wearables from Noise. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Noise",
     "category": "Wearables",
-    "price": 27612,
-    "countInStock": 54,
+    "price": 17699,
+    "countInStock": 99,
     "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 754
+    "rating": 4.4,
+    "numReviews": 40
   },
   {
-    "name": "Samsonite Travel 129",
+    "name": "Safari Travel 17",
     "image": "https://picsum.photos/seed/45/800/800",
     "images": [
       "https://picsum.photos/seed/45/800/800",
@@ -151,17 +151,17 @@ const products = [
       "https://picsum.photos/seed/48/800/800",
       "https://picsum.photos/seed/49/800/800"
     ],
-    "description": "High-quality travel from Samsonite. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsonite",
+    "description": "High-quality travel from Safari. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Safari",
     "category": "Travel",
-    "price": 10113,
-    "countInStock": 16,
-    "isFeatured": true,
-    "rating": 4.4,
-    "numReviews": 298
+    "price": 14294,
+    "countInStock": 35,
+    "isFeatured": false,
+    "rating": 4.5,
+    "numReviews": 373
   },
   {
-    "name": "Decathlon Sports 73",
+    "name": "Cosco Sports 540",
     "image": "https://picsum.photos/seed/50/800/800",
     "images": [
       "https://picsum.photos/seed/50/800/800",
@@ -170,17 +170,17 @@ const products = [
       "https://picsum.photos/seed/53/800/800",
       "https://picsum.photos/seed/54/800/800"
     ],
-    "description": "High-quality sports from Decathlon. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Decathlon",
+    "description": "High-quality sports from Cosco. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Cosco",
     "category": "Sports",
-    "price": 8033,
-    "countInStock": 2,
+    "price": 36327,
+    "countInStock": 21,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 61
+    "rating": 3.3,
+    "numReviews": 969
   },
   {
-    "name": "Oxford Books 212",
+    "name": "Scholastic Books 972",
     "image": "https://picsum.photos/seed/55/800/800",
     "images": [
       "https://picsum.photos/seed/55/800/800",
@@ -189,17 +189,17 @@ const products = [
       "https://picsum.photos/seed/58/800/800",
       "https://picsum.photos/seed/59/800/800"
     ],
-    "description": "High-quality books from Oxford. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Oxford",
+    "description": "High-quality books from Scholastic. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Scholastic",
     "category": "Books",
-    "price": 2039,
-    "countInStock": 46,
+    "price": 656,
+    "countInStock": 91,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 379
+    "rating": 3.4,
+    "numReviews": 320
   },
   {
-    "name": "Realme Mobiles 400",
+    "name": "Xiaomi Mobiles 67",
     "image": "https://picsum.photos/seed/60/800/800",
     "images": [
       "https://picsum.photos/seed/60/800/800",
@@ -208,17 +208,17 @@ const products = [
       "https://picsum.photos/seed/63/800/800",
       "https://picsum.photos/seed/64/800/800"
     ],
-    "description": "High-quality mobiles from Realme. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Realme",
+    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Xiaomi",
     "category": "Mobiles",
-    "price": 44555,
-    "countInStock": 72,
+    "price": 45084,
+    "countInStock": 93,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 439
+    "rating": 3.4,
+    "numReviews": 136
   },
   {
-    "name": "Razer Electronics 763",
+    "name": "HP Electronics 623",
     "image": "https://picsum.photos/seed/65/800/800",
     "images": [
       "https://picsum.photos/seed/65/800/800",
@@ -227,17 +227,17 @@ const products = [
       "https://picsum.photos/seed/68/800/800",
       "https://picsum.photos/seed/69/800/800"
     ],
-    "description": "High-quality electronics from Razer. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Razer",
+    "description": "High-quality electronics from HP. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "HP",
     "category": "Electronics",
-    "price": 68822,
-    "countInStock": 60,
+    "price": 149285,
+    "countInStock": 7,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 635
+    "rating": 3.3,
+    "numReviews": 54
   },
   {
-    "name": "FabIndia Fashion 165",
+    "name": "Levis Fashion 931",
     "image": "https://picsum.photos/seed/70/800/800",
     "images": [
       "https://picsum.photos/seed/70/800/800",
@@ -246,17 +246,17 @@ const products = [
       "https://picsum.photos/seed/73/800/800",
       "https://picsum.photos/seed/74/800/800"
     ],
-    "description": "High-quality fashion from FabIndia. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "FabIndia",
+    "description": "High-quality fashion from Levis. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Levis",
     "category": "Fashion",
-    "price": 9319,
-    "countInStock": 49,
-    "isFeatured": false,
-    "rating": 4,
-    "numReviews": 14
+    "price": 5063,
+    "countInStock": 9,
+    "isFeatured": true,
+    "rating": 4.1,
+    "numReviews": 448
   },
   {
-    "name": "IKEA Home & Furniture 888",
+    "name": "Home Centre Home & Furniture 539",
     "image": "https://picsum.photos/seed/75/800/800",
     "images": [
       "https://picsum.photos/seed/75/800/800",
@@ -265,17 +265,17 @@ const products = [
       "https://picsum.photos/seed/78/800/800",
       "https://picsum.photos/seed/79/800/800"
     ],
-    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "IKEA",
+    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Home Centre",
     "category": "Home & Furniture",
-    "price": 44619,
+    "price": 9271,
     "countInStock": 22,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 481
+    "rating": 3.8,
+    "numReviews": 654
   },
   {
-    "name": "Bajaj Appliances 254",
+    "name": "Bajaj Appliances 871",
     "image": "https://picsum.photos/seed/80/800/800",
     "images": [
       "https://picsum.photos/seed/80/800/800",
@@ -287,14 +287,14 @@ const products = [
     "description": "High-quality appliances from Bajaj. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "Bajaj",
     "category": "Appliances",
-    "price": 60702,
-    "countInStock": 85,
-    "isFeatured": true,
-    "rating": 4.2,
-    "numReviews": 783
+    "price": 26589,
+    "countInStock": 18,
+    "isFeatured": false,
+    "rating": 3,
+    "numReviews": 963
   },
   {
-    "name": "Organic India Grocery 436",
+    "name": "Happilo Grocery 438",
     "image": "https://picsum.photos/seed/85/800/800",
     "images": [
       "https://picsum.photos/seed/85/800/800",
@@ -303,17 +303,17 @@ const products = [
       "https://picsum.photos/seed/88/800/800",
       "https://picsum.photos/seed/89/800/800"
     ],
-    "description": "High-quality grocery from Organic India. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Organic India",
+    "description": "High-quality grocery from Happilo. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Happilo",
     "category": "Grocery",
-    "price": 1777,
-    "countInStock": 2,
+    "price": 4316,
+    "countInStock": 54,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 173
+    "rating": 3.5,
+    "numReviews": 993
   },
   {
-    "name": "Lakme Beauty 761",
+    "name": "Neutrogena Beauty 138",
     "image": "https://picsum.photos/seed/90/800/800",
     "images": [
       "https://picsum.photos/seed/90/800/800",
@@ -322,17 +322,17 @@ const products = [
       "https://picsum.photos/seed/93/800/800",
       "https://picsum.photos/seed/94/800/800"
     ],
-    "description": "High-quality beauty from Lakme. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Lakme",
+    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Neutrogena",
     "category": "Beauty",
-    "price": 377,
-    "countInStock": 64,
+    "price": 2197,
+    "countInStock": 35,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 770
+    "rating": 3.3,
+    "numReviews": 866
   },
   {
-    "name": "Garmin Wearables 810",
+    "name": "Apple Wearables 158",
     "image": "https://picsum.photos/seed/95/800/800",
     "images": [
       "https://picsum.photos/seed/95/800/800",
@@ -341,17 +341,17 @@ const products = [
       "https://picsum.photos/seed/98/800/800",
       "https://picsum.photos/seed/99/800/800"
     ],
-    "description": "High-quality wearables from Garmin. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Garmin",
+    "description": "High-quality wearables from Apple. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Apple",
     "category": "Wearables",
-    "price": 38123,
-    "countInStock": 91,
-    "isFeatured": true,
-    "rating": 4.6,
-    "numReviews": 250
+    "price": 20465,
+    "countInStock": 34,
+    "isFeatured": false,
+    "rating": 3.4,
+    "numReviews": 995
   },
   {
-    "name": "Mocobara Travel 127",
+    "name": "American Tourister Travel 819",
     "image": "https://picsum.photos/seed/100/800/800",
     "images": [
       "https://picsum.photos/seed/100/800/800",
@@ -360,17 +360,17 @@ const products = [
       "https://picsum.photos/seed/103/800/800",
       "https://picsum.photos/seed/104/800/800"
     ],
-    "description": "High-quality travel from Mocobara. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Mocobara",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 14305,
-    "countInStock": 85,
+    "price": 1266,
+    "countInStock": 70,
     "isFeatured": true,
-    "rating": 4.3,
-    "numReviews": 180
+    "rating": 3.9,
+    "numReviews": 506
   },
   {
-    "name": "Wilson Sports 719",
+    "name": "Speedo Sports 244",
     "image": "https://picsum.photos/seed/105/800/800",
     "images": [
       "https://picsum.photos/seed/105/800/800",
@@ -379,17 +379,17 @@ const products = [
       "https://picsum.photos/seed/108/800/800",
       "https://picsum.photos/seed/109/800/800"
     ],
-    "description": "High-quality sports from Wilson. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Wilson",
+    "description": "High-quality sports from Speedo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Speedo",
     "category": "Sports",
-    "price": 27355,
-    "countInStock": 61,
+    "price": 15324,
+    "countInStock": 60,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 364
+    "rating": 3.2,
+    "numReviews": 141
   },
   {
-    "name": "Rupa Books 177",
+    "name": "Scholastic Books 946",
     "image": "https://picsum.photos/seed/110/800/800",
     "images": [
       "https://picsum.photos/seed/110/800/800",
@@ -398,17 +398,17 @@ const products = [
       "https://picsum.photos/seed/113/800/800",
       "https://picsum.photos/seed/114/800/800"
     ],
-    "description": "High-quality books from Rupa. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Rupa",
+    "description": "High-quality books from Scholastic. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Scholastic",
     "category": "Books",
-    "price": 243,
-    "countInStock": 63,
-    "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 906
+    "price": 427,
+    "countInStock": 9,
+    "isFeatured": false,
+    "rating": 3.6,
+    "numReviews": 743
   },
   {
-    "name": "Realme Mobiles 477",
+    "name": "OnePlus Mobiles 530",
     "image": "https://picsum.photos/seed/115/800/800",
     "images": [
       "https://picsum.photos/seed/115/800/800",
@@ -417,17 +417,17 @@ const products = [
       "https://picsum.photos/seed/118/800/800",
       "https://picsum.photos/seed/119/800/800"
     ],
-    "description": "High-quality mobiles from Realme. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Realme",
+    "description": "High-quality mobiles from OnePlus. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "OnePlus",
     "category": "Mobiles",
-    "price": 66293,
-    "countInStock": 21,
+    "price": 49871,
+    "countInStock": 17,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 86
+    "rating": 4.7,
+    "numReviews": 457
   },
   {
-    "name": "Asus Electronics 698",
+    "name": "Acer Electronics 70",
     "image": "https://picsum.photos/seed/120/800/800",
     "images": [
       "https://picsum.photos/seed/120/800/800",
@@ -436,17 +436,17 @@ const products = [
       "https://picsum.photos/seed/123/800/800",
       "https://picsum.photos/seed/124/800/800"
     ],
-    "description": "High-quality electronics from Asus. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Asus",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 92393,
-    "countInStock": 46,
+    "price": 110759,
+    "countInStock": 58,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 282
+    "rating": 3.3,
+    "numReviews": 59
   },
   {
-    "name": "Allen Solly Fashion 634",
+    "name": "Zara Fashion 61",
     "image": "https://picsum.photos/seed/125/800/800",
     "images": [
       "https://picsum.photos/seed/125/800/800",
@@ -455,17 +455,17 @@ const products = [
       "https://picsum.photos/seed/128/800/800",
       "https://picsum.photos/seed/129/800/800"
     ],
-    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Allen Solly",
+    "description": "High-quality fashion from Zara. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Zara",
     "category": "Fashion",
-    "price": 9090,
-    "countInStock": 69,
+    "price": 5846,
+    "countInStock": 36,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 613
+    "rating": 3.3,
+    "numReviews": 344
   },
   {
-    "name": "Nilkamal Home & Furniture 338",
+    "name": "Home Centre Home & Furniture 390",
     "image": "https://picsum.photos/seed/130/800/800",
     "images": [
       "https://picsum.photos/seed/130/800/800",
@@ -474,17 +474,17 @@ const products = [
       "https://picsum.photos/seed/133/800/800",
       "https://picsum.photos/seed/134/800/800"
     ],
-    "description": "High-quality home & furniture from Nilkamal. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Nilkamal",
+    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Home Centre",
     "category": "Home & Furniture",
-    "price": 13058,
-    "countInStock": 74,
+    "price": 16231,
+    "countInStock": 62,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 736
+    "rating": 4.9,
+    "numReviews": 58
   },
   {
-    "name": "Bajaj Appliances 912",
+    "name": "Philips Appliances 19",
     "image": "https://picsum.photos/seed/135/800/800",
     "images": [
       "https://picsum.photos/seed/135/800/800",
@@ -493,17 +493,17 @@ const products = [
       "https://picsum.photos/seed/138/800/800",
       "https://picsum.photos/seed/139/800/800"
     ],
-    "description": "High-quality appliances from Bajaj. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Bajaj",
+    "description": "High-quality appliances from Philips. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Philips",
     "category": "Appliances",
-    "price": 11597,
-    "countInStock": 5,
-    "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 355
+    "price": 8206,
+    "countInStock": 63,
+    "isFeatured": true,
+    "rating": 4.5,
+    "numReviews": 599
   },
   {
-    "name": "Reliance Grocery 227",
+    "name": "Amul Grocery 198",
     "image": "https://picsum.photos/seed/140/800/800",
     "images": [
       "https://picsum.photos/seed/140/800/800",
@@ -512,17 +512,17 @@ const products = [
       "https://picsum.photos/seed/143/800/800",
       "https://picsum.photos/seed/144/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Amul. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Amul",
     "category": "Grocery",
-    "price": 2102,
-    "countInStock": 99,
+    "price": 4290,
+    "countInStock": 79,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 920
+    "rating": 3.4,
+    "numReviews": 545
   },
   {
-    "name": "Estee Lauder Beauty 746",
+    "name": "Neutrogena Beauty 503",
     "image": "https://picsum.photos/seed/145/800/800",
     "images": [
       "https://picsum.photos/seed/145/800/800",
@@ -531,17 +531,17 @@ const products = [
       "https://picsum.photos/seed/148/800/800",
       "https://picsum.photos/seed/149/800/800"
     ],
-    "description": "High-quality beauty from Estee Lauder. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Estee Lauder",
+    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Neutrogena",
     "category": "Beauty",
-    "price": 4607,
-    "countInStock": 80,
-    "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 282
+    "price": 3936,
+    "countInStock": 5,
+    "isFeatured": true,
+    "rating": 4,
+    "numReviews": 929
   },
   {
-    "name": "boAt Wearables 466",
+    "name": "boAt Wearables 905",
     "image": "https://picsum.photos/seed/150/800/800",
     "images": [
       "https://picsum.photos/seed/150/800/800",
@@ -550,17 +550,17 @@ const products = [
       "https://picsum.photos/seed/153/800/800",
       "https://picsum.photos/seed/154/800/800"
     ],
-    "description": "High-quality wearables from boAt. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality wearables from boAt. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "boAt",
     "category": "Wearables",
-    "price": 3042,
-    "countInStock": 68,
+    "price": 37544,
+    "countInStock": 22,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 856
+    "rating": 4.4,
+    "numReviews": 329
   },
   {
-    "name": "Mocobara Travel 485",
+    "name": "Samsonite Travel 326",
     "image": "https://picsum.photos/seed/155/800/800",
     "images": [
       "https://picsum.photos/seed/155/800/800",
@@ -569,17 +569,17 @@ const products = [
       "https://picsum.photos/seed/158/800/800",
       "https://picsum.photos/seed/159/800/800"
     ],
-    "description": "High-quality travel from Mocobara. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Mocobara",
+    "description": "High-quality travel from Samsonite. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Samsonite",
     "category": "Travel",
-    "price": 19828,
-    "countInStock": 45,
+    "price": 1399,
+    "countInStock": 34,
     "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 28
+    "rating": 3.7,
+    "numReviews": 903
   },
   {
-    "name": "Speedo Sports 444",
+    "name": "Yonex Sports 306",
     "image": "https://picsum.photos/seed/160/800/800",
     "images": [
       "https://picsum.photos/seed/160/800/800",
@@ -588,17 +588,17 @@ const products = [
       "https://picsum.photos/seed/163/800/800",
       "https://picsum.photos/seed/164/800/800"
     ],
-    "description": "High-quality sports from Speedo. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Speedo",
+    "description": "High-quality sports from Yonex. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Yonex",
     "category": "Sports",
-    "price": 27933,
-    "countInStock": 56,
+    "price": 36313,
+    "countInStock": 67,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 135
+    "rating": 3.8,
+    "numReviews": 625
   },
   {
-    "name": "Oxford Books 534",
+    "name": "Rupa Books 848",
     "image": "https://picsum.photos/seed/165/800/800",
     "images": [
       "https://picsum.photos/seed/165/800/800",
@@ -607,17 +607,17 @@ const products = [
       "https://picsum.photos/seed/168/800/800",
       "https://picsum.photos/seed/169/800/800"
     ],
-    "description": "High-quality books from Oxford. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Oxford",
+    "description": "High-quality books from Rupa. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Rupa",
     "category": "Books",
-    "price": 2021,
-    "countInStock": 99,
+    "price": 1342,
+    "countInStock": 73,
     "isFeatured": true,
-    "rating": 3.3,
-    "numReviews": 844
+    "rating": 3.7,
+    "numReviews": 68
   },
   {
-    "name": "Samsung Mobiles 451",
+    "name": "Xiaomi Mobiles 669",
     "image": "https://picsum.photos/seed/170/800/800",
     "images": [
       "https://picsum.photos/seed/170/800/800",
@@ -626,17 +626,17 @@ const products = [
       "https://picsum.photos/seed/173/800/800",
       "https://picsum.photos/seed/174/800/800"
     ],
-    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Xiaomi",
     "category": "Mobiles",
-    "price": 82386,
-    "countInStock": 4,
+    "price": 78623,
+    "countInStock": 55,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 64
+    "rating": 4.8,
+    "numReviews": 88
   },
   {
-    "name": "MSI Electronics 1",
+    "name": "Acer Electronics 436",
     "image": "https://picsum.photos/seed/175/800/800",
     "images": [
       "https://picsum.photos/seed/175/800/800",
@@ -645,17 +645,17 @@ const products = [
       "https://picsum.photos/seed/178/800/800",
       "https://picsum.photos/seed/179/800/800"
     ],
-    "description": "High-quality electronics from MSI. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "MSI",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 134590,
-    "countInStock": 75,
+    "price": 112823,
+    "countInStock": 82,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 853
+    "rating": 3.8,
+    "numReviews": 201
   },
   {
-    "name": "Adidas Fashion 55",
+    "name": "Nike Fashion 329",
     "image": "https://picsum.photos/seed/180/800/800",
     "images": [
       "https://picsum.photos/seed/180/800/800",
@@ -664,17 +664,17 @@ const products = [
       "https://picsum.photos/seed/183/800/800",
       "https://picsum.photos/seed/184/800/800"
     ],
-    "description": "High-quality fashion from Adidas. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Adidas",
+    "description": "High-quality fashion from Nike. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Nike",
     "category": "Fashion",
-    "price": 7817,
-    "countInStock": 42,
+    "price": 783,
+    "countInStock": 11,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 126
+    "rating": 4.4,
+    "numReviews": 403
   },
   {
-    "name": "Urban Ladder Home & Furniture 930",
+    "name": "Duroflex Home & Furniture 343",
     "image": "https://picsum.photos/seed/185/800/800",
     "images": [
       "https://picsum.photos/seed/185/800/800",
@@ -683,17 +683,17 @@ const products = [
       "https://picsum.photos/seed/188/800/800",
       "https://picsum.photos/seed/189/800/800"
     ],
-    "description": "High-quality home & furniture from Urban Ladder. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Urban Ladder",
+    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Duroflex",
     "category": "Home & Furniture",
-    "price": 43040,
-    "countInStock": 67,
-    "isFeatured": true,
+    "price": 40221,
+    "countInStock": 85,
+    "isFeatured": false,
     "rating": 3.4,
-    "numReviews": 459
+    "numReviews": 471
   },
   {
-    "name": "Whirlpool Appliances 625",
+    "name": "Samsung Appliances 611",
     "image": "https://picsum.photos/seed/190/800/800",
     "images": [
       "https://picsum.photos/seed/190/800/800",
@@ -702,17 +702,17 @@ const products = [
       "https://picsum.photos/seed/193/800/800",
       "https://picsum.photos/seed/194/800/800"
     ],
-    "description": "High-quality appliances from Whirlpool. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Whirlpool",
+    "description": "High-quality appliances from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Appliances",
-    "price": 40251,
-    "countInStock": 24,
+    "price": 61397,
+    "countInStock": 41,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 229
+    "rating": 3.1,
+    "numReviews": 432
   },
   {
-    "name": "Reliance Grocery 18",
+    "name": "Organic India Grocery 851",
     "image": "https://picsum.photos/seed/195/800/800",
     "images": [
       "https://picsum.photos/seed/195/800/800",
@@ -721,17 +721,17 @@ const products = [
       "https://picsum.photos/seed/198/800/800",
       "https://picsum.photos/seed/199/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Organic India. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Organic India",
     "category": "Grocery",
-    "price": 2324,
-    "countInStock": 97,
-    "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 755
+    "price": 1032,
+    "countInStock": 37,
+    "isFeatured": true,
+    "rating": 3.1,
+    "numReviews": 805
   },
   {
-    "name": "Estee Lauder Beauty 77",
+    "name": "Lakme Beauty 823",
     "image": "https://picsum.photos/seed/200/800/800",
     "images": [
       "https://picsum.photos/seed/200/800/800",
@@ -740,17 +740,17 @@ const products = [
       "https://picsum.photos/seed/203/800/800",
       "https://picsum.photos/seed/204/800/800"
     ],
-    "description": "High-quality beauty from Estee Lauder. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Estee Lauder",
+    "description": "High-quality beauty from Lakme. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Lakme",
     "category": "Beauty",
-    "price": 3034,
-    "countInStock": 46,
+    "price": 1902,
+    "countInStock": 67,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 765
+    "rating": 4.6,
+    "numReviews": 248
   },
   {
-    "name": "Noise Wearables 770",
+    "name": "Garmin Wearables 249",
     "image": "https://picsum.photos/seed/205/800/800",
     "images": [
       "https://picsum.photos/seed/205/800/800",
@@ -759,17 +759,17 @@ const products = [
       "https://picsum.photos/seed/208/800/800",
       "https://picsum.photos/seed/209/800/800"
     ],
-    "description": "High-quality wearables from Noise. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Noise",
+    "description": "High-quality wearables from Garmin. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Garmin",
     "category": "Wearables",
-    "price": 37755,
-    "countInStock": 41,
+    "price": 17991,
+    "countInStock": 20,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 483
+    "rating": 3.1,
+    "numReviews": 610
   },
   {
-    "name": "Wildcraft Travel 963",
+    "name": "American Tourister Travel 159",
     "image": "https://picsum.photos/seed/210/800/800",
     "images": [
       "https://picsum.photos/seed/210/800/800",
@@ -778,17 +778,17 @@ const products = [
       "https://picsum.photos/seed/213/800/800",
       "https://picsum.photos/seed/214/800/800"
     ],
-    "description": "High-quality travel from Wildcraft. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Wildcraft",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 3512,
-    "countInStock": 42,
+    "price": 7850,
+    "countInStock": 1,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 947
+    "rating": 3.8,
+    "numReviews": 487
   },
   {
-    "name": "Cosco Sports 660",
+    "name": "Yonex Sports 438",
     "image": "https://picsum.photos/seed/215/800/800",
     "images": [
       "https://picsum.photos/seed/215/800/800",
@@ -797,17 +797,17 @@ const products = [
       "https://picsum.photos/seed/218/800/800",
       "https://picsum.photos/seed/219/800/800"
     ],
-    "description": "High-quality sports from Cosco. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Cosco",
+    "description": "High-quality sports from Yonex. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Yonex",
     "category": "Sports",
-    "price": 26623,
-    "countInStock": 18,
-    "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 371
+    "price": 7132,
+    "countInStock": 60,
+    "isFeatured": true,
+    "rating": 3.7,
+    "numReviews": 986
   },
   {
-    "name": "Scholastic Books 479",
+    "name": "Pearson Books 792",
     "image": "https://picsum.photos/seed/220/800/800",
     "images": [
       "https://picsum.photos/seed/220/800/800",
@@ -816,17 +816,17 @@ const products = [
       "https://picsum.photos/seed/223/800/800",
       "https://picsum.photos/seed/224/800/800"
     ],
-    "description": "High-quality books from Scholastic. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Scholastic",
+    "description": "High-quality books from Pearson. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Pearson",
     "category": "Books",
-    "price": 796,
-    "countInStock": 60,
+    "price": 1446,
+    "countInStock": 73,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 604
+    "rating": 4.4,
+    "numReviews": 220
   },
   {
-    "name": "Google Mobiles 191",
+    "name": "Google Mobiles 555",
     "image": "https://picsum.photos/seed/225/800/800",
     "images": [
       "https://picsum.photos/seed/225/800/800",
@@ -838,14 +838,14 @@ const products = [
     "description": "High-quality mobiles from Google. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Google",
     "category": "Mobiles",
-    "price": 74010,
-    "countInStock": 83,
+    "price": 70318,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 952
+    "rating": 4.2,
+    "numReviews": 510
   },
   {
-    "name": "Razer Electronics 166",
+    "name": "Sony Electronics 803",
     "image": "https://picsum.photos/seed/230/800/800",
     "images": [
       "https://picsum.photos/seed/230/800/800",
@@ -854,17 +854,17 @@ const products = [
       "https://picsum.photos/seed/233/800/800",
       "https://picsum.photos/seed/234/800/800"
     ],
-    "description": "High-quality electronics from Razer. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Razer",
+    "description": "High-quality electronics from Sony. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Sony",
     "category": "Electronics",
-    "price": 106112,
-    "countInStock": 7,
+    "price": 70895,
+    "countInStock": 35,
     "isFeatured": true,
-    "rating": 4.8,
-    "numReviews": 62
+    "rating": 3.5,
+    "numReviews": 125
   },
   {
-    "name": "Nike Fashion 438",
+    "name": "Puma Fashion 183",
     "image": "https://picsum.photos/seed/235/800/800",
     "images": [
       "https://picsum.photos/seed/235/800/800",
@@ -873,17 +873,17 @@ const products = [
       "https://picsum.photos/seed/238/800/800",
       "https://picsum.photos/seed/239/800/800"
     ],
-    "description": "High-quality fashion from Nike. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Nike",
+    "description": "High-quality fashion from Puma. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Puma",
     "category": "Fashion",
-    "price": 5510,
-    "countInStock": 38,
+    "price": 2223,
+    "countInStock": 86,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 160
+    "rating": 3.7,
+    "numReviews": 977
   },
   {
-    "name": "Pepperfry Home & Furniture 188",
+    "name": "IKEA Home & Furniture 418",
     "image": "https://picsum.photos/seed/240/800/800",
     "images": [
       "https://picsum.photos/seed/240/800/800",
@@ -892,17 +892,17 @@ const products = [
       "https://picsum.photos/seed/243/800/800",
       "https://picsum.photos/seed/244/800/800"
     ],
-    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Pepperfry",
+    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "IKEA",
     "category": "Home & Furniture",
-    "price": 50926,
-    "countInStock": 75,
+    "price": 46247,
+    "countInStock": 33,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 985
+    "rating": 3.8,
+    "numReviews": 847
   },
   {
-    "name": "Kent Appliances 469",
+    "name": "Haier Appliances 393",
     "image": "https://picsum.photos/seed/245/800/800",
     "images": [
       "https://picsum.photos/seed/245/800/800",
@@ -911,17 +911,17 @@ const products = [
       "https://picsum.photos/seed/248/800/800",
       "https://picsum.photos/seed/249/800/800"
     ],
-    "description": "High-quality appliances from Kent. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Kent",
+    "description": "High-quality appliances from Haier. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Haier",
     "category": "Appliances",
-    "price": 54204,
-    "countInStock": 60,
+    "price": 55382,
+    "countInStock": 30,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 252
+    "rating": 3.1,
+    "numReviews": 415
   },
   {
-    "name": "Reliance Grocery 294",
+    "name": "Nestle Grocery 282",
     "image": "https://picsum.photos/seed/250/800/800",
     "images": [
       "https://picsum.photos/seed/250/800/800",
@@ -930,17 +930,17 @@ const products = [
       "https://picsum.photos/seed/253/800/800",
       "https://picsum.photos/seed/254/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Nestle. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Nestle",
     "category": "Grocery",
-    "price": 3838,
-    "countInStock": 94,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 217
+    "price": 1816,
+    "countInStock": 67,
+    "isFeatured": true,
+    "rating": 3.8,
+    "numReviews": 632
   },
   {
-    "name": "Neutrogena Beauty 394",
+    "name": "Clinique Beauty 702",
     "image": "https://picsum.photos/seed/255/800/800",
     "images": [
       "https://picsum.photos/seed/255/800/800",
@@ -949,17 +949,17 @@ const products = [
       "https://picsum.photos/seed/258/800/800",
       "https://picsum.photos/seed/259/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Neutrogena",
+    "description": "High-quality beauty from Clinique. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Clinique",
     "category": "Beauty",
-    "price": 2783,
-    "countInStock": 44,
+    "price": 4033,
+    "countInStock": 14,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 349
+    "rating": 4.5,
+    "numReviews": 29
   },
   {
-    "name": "Samsung Wearables 86",
+    "name": "Noise Wearables 559",
     "image": "https://picsum.photos/seed/260/800/800",
     "images": [
       "https://picsum.photos/seed/260/800/800",
@@ -968,17 +968,17 @@ const products = [
       "https://picsum.photos/seed/263/800/800",
       "https://picsum.photos/seed/264/800/800"
     ],
-    "description": "High-quality wearables from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality wearables from Noise. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Noise",
     "category": "Wearables",
-    "price": 38418,
-    "countInStock": 87,
-    "isFeatured": true,
-    "rating": 3.2,
-    "numReviews": 111
+    "price": 27926,
+    "countInStock": 81,
+    "isFeatured": false,
+    "rating": 4.6,
+    "numReviews": 344
   },
   {
-    "name": "Skybags Travel 51",
+    "name": "Mocobara Travel 206",
     "image": "https://picsum.photos/seed/265/800/800",
     "images": [
       "https://picsum.photos/seed/265/800/800",
@@ -987,17 +987,17 @@ const products = [
       "https://picsum.photos/seed/268/800/800",
       "https://picsum.photos/seed/269/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from Mocobara. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Mocobara",
     "category": "Travel",
-    "price": 15809,
-    "countInStock": 67,
+    "price": 3437,
+    "countInStock": 21,
     "isFeatured": false,
     "rating": 4.9,
-    "numReviews": 824
+    "numReviews": 701
   },
   {
-    "name": "Powermax Sports 493",
+    "name": "Decathlon Sports 96",
     "image": "https://picsum.photos/seed/270/800/800",
     "images": [
       "https://picsum.photos/seed/270/800/800",
@@ -1006,17 +1006,17 @@ const products = [
       "https://picsum.photos/seed/273/800/800",
       "https://picsum.photos/seed/274/800/800"
     ],
-    "description": "High-quality sports from Powermax. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Powermax",
+    "description": "High-quality sports from Decathlon. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Decathlon",
     "category": "Sports",
-    "price": 19613,
-    "countInStock": 91,
+    "price": 4383,
+    "countInStock": 8,
     "isFeatured": false,
     "rating": 4.9,
-    "numReviews": 250
+    "numReviews": 604
   },
   {
-    "name": "Westland Books 287",
+    "name": "Pearson Books 289",
     "image": "https://picsum.photos/seed/275/800/800",
     "images": [
       "https://picsum.photos/seed/275/800/800",
@@ -1025,17 +1025,17 @@ const products = [
       "https://picsum.photos/seed/278/800/800",
       "https://picsum.photos/seed/279/800/800"
     ],
-    "description": "High-quality books from Westland. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Westland",
+    "description": "High-quality books from Pearson. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Pearson",
     "category": "Books",
-    "price": 883,
-    "countInStock": 51,
+    "price": 1880,
+    "countInStock": 36,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 360
+    "rating": 4.5,
+    "numReviews": 374
   },
   {
-    "name": "Google Mobiles 579",
+    "name": "Realme Mobiles 598",
     "image": "https://picsum.photos/seed/280/800/800",
     "images": [
       "https://picsum.photos/seed/280/800/800",
@@ -1044,17 +1044,17 @@ const products = [
       "https://picsum.photos/seed/283/800/800",
       "https://picsum.photos/seed/284/800/800"
     ],
-    "description": "High-quality mobiles from Google. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Google",
+    "description": "High-quality mobiles from Realme. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Realme",
     "category": "Mobiles",
-    "price": 122647,
-    "countInStock": 70,
+    "price": 99958,
+    "countInStock": 46,
     "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 391
+    "rating": 4.3,
+    "numReviews": 458
   },
   {
-    "name": "Microsoft Electronics 205",
+    "name": "Microsoft Electronics 483",
     "image": "https://picsum.photos/seed/285/800/800",
     "images": [
       "https://picsum.photos/seed/285/800/800",
@@ -1066,14 +1066,14 @@ const products = [
     "description": "High-quality electronics from Microsoft. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "Microsoft",
     "category": "Electronics",
-    "price": 72270,
-    "countInStock": 79,
+    "price": 151304,
+    "countInStock": 50,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 840
+    "rating": 3.5,
+    "numReviews": 635
   },
   {
-    "name": "Biba Fashion 462",
+    "name": "Biba Fashion 709",
     "image": "https://picsum.photos/seed/290/800/800",
     "images": [
       "https://picsum.photos/seed/290/800/800",
@@ -1082,17 +1082,17 @@ const products = [
       "https://picsum.photos/seed/293/800/800",
       "https://picsum.photos/seed/294/800/800"
     ],
-    "description": "High-quality fashion from Biba. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality fashion from Biba. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Biba",
     "category": "Fashion",
-    "price": 9241,
-    "countInStock": 4,
+    "price": 6858,
+    "countInStock": 17,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 989
+    "rating": 4.4,
+    "numReviews": 255
   },
   {
-    "name": "Urban Ladder Home & Furniture 231",
+    "name": "Duroflex Home & Furniture 798",
     "image": "https://picsum.photos/seed/295/800/800",
     "images": [
       "https://picsum.photos/seed/295/800/800",
@@ -1101,17 +1101,17 @@ const products = [
       "https://picsum.photos/seed/298/800/800",
       "https://picsum.photos/seed/299/800/800"
     ],
-    "description": "High-quality home & furniture from Urban Ladder. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Urban Ladder",
+    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Duroflex",
     "category": "Home & Furniture",
-    "price": 41231,
-    "countInStock": 90,
+    "price": 32394,
+    "countInStock": 66,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 118
+    "rating": 3,
+    "numReviews": 339
   },
   {
-    "name": "Samsung Appliances 289",
+    "name": "Samsung Appliances 865",
     "image": "https://picsum.photos/seed/300/800/800",
     "images": [
       "https://picsum.photos/seed/300/800/800",
@@ -1120,17 +1120,17 @@ const products = [
       "https://picsum.photos/seed/303/800/800",
       "https://picsum.photos/seed/304/800/800"
     ],
-    "description": "High-quality appliances from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality appliances from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Samsung",
     "category": "Appliances",
-    "price": 48035,
-    "countInStock": 56,
+    "price": 45789,
+    "countInStock": 11,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 114
+    "rating": 3.1,
+    "numReviews": 310
   },
   {
-    "name": "Reliance Grocery 959",
+    "name": "Dabur Grocery 722",
     "image": "https://picsum.photos/seed/305/800/800",
     "images": [
       "https://picsum.photos/seed/305/800/800",
@@ -1139,17 +1139,17 @@ const products = [
       "https://picsum.photos/seed/308/800/800",
       "https://picsum.photos/seed/309/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Dabur. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Dabur",
     "category": "Grocery",
-    "price": 3141,
-    "countInStock": 82,
+    "price": 715,
+    "countInStock": 96,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 739
+    "rating": 4.7,
+    "numReviews": 478
   },
   {
-    "name": "The Body Shop Beauty 381",
+    "name": "Lakme Beauty 316",
     "image": "https://picsum.photos/seed/310/800/800",
     "images": [
       "https://picsum.photos/seed/310/800/800",
@@ -1158,17 +1158,17 @@ const products = [
       "https://picsum.photos/seed/313/800/800",
       "https://picsum.photos/seed/314/800/800"
     ],
-    "description": "High-quality beauty from The Body Shop. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "The Body Shop",
+    "description": "High-quality beauty from Lakme. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Lakme",
     "category": "Beauty",
-    "price": 2141,
-    "countInStock": 5,
+    "price": 335,
+    "countInStock": 65,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 541
+    "rating": 4.2,
+    "numReviews": 857
   },
   {
-    "name": "Fossil Wearables 274",
+    "name": "Fossil Wearables 546",
     "image": "https://picsum.photos/seed/315/800/800",
     "images": [
       "https://picsum.photos/seed/315/800/800",
@@ -1177,17 +1177,17 @@ const products = [
       "https://picsum.photos/seed/318/800/800",
       "https://picsum.photos/seed/319/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality wearables from Fossil. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "Fossil",
     "category": "Wearables",
-    "price": 26462,
-    "countInStock": 24,
+    "price": 15556,
+    "countInStock": 94,
     "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 731
+    "rating": 3.5,
+    "numReviews": 445
   },
   {
-    "name": "Samsonite Travel 79",
+    "name": "VIP Travel 707",
     "image": "https://picsum.photos/seed/320/800/800",
     "images": [
       "https://picsum.photos/seed/320/800/800",
@@ -1196,17 +1196,17 @@ const products = [
       "https://picsum.photos/seed/323/800/800",
       "https://picsum.photos/seed/324/800/800"
     ],
-    "description": "High-quality travel from Samsonite. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Samsonite",
+    "description": "High-quality travel from VIP. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "VIP",
     "category": "Travel",
-    "price": 17520,
-    "countInStock": 60,
+    "price": 3619,
+    "countInStock": 61,
     "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 788
+    "rating": 3.3,
+    "numReviews": 847
   },
   {
-    "name": "Decathlon Sports 736",
+    "name": "Speedo Sports 496",
     "image": "https://picsum.photos/seed/325/800/800",
     "images": [
       "https://picsum.photos/seed/325/800/800",
@@ -1215,17 +1215,17 @@ const products = [
       "https://picsum.photos/seed/328/800/800",
       "https://picsum.photos/seed/329/800/800"
     ],
-    "description": "High-quality sports from Decathlon. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Decathlon",
+    "description": "High-quality sports from Speedo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Speedo",
     "category": "Sports",
-    "price": 38061,
-    "countInStock": 24,
-    "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 800
+    "price": 4446,
+    "countInStock": 71,
+    "isFeatured": true,
+    "rating": 3.5,
+    "numReviews": 910
   },
   {
-    "name": "Oxford Books 520",
+    "name": "Penguin Books 834",
     "image": "https://picsum.photos/seed/330/800/800",
     "images": [
       "https://picsum.photos/seed/330/800/800",
@@ -1234,17 +1234,17 @@ const products = [
       "https://picsum.photos/seed/333/800/800",
       "https://picsum.photos/seed/334/800/800"
     ],
-    "description": "High-quality books from Oxford. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Oxford",
+    "description": "High-quality books from Penguin. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Penguin",
     "category": "Books",
-    "price": 1126,
-    "countInStock": 97,
+    "price": 1887,
+    "countInStock": 92,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 519
+    "rating": 3.1,
+    "numReviews": 563
   },
   {
-    "name": "OnePlus Mobiles 201",
+    "name": "Realme Mobiles 750",
     "image": "https://picsum.photos/seed/335/800/800",
     "images": [
       "https://picsum.photos/seed/335/800/800",
@@ -1253,17 +1253,17 @@ const products = [
       "https://picsum.photos/seed/338/800/800",
       "https://picsum.photos/seed/339/800/800"
     ],
-    "description": "High-quality mobiles from OnePlus. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "OnePlus",
+    "description": "High-quality mobiles from Realme. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Realme",
     "category": "Mobiles",
-    "price": 39902,
-    "countInStock": 72,
-    "isFeatured": true,
-    "rating": 5,
-    "numReviews": 350
+    "price": 103238,
+    "countInStock": 78,
+    "isFeatured": false,
+    "rating": 3.6,
+    "numReviews": 98
   },
   {
-    "name": "Sony Electronics 47",
+    "name": "Acer Electronics 651",
     "image": "https://picsum.photos/seed/340/800/800",
     "images": [
       "https://picsum.photos/seed/340/800/800",
@@ -1272,17 +1272,17 @@ const products = [
       "https://picsum.photos/seed/343/800/800",
       "https://picsum.photos/seed/344/800/800"
     ],
-    "description": "High-quality electronics from Sony. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Sony",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 46834,
-    "countInStock": 22,
+    "price": 150178,
+    "countInStock": 85,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 564
+    "rating": 4.4,
+    "numReviews": 428
   },
   {
-    "name": "Allen Solly Fashion 365",
+    "name": "Biba Fashion 7",
     "image": "https://picsum.photos/seed/345/800/800",
     "images": [
       "https://picsum.photos/seed/345/800/800",
@@ -1291,17 +1291,17 @@ const products = [
       "https://picsum.photos/seed/348/800/800",
       "https://picsum.photos/seed/349/800/800"
     ],
-    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Allen Solly",
+    "description": "High-quality fashion from Biba. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Biba",
     "category": "Fashion",
-    "price": 507,
-    "countInStock": 68,
-    "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 120
+    "price": 8096,
+    "countInStock": 65,
+    "isFeatured": true,
+    "rating": 4.6,
+    "numReviews": 411
   },
   {
-    "name": "Sleepwell Home & Furniture 639",
+    "name": "Godrej Interio Home & Furniture 784",
     "image": "https://picsum.photos/seed/350/800/800",
     "images": [
       "https://picsum.photos/seed/350/800/800",
@@ -1310,17 +1310,17 @@ const products = [
       "https://picsum.photos/seed/353/800/800",
       "https://picsum.photos/seed/354/800/800"
     ],
-    "description": "High-quality home & furniture from Sleepwell. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Sleepwell",
+    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Godrej Interio",
     "category": "Home & Furniture",
-    "price": 20900,
-    "countInStock": 98,
+    "price": 22312,
+    "countInStock": 96,
     "isFeatured": false,
-    "rating": 3,
-    "numReviews": 14
+    "rating": 3.5,
+    "numReviews": 415
   },
   {
-    "name": "Prestige Appliances 314",
+    "name": "Prestige Appliances 652",
     "image": "https://picsum.photos/seed/355/800/800",
     "images": [
       "https://picsum.photos/seed/355/800/800",
@@ -1329,17 +1329,17 @@ const products = [
       "https://picsum.photos/seed/358/800/800",
       "https://picsum.photos/seed/359/800/800"
     ],
-    "description": "High-quality appliances from Prestige. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality appliances from Prestige. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Prestige",
     "category": "Appliances",
-    "price": 40829,
-    "countInStock": 23,
+    "price": 42287,
+    "countInStock": 71,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 386
+    "rating": 3.8,
+    "numReviews": 209
   },
   {
-    "name": "Nestle Grocery 366",
+    "name": "Reliance Grocery 679",
     "image": "https://picsum.photos/seed/360/800/800",
     "images": [
       "https://picsum.photos/seed/360/800/800",
@@ -1348,17 +1348,17 @@ const products = [
       "https://picsum.photos/seed/363/800/800",
       "https://picsum.photos/seed/364/800/800"
     ],
-    "description": "High-quality grocery from Nestle. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Nestle",
+    "description": "High-quality grocery from Reliance. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Reliance",
     "category": "Grocery",
-    "price": 492,
-    "countInStock": 21,
+    "price": 2669,
+    "countInStock": 84,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 407
+    "rating": 4.4,
+    "numReviews": 302
   },
   {
-    "name": "Neutrogena Beauty 427",
+    "name": "Lakme Beauty 205",
     "image": "https://picsum.photos/seed/365/800/800",
     "images": [
       "https://picsum.photos/seed/365/800/800",
@@ -1367,17 +1367,17 @@ const products = [
       "https://picsum.photos/seed/368/800/800",
       "https://picsum.photos/seed/369/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Neutrogena",
+    "description": "High-quality beauty from Lakme. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Lakme",
     "category": "Beauty",
-    "price": 4029,
-    "countInStock": 22,
+    "price": 1447,
+    "countInStock": 34,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 873
+    "rating": 3.3,
+    "numReviews": 777
   },
   {
-    "name": "Fossil Wearables 316",
+    "name": "Apple Wearables 935",
     "image": "https://picsum.photos/seed/370/800/800",
     "images": [
       "https://picsum.photos/seed/370/800/800",
@@ -1386,17 +1386,17 @@ const products = [
       "https://picsum.photos/seed/373/800/800",
       "https://picsum.photos/seed/374/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Fossil",
+    "description": "High-quality wearables from Apple. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Apple",
     "category": "Wearables",
-    "price": 22576,
-    "countInStock": 53,
+    "price": 41468,
+    "countInStock": 47,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 509
+    "rating": 4.1,
+    "numReviews": 913
   },
   {
-    "name": "Safari Travel 142",
+    "name": "Samsonite Travel 23",
     "image": "https://picsum.photos/seed/375/800/800",
     "images": [
       "https://picsum.photos/seed/375/800/800",
@@ -1405,17 +1405,17 @@ const products = [
       "https://picsum.photos/seed/378/800/800",
       "https://picsum.photos/seed/379/800/800"
     ],
-    "description": "High-quality travel from Safari. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Safari",
+    "description": "High-quality travel from Samsonite. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Samsonite",
     "category": "Travel",
-    "price": 11340,
-    "countInStock": 25,
-    "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 224
+    "price": 2902,
+    "countInStock": 19,
+    "isFeatured": true,
+    "rating": 3.5,
+    "numReviews": 243
   },
   {
-    "name": "Cosco Sports 438",
+    "name": "Cosco Sports 997",
     "image": "https://picsum.photos/seed/380/800/800",
     "images": [
       "https://picsum.photos/seed/380/800/800",
@@ -1427,14 +1427,14 @@ const products = [
     "description": "High-quality sports from Cosco. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Cosco",
     "category": "Sports",
-    "price": 18218,
-    "countInStock": 41,
+    "price": 25712,
+    "countInStock": 11,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 752
+    "rating": 4,
+    "numReviews": 552
   },
   {
-    "name": "Penguin Books 845",
+    "name": "Oxford Books 16",
     "image": "https://picsum.photos/seed/385/800/800",
     "images": [
       "https://picsum.photos/seed/385/800/800",
@@ -1443,17 +1443,17 @@ const products = [
       "https://picsum.photos/seed/388/800/800",
       "https://picsum.photos/seed/389/800/800"
     ],
-    "description": "High-quality books from Penguin. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Penguin",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 1054,
-    "countInStock": 41,
-    "isFeatured": true,
-    "rating": 3.7,
-    "numReviews": 559
+    "price": 1043,
+    "countInStock": 84,
+    "isFeatured": false,
+    "rating": 3,
+    "numReviews": 694
   },
   {
-    "name": "Nothing Mobiles 225",
+    "name": "Vivo Mobiles 276",
     "image": "https://picsum.photos/seed/390/800/800",
     "images": [
       "https://picsum.photos/seed/390/800/800",
@@ -1462,17 +1462,17 @@ const products = [
       "https://picsum.photos/seed/393/800/800",
       "https://picsum.photos/seed/394/800/800"
     ],
-    "description": "High-quality mobiles from Nothing. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Nothing",
+    "description": "High-quality mobiles from Vivo. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Vivo",
     "category": "Mobiles",
-    "price": 84402,
-    "countInStock": 64,
+    "price": 94667,
+    "countInStock": 13,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 779
+    "rating": 3.9,
+    "numReviews": 179
   },
   {
-    "name": "Acer Electronics 547",
+    "name": "Acer Electronics 289",
     "image": "https://picsum.photos/seed/395/800/800",
     "images": [
       "https://picsum.photos/seed/395/800/800",
@@ -1481,17 +1481,17 @@ const products = [
       "https://picsum.photos/seed/398/800/800",
       "https://picsum.photos/seed/399/800/800"
     ],
-    "description": "High-quality electronics from Acer. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "Acer",
     "category": "Electronics",
-    "price": 62260,
-    "countInStock": 1,
+    "price": 162440,
+    "countInStock": 4,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 917
+    "rating": 4.7,
+    "numReviews": 301
   },
   {
-    "name": "Biba Fashion 800",
+    "name": "Adidas Fashion 92",
     "image": "https://picsum.photos/seed/400/800/800",
     "images": [
       "https://picsum.photos/seed/400/800/800",
@@ -1500,17 +1500,17 @@ const products = [
       "https://picsum.photos/seed/403/800/800",
       "https://picsum.photos/seed/404/800/800"
     ],
-    "description": "High-quality fashion from Biba. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Biba",
+    "description": "High-quality fashion from Adidas. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Adidas",
     "category": "Fashion",
-    "price": 10260,
-    "countInStock": 65,
+    "price": 7450,
+    "countInStock": 29,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 163
+    "rating": 4.8,
+    "numReviews": 679
   },
   {
-    "name": "Home Centre Home & Furniture 775",
+    "name": "Godrej Interio Home & Furniture 860",
     "image": "https://picsum.photos/seed/405/800/800",
     "images": [
       "https://picsum.photos/seed/405/800/800",
@@ -1519,17 +1519,17 @@ const products = [
       "https://picsum.photos/seed/408/800/800",
       "https://picsum.photos/seed/409/800/800"
     ],
-    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Home Centre",
+    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Godrej Interio",
     "category": "Home & Furniture",
-    "price": 17500,
-    "countInStock": 91,
+    "price": 13195,
+    "countInStock": 23,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 735
+    "rating": 4.2,
+    "numReviews": 956
   },
   {
-    "name": "Philips Appliances 306",
+    "name": "Samsung Appliances 962",
     "image": "https://picsum.photos/seed/410/800/800",
     "images": [
       "https://picsum.photos/seed/410/800/800",
@@ -1538,17 +1538,17 @@ const products = [
       "https://picsum.photos/seed/413/800/800",
       "https://picsum.photos/seed/414/800/800"
     ],
-    "description": "High-quality appliances from Philips. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Philips",
+    "description": "High-quality appliances from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Appliances",
-    "price": 3787,
-    "countInStock": 83,
-    "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 492
+    "price": 14393,
+    "countInStock": 39,
+    "isFeatured": true,
+    "rating": 3.8,
+    "numReviews": 322
   },
   {
-    "name": "Hindustan Unilever Grocery 771",
+    "name": "Amul Grocery 145",
     "image": "https://picsum.photos/seed/415/800/800",
     "images": [
       "https://picsum.photos/seed/415/800/800",
@@ -1557,17 +1557,17 @@ const products = [
       "https://picsum.photos/seed/418/800/800",
       "https://picsum.photos/seed/419/800/800"
     ],
-    "description": "High-quality grocery from Hindustan Unilever. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Hindustan Unilever",
+    "description": "High-quality grocery from Amul. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Amul",
     "category": "Grocery",
-    "price": 2669,
-    "countInStock": 60,
+    "price": 1156,
+    "countInStock": 36,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 640
+    "rating": 3.7,
+    "numReviews": 772
   },
   {
-    "name": "The Body Shop Beauty 739",
+    "name": "Clinique Beauty 275",
     "image": "https://picsum.photos/seed/420/800/800",
     "images": [
       "https://picsum.photos/seed/420/800/800",
@@ -1576,17 +1576,17 @@ const products = [
       "https://picsum.photos/seed/423/800/800",
       "https://picsum.photos/seed/424/800/800"
     ],
-    "description": "High-quality beauty from The Body Shop. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "The Body Shop",
+    "description": "High-quality beauty from Clinique. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Clinique",
     "category": "Beauty",
-    "price": 4390,
-    "countInStock": 61,
-    "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 145
+    "price": 514,
+    "countInStock": 52,
+    "isFeatured": true,
+    "rating": 4.4,
+    "numReviews": 912
   },
   {
-    "name": "Apple Wearables 975",
+    "name": "Noise Wearables 77",
     "image": "https://picsum.photos/seed/425/800/800",
     "images": [
       "https://picsum.photos/seed/425/800/800",
@@ -1595,17 +1595,17 @@ const products = [
       "https://picsum.photos/seed/428/800/800",
       "https://picsum.photos/seed/429/800/800"
     ],
-    "description": "High-quality wearables from Apple. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Apple",
+    "description": "High-quality wearables from Noise. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Noise",
     "category": "Wearables",
-    "price": 41118,
-    "countInStock": 42,
+    "price": 19116,
+    "countInStock": 67,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 498
+    "rating": 4.3,
+    "numReviews": 128
   },
   {
-    "name": "Safari Travel 158",
+    "name": "American Tourister Travel 173",
     "image": "https://picsum.photos/seed/430/800/800",
     "images": [
       "https://picsum.photos/seed/430/800/800",
@@ -1614,17 +1614,17 @@ const products = [
       "https://picsum.photos/seed/433/800/800",
       "https://picsum.photos/seed/434/800/800"
     ],
-    "description": "High-quality travel from Safari. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Safari",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 8700,
-    "countInStock": 92,
-    "isFeatured": false,
+    "price": 7415,
+    "countInStock": 75,
+    "isFeatured": true,
     "rating": 3.5,
-    "numReviews": 665
+    "numReviews": 339
   },
   {
-    "name": "Decathlon Sports 824",
+    "name": "Spalding Sports 840",
     "image": "https://picsum.photos/seed/435/800/800",
     "images": [
       "https://picsum.photos/seed/435/800/800",
@@ -1633,17 +1633,17 @@ const products = [
       "https://picsum.photos/seed/438/800/800",
       "https://picsum.photos/seed/439/800/800"
     ],
-    "description": "High-quality sports from Decathlon. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Decathlon",
+    "description": "High-quality sports from Spalding. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Spalding",
     "category": "Sports",
-    "price": 12864,
-    "countInStock": 85,
-    "isFeatured": false,
+    "price": 14495,
+    "countInStock": 70,
+    "isFeatured": true,
     "rating": 5,
-    "numReviews": 998
+    "numReviews": 860
   },
   {
-    "name": "Pearson Books 386",
+    "name": "Penguin Books 79",
     "image": "https://picsum.photos/seed/440/800/800",
     "images": [
       "https://picsum.photos/seed/440/800/800",
@@ -1652,17 +1652,17 @@ const products = [
       "https://picsum.photos/seed/443/800/800",
       "https://picsum.photos/seed/444/800/800"
     ],
-    "description": "High-quality books from Pearson. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Pearson",
+    "description": "High-quality books from Penguin. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Penguin",
     "category": "Books",
-    "price": 996,
-    "countInStock": 34,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 211
+    "price": 1632,
+    "countInStock": 13,
+    "isFeatured": true,
+    "rating": 3.6,
+    "numReviews": 82
   },
   {
-    "name": "Xiaomi Mobiles 980",
+    "name": "Apple Mobiles 79",
     "image": "https://picsum.photos/seed/445/800/800",
     "images": [
       "https://picsum.photos/seed/445/800/800",
@@ -1671,17 +1671,17 @@ const products = [
       "https://picsum.photos/seed/448/800/800",
       "https://picsum.photos/seed/449/800/800"
     ],
-    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Xiaomi",
+    "description": "High-quality mobiles from Apple. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Apple",
     "category": "Mobiles",
-    "price": 97622,
-    "countInStock": 61,
+    "price": 34473,
+    "countInStock": 88,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 989
+    "rating": 3.3,
+    "numReviews": 753
   },
   {
-    "name": "Microsoft Electronics 142",
+    "name": "Acer Electronics 547",
     "image": "https://picsum.photos/seed/450/800/800",
     "images": [
       "https://picsum.photos/seed/450/800/800",
@@ -1690,17 +1690,17 @@ const products = [
       "https://picsum.photos/seed/453/800/800",
       "https://picsum.photos/seed/454/800/800"
     ],
-    "description": "High-quality electronics from Microsoft. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Microsoft",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 55165,
-    "countInStock": 20,
+    "price": 137431,
+    "countInStock": 26,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 6
+    "rating": 3.2,
+    "numReviews": 693
   },
   {
-    "name": "Zara Fashion 987",
+    "name": "Allen Solly Fashion 822",
     "image": "https://picsum.photos/seed/455/800/800",
     "images": [
       "https://picsum.photos/seed/455/800/800",
@@ -1709,17 +1709,17 @@ const products = [
       "https://picsum.photos/seed/458/800/800",
       "https://picsum.photos/seed/459/800/800"
     ],
-    "description": "High-quality fashion from Zara. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Zara",
+    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Allen Solly",
     "category": "Fashion",
-    "price": 1510,
-    "countInStock": 45,
-    "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 7
+    "price": 3018,
+    "countInStock": 28,
+    "isFeatured": true,
+    "rating": 3.5,
+    "numReviews": 402
   },
   {
-    "name": "Godrej Interio Home & Furniture 48",
+    "name": "Urban Ladder Home & Furniture 320",
     "image": "https://picsum.photos/seed/460/800/800",
     "images": [
       "https://picsum.photos/seed/460/800/800",
@@ -1728,17 +1728,17 @@ const products = [
       "https://picsum.photos/seed/463/800/800",
       "https://picsum.photos/seed/464/800/800"
     ],
-    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Godrej Interio",
+    "description": "High-quality home & furniture from Urban Ladder. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Urban Ladder",
     "category": "Home & Furniture",
-    "price": 8251,
-    "countInStock": 61,
+    "price": 29273,
+    "countInStock": 33,
     "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 145
+    "rating": 3.2,
+    "numReviews": 81
   },
   {
-    "name": "Whirlpool Appliances 106",
+    "name": "Havells Appliances 80",
     "image": "https://picsum.photos/seed/465/800/800",
     "images": [
       "https://picsum.photos/seed/465/800/800",
@@ -1747,17 +1747,17 @@ const products = [
       "https://picsum.photos/seed/468/800/800",
       "https://picsum.photos/seed/469/800/800"
     ],
-    "description": "High-quality appliances from Whirlpool. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Whirlpool",
+    "description": "High-quality appliances from Havells. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Havells",
     "category": "Appliances",
-    "price": 21965,
-    "countInStock": 26,
-    "isFeatured": true,
-    "rating": 4.6,
-    "numReviews": 252
+    "price": 36879,
+    "countInStock": 32,
+    "isFeatured": false,
+    "rating": 4.1,
+    "numReviews": 888
   },
   {
-    "name": "Dabur Grocery 427",
+    "name": "Organic India Grocery 859",
     "image": "https://picsum.photos/seed/470/800/800",
     "images": [
       "https://picsum.photos/seed/470/800/800",
@@ -1766,17 +1766,17 @@ const products = [
       "https://picsum.photos/seed/473/800/800",
       "https://picsum.photos/seed/474/800/800"
     ],
-    "description": "High-quality grocery from Dabur. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Dabur",
+    "description": "High-quality grocery from Organic India. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Organic India",
     "category": "Grocery",
-    "price": 3298,
-    "countInStock": 66,
-    "isFeatured": false,
-    "rating": 3,
-    "numReviews": 407
+    "price": 4721,
+    "countInStock": 36,
+    "isFeatured": true,
+    "rating": 3.6,
+    "numReviews": 801
   },
   {
-    "name": "Mamaearth Beauty 899",
+    "name": "Neutrogena Beauty 420",
     "image": "https://picsum.photos/seed/475/800/800",
     "images": [
       "https://picsum.photos/seed/475/800/800",
@@ -1785,17 +1785,17 @@ const products = [
       "https://picsum.photos/seed/478/800/800",
       "https://picsum.photos/seed/479/800/800"
     ],
-    "description": "High-quality beauty from Mamaearth. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Mamaearth",
+    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Neutrogena",
     "category": "Beauty",
-    "price": 4911,
-    "countInStock": 21,
+    "price": 3795,
+    "countInStock": 56,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 148
+    "rating": 4.9,
+    "numReviews": 178
   },
   {
-    "name": "Garmin Wearables 722",
+    "name": "Samsung Wearables 833",
     "image": "https://picsum.photos/seed/480/800/800",
     "images": [
       "https://picsum.photos/seed/480/800/800",
@@ -1804,17 +1804,17 @@ const products = [
       "https://picsum.photos/seed/483/800/800",
       "https://picsum.photos/seed/484/800/800"
     ],
-    "description": "High-quality wearables from Garmin. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Garmin",
+    "description": "High-quality wearables from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Wearables",
-    "price": 20709,
-    "countInStock": 76,
-    "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 650
+    "price": 15921,
+    "countInStock": 22,
+    "isFeatured": true,
+    "rating": 4.4,
+    "numReviews": 206
   },
   {
-    "name": "Wildcraft Travel 996",
+    "name": "Wildcraft Travel 500",
     "image": "https://picsum.photos/seed/485/800/800",
     "images": [
       "https://picsum.photos/seed/485/800/800",
@@ -1826,14 +1826,14 @@ const products = [
     "description": "High-quality travel from Wildcraft. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Wildcraft",
     "category": "Travel",
-    "price": 15163,
-    "countInStock": 95,
+    "price": 20590,
+    "countInStock": 13,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 282
+    "rating": 4.3,
+    "numReviews": 285
   },
   {
-    "name": "Spalding Sports 704",
+    "name": "Cosco Sports 240",
     "image": "https://picsum.photos/seed/490/800/800",
     "images": [
       "https://picsum.photos/seed/490/800/800",
@@ -1842,17 +1842,17 @@ const products = [
       "https://picsum.photos/seed/493/800/800",
       "https://picsum.photos/seed/494/800/800"
     ],
-    "description": "High-quality sports from Spalding. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Spalding",
+    "description": "High-quality sports from Cosco. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Cosco",
     "category": "Sports",
-    "price": 6414,
-    "countInStock": 94,
+    "price": 12867,
+    "countInStock": 40,
     "isFeatured": false,
     "rating": 4.3,
-    "numReviews": 874
+    "numReviews": 310
   },
   {
-    "name": "Scholastic Books 41",
+    "name": "Rupa Books 595",
     "image": "https://picsum.photos/seed/495/800/800",
     "images": [
       "https://picsum.photos/seed/495/800/800",
@@ -1861,17 +1861,17 @@ const products = [
       "https://picsum.photos/seed/498/800/800",
       "https://picsum.photos/seed/499/800/800"
     ],
-    "description": "High-quality books from Scholastic. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Scholastic",
+    "description": "High-quality books from Rupa. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Rupa",
     "category": "Books",
-    "price": 1549,
-    "countInStock": 28,
+    "price": 883,
+    "countInStock": 68,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 356
+    "rating": 4.5,
+    "numReviews": 295
   },
   {
-    "name": "Xiaomi Mobiles 199",
+    "name": "Xiaomi Mobiles 956",
     "image": "https://picsum.photos/seed/500/800/800",
     "images": [
       "https://picsum.photos/seed/500/800/800",
@@ -1880,17 +1880,17 @@ const products = [
       "https://picsum.photos/seed/503/800/800",
       "https://picsum.photos/seed/504/800/800"
     ],
-    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Xiaomi",
     "category": "Mobiles",
-    "price": 90166,
-    "countInStock": 97,
+    "price": 85921,
+    "countInStock": 93,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 492
+    "rating": 3.4,
+    "numReviews": 516
   },
   {
-    "name": "Asus Electronics 117",
+    "name": "LG Electronics 211",
     "image": "https://picsum.photos/seed/505/800/800",
     "images": [
       "https://picsum.photos/seed/505/800/800",
@@ -1899,17 +1899,17 @@ const products = [
       "https://picsum.photos/seed/508/800/800",
       "https://picsum.photos/seed/509/800/800"
     ],
-    "description": "High-quality electronics from Asus. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Asus",
+    "description": "High-quality electronics from LG. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "LG",
     "category": "Electronics",
-    "price": 139989,
-    "countInStock": 36,
+    "price": 137261,
+    "countInStock": 49,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 635
+    "rating": 4.8,
+    "numReviews": 594
   },
   {
-    "name": "Zara Fashion 892",
+    "name": "H&M Fashion 49",
     "image": "https://picsum.photos/seed/510/800/800",
     "images": [
       "https://picsum.photos/seed/510/800/800",
@@ -1918,17 +1918,17 @@ const products = [
       "https://picsum.photos/seed/513/800/800",
       "https://picsum.photos/seed/514/800/800"
     ],
-    "description": "High-quality fashion from Zara. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Zara",
+    "description": "High-quality fashion from H&M. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "H&M",
     "category": "Fashion",
-    "price": 4836,
-    "countInStock": 23,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 748
+    "price": 2135,
+    "countInStock": 29,
+    "isFeatured": true,
+    "rating": 5,
+    "numReviews": 281
   },
   {
-    "name": "Sleepwell Home & Furniture 380",
+    "name": "Duroflex Home & Furniture 548",
     "image": "https://picsum.photos/seed/515/800/800",
     "images": [
       "https://picsum.photos/seed/515/800/800",
@@ -1937,17 +1937,17 @@ const products = [
       "https://picsum.photos/seed/518/800/800",
       "https://picsum.photos/seed/519/800/800"
     ],
-    "description": "High-quality home & furniture from Sleepwell. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Sleepwell",
+    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Duroflex",
     "category": "Home & Furniture",
-    "price": 30628,
-    "countInStock": 95,
+    "price": 44095,
+    "countInStock": 64,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 862
+    "rating": 3.4,
+    "numReviews": 176
   },
   {
-    "name": "Kent Appliances 58",
+    "name": "Daikin Appliances 878",
     "image": "https://picsum.photos/seed/520/800/800",
     "images": [
       "https://picsum.photos/seed/520/800/800",
@@ -1956,17 +1956,17 @@ const products = [
       "https://picsum.photos/seed/523/800/800",
       "https://picsum.photos/seed/524/800/800"
     ],
-    "description": "High-quality appliances from Kent. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Kent",
+    "description": "High-quality appliances from Daikin. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Daikin",
     "category": "Appliances",
-    "price": 35912,
-    "countInStock": 27,
+    "price": 25762,
+    "countInStock": 41,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 789
+    "rating": 3.3,
+    "numReviews": 211
   },
   {
-    "name": "Tata Grocery 258",
+    "name": "Amul Grocery 3",
     "image": "https://picsum.photos/seed/525/800/800",
     "images": [
       "https://picsum.photos/seed/525/800/800",
@@ -1975,17 +1975,17 @@ const products = [
       "https://picsum.photos/seed/528/800/800",
       "https://picsum.photos/seed/529/800/800"
     ],
-    "description": "High-quality grocery from Tata. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Tata",
+    "description": "High-quality grocery from Amul. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Amul",
     "category": "Grocery",
-    "price": 2468,
-    "countInStock": 87,
+    "price": 4497,
+    "countInStock": 21,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 231
+    "rating": 3.5,
+    "numReviews": 346
   },
   {
-    "name": "The Body Shop Beauty 172",
+    "name": "Maybelline Beauty 970",
     "image": "https://picsum.photos/seed/530/800/800",
     "images": [
       "https://picsum.photos/seed/530/800/800",
@@ -1994,17 +1994,17 @@ const products = [
       "https://picsum.photos/seed/533/800/800",
       "https://picsum.photos/seed/534/800/800"
     ],
-    "description": "High-quality beauty from The Body Shop. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "The Body Shop",
+    "description": "High-quality beauty from Maybelline. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Maybelline",
     "category": "Beauty",
-    "price": 2772,
-    "countInStock": 89,
+    "price": 629,
+    "countInStock": 43,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 559
+    "rating": 4,
+    "numReviews": 158
   },
   {
-    "name": "Fitbit Wearables 702",
+    "name": "Samsung Wearables 337",
     "image": "https://picsum.photos/seed/535/800/800",
     "images": [
       "https://picsum.photos/seed/535/800/800",
@@ -2013,17 +2013,17 @@ const products = [
       "https://picsum.photos/seed/538/800/800",
       "https://picsum.photos/seed/539/800/800"
     ],
-    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Fitbit",
+    "description": "High-quality wearables from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Wearables",
-    "price": 4150,
-    "countInStock": 88,
-    "isFeatured": true,
-    "rating": 3.9,
-    "numReviews": 843
+    "price": 20544,
+    "countInStock": 33,
+    "isFeatured": false,
+    "rating": 4.8,
+    "numReviews": 289
   },
   {
-    "name": "Skybags Travel 622",
+    "name": "VIP Travel 728",
     "image": "https://picsum.photos/seed/540/800/800",
     "images": [
       "https://picsum.photos/seed/540/800/800",
@@ -2032,17 +2032,17 @@ const products = [
       "https://picsum.photos/seed/543/800/800",
       "https://picsum.photos/seed/544/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from VIP. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "VIP",
     "category": "Travel",
-    "price": 11379,
-    "countInStock": 53,
+    "price": 2635,
+    "countInStock": 81,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 322
+    "rating": 3.4,
+    "numReviews": 355
   },
   {
-    "name": "Yonex Sports 541",
+    "name": "Powermax Sports 820",
     "image": "https://picsum.photos/seed/545/800/800",
     "images": [
       "https://picsum.photos/seed/545/800/800",
@@ -2051,17 +2051,17 @@ const products = [
       "https://picsum.photos/seed/548/800/800",
       "https://picsum.photos/seed/549/800/800"
     ],
-    "description": "High-quality sports from Yonex. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Yonex",
+    "description": "High-quality sports from Powermax. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Powermax",
     "category": "Sports",
-    "price": 2729,
-    "countInStock": 5,
+    "price": 40113,
+    "countInStock": 55,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 203
+    "rating": 4.1,
+    "numReviews": 414
   },
   {
-    "name": "Scholastic Books 554",
+    "name": "Oxford Books 319",
     "image": "https://picsum.photos/seed/550/800/800",
     "images": [
       "https://picsum.photos/seed/550/800/800",
@@ -2070,17 +2070,17 @@ const products = [
       "https://picsum.photos/seed/553/800/800",
       "https://picsum.photos/seed/554/800/800"
     ],
-    "description": "High-quality books from Scholastic. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Scholastic",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 1883,
-    "countInStock": 38,
+    "price": 497,
+    "countInStock": 17,
     "isFeatured": false,
     "rating": 4.8,
-    "numReviews": 51
+    "numReviews": 498
   },
   {
-    "name": "Oppo Mobiles 868",
+    "name": "Xiaomi Mobiles 54",
     "image": "https://picsum.photos/seed/555/800/800",
     "images": [
       "https://picsum.photos/seed/555/800/800",
@@ -2089,17 +2089,17 @@ const products = [
       "https://picsum.photos/seed/558/800/800",
       "https://picsum.photos/seed/559/800/800"
     ],
-    "description": "High-quality mobiles from Oppo. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Oppo",
+    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Xiaomi",
     "category": "Mobiles",
-    "price": 47508,
-    "countInStock": 49,
+    "price": 84786,
+    "countInStock": 44,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 181
+    "rating": 3.2,
+    "numReviews": 709
   },
   {
-    "name": "Asus Electronics 603",
+    "name": "Acer Electronics 612",
     "image": "https://picsum.photos/seed/560/800/800",
     "images": [
       "https://picsum.photos/seed/560/800/800",
@@ -2108,17 +2108,17 @@ const products = [
       "https://picsum.photos/seed/563/800/800",
       "https://picsum.photos/seed/564/800/800"
     ],
-    "description": "High-quality electronics from Asus. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Asus",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 74757,
-    "countInStock": 18,
+    "price": 127873,
+    "countInStock": 94,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 466
+    "rating": 3.3,
+    "numReviews": 748
   },
   {
-    "name": "Puma Fashion 659",
+    "name": "Levis Fashion 726",
     "image": "https://picsum.photos/seed/565/800/800",
     "images": [
       "https://picsum.photos/seed/565/800/800",
@@ -2127,17 +2127,17 @@ const products = [
       "https://picsum.photos/seed/568/800/800",
       "https://picsum.photos/seed/569/800/800"
     ],
-    "description": "High-quality fashion from Puma. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Puma",
+    "description": "High-quality fashion from Levis. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Levis",
     "category": "Fashion",
-    "price": 5871,
-    "countInStock": 32,
-    "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 481
+    "price": 2483,
+    "countInStock": 28,
+    "isFeatured": true,
+    "rating": 3.7,
+    "numReviews": 577
   },
   {
-    "name": "Pepperfry Home & Furniture 343",
+    "name": "Duroflex Home & Furniture 294",
     "image": "https://picsum.photos/seed/570/800/800",
     "images": [
       "https://picsum.photos/seed/570/800/800",
@@ -2146,17 +2146,17 @@ const products = [
       "https://picsum.photos/seed/573/800/800",
       "https://picsum.photos/seed/574/800/800"
     ],
-    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Pepperfry",
+    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Duroflex",
     "category": "Home & Furniture",
-    "price": 22118,
-    "countInStock": 2,
-    "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 967
+    "price": 45307,
+    "countInStock": 70,
+    "isFeatured": true,
+    "rating": 3.1,
+    "numReviews": 416
   },
   {
-    "name": "Haier Appliances 81",
+    "name": "Prestige Appliances 245",
     "image": "https://picsum.photos/seed/575/800/800",
     "images": [
       "https://picsum.photos/seed/575/800/800",
@@ -2165,17 +2165,17 @@ const products = [
       "https://picsum.photos/seed/578/800/800",
       "https://picsum.photos/seed/579/800/800"
     ],
-    "description": "High-quality appliances from Haier. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Haier",
+    "description": "High-quality appliances from Prestige. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Prestige",
     "category": "Appliances",
-    "price": 13209,
-    "countInStock": 37,
+    "price": 22031,
+    "countInStock": 34,
     "isFeatured": false,
     "rating": 3.5,
-    "numReviews": 1
+    "numReviews": 867
   },
   {
-    "name": "Reliance Grocery 949",
+    "name": "Dabur Grocery 671",
     "image": "https://picsum.photos/seed/580/800/800",
     "images": [
       "https://picsum.photos/seed/580/800/800",
@@ -2184,17 +2184,17 @@ const products = [
       "https://picsum.photos/seed/583/800/800",
       "https://picsum.photos/seed/584/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Dabur. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Dabur",
     "category": "Grocery",
-    "price": 847,
-    "countInStock": 67,
-    "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 423
+    "price": 3138,
+    "countInStock": 79,
+    "isFeatured": true,
+    "rating": 4,
+    "numReviews": 127
   },
   {
-    "name": "Maybelline Beauty 550",
+    "name": "Lakme Beauty 282",
     "image": "https://picsum.photos/seed/585/800/800",
     "images": [
       "https://picsum.photos/seed/585/800/800",
@@ -2203,17 +2203,17 @@ const products = [
       "https://picsum.photos/seed/588/800/800",
       "https://picsum.photos/seed/589/800/800"
     ],
-    "description": "High-quality beauty from Maybelline. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Maybelline",
+    "description": "High-quality beauty from Lakme. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Lakme",
     "category": "Beauty",
-    "price": 525,
-    "countInStock": 6,
+    "price": 419,
+    "countInStock": 86,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 900
+    "rating": 3.7,
+    "numReviews": 73
   },
   {
-    "name": "Fitbit Wearables 210",
+    "name": "Fitbit Wearables 839",
     "image": "https://picsum.photos/seed/590/800/800",
     "images": [
       "https://picsum.photos/seed/590/800/800",
@@ -2222,17 +2222,17 @@ const products = [
       "https://picsum.photos/seed/593/800/800",
       "https://picsum.photos/seed/594/800/800"
     ],
-    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Fitbit",
     "category": "Wearables",
-    "price": 8401,
-    "countInStock": 97,
-    "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 314
+    "price": 21699,
+    "countInStock": 64,
+    "isFeatured": true,
+    "rating": 3.7,
+    "numReviews": 882
   },
   {
-    "name": "Samsonite Travel 641",
+    "name": "VIP Travel 188",
     "image": "https://picsum.photos/seed/595/800/800",
     "images": [
       "https://picsum.photos/seed/595/800/800",
@@ -2241,17 +2241,17 @@ const products = [
       "https://picsum.photos/seed/598/800/800",
       "https://picsum.photos/seed/599/800/800"
     ],
-    "description": "High-quality travel from Samsonite. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Samsonite",
+    "description": "High-quality travel from VIP. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "VIP",
     "category": "Travel",
-    "price": 2465,
-    "countInStock": 42,
+    "price": 2995,
+    "countInStock": 92,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 314
+    "rating": 4,
+    "numReviews": 305
   },
   {
-    "name": "Decathlon Sports 794",
+    "name": "Decathlon Sports 928",
     "image": "https://picsum.photos/seed/600/800/800",
     "images": [
       "https://picsum.photos/seed/600/800/800",
@@ -2263,14 +2263,14 @@ const products = [
     "description": "High-quality sports from Decathlon. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "Decathlon",
     "category": "Sports",
-    "price": 14807,
-    "countInStock": 89,
+    "price": 3587,
+    "countInStock": 54,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 115
+    "rating": 3.2,
+    "numReviews": 26
   },
   {
-    "name": "Rupa Books 466",
+    "name": "Scholastic Books 990",
     "image": "https://picsum.photos/seed/605/800/800",
     "images": [
       "https://picsum.photos/seed/605/800/800",
@@ -2279,17 +2279,17 @@ const products = [
       "https://picsum.photos/seed/608/800/800",
       "https://picsum.photos/seed/609/800/800"
     ],
-    "description": "High-quality books from Rupa. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Rupa",
+    "description": "High-quality books from Scholastic. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Scholastic",
     "category": "Books",
-    "price": 1086,
-    "countInStock": 60,
+    "price": 439,
+    "countInStock": 30,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 918
+    "rating": 4.5,
+    "numReviews": 166
   },
   {
-    "name": "Nothing Mobiles 129",
+    "name": "Samsung Mobiles 708",
     "image": "https://picsum.photos/seed/610/800/800",
     "images": [
       "https://picsum.photos/seed/610/800/800",
@@ -2298,17 +2298,17 @@ const products = [
       "https://picsum.photos/seed/613/800/800",
       "https://picsum.photos/seed/614/800/800"
     ],
-    "description": "High-quality mobiles from Nothing. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Nothing",
+    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Mobiles",
-    "price": 58635,
-    "countInStock": 41,
+    "price": 82543,
+    "countInStock": 50,
     "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 416
+    "rating": 4.2,
+    "numReviews": 865
   },
   {
-    "name": "LG Electronics 481",
+    "name": "HP Electronics 854",
     "image": "https://picsum.photos/seed/615/800/800",
     "images": [
       "https://picsum.photos/seed/615/800/800",
@@ -2317,17 +2317,17 @@ const products = [
       "https://picsum.photos/seed/618/800/800",
       "https://picsum.photos/seed/619/800/800"
     ],
-    "description": "High-quality electronics from LG. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "LG",
+    "description": "High-quality electronics from HP. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "HP",
     "category": "Electronics",
-    "price": 99826,
-    "countInStock": 19,
+    "price": 108492,
+    "countInStock": 1,
     "isFeatured": false,
     "rating": 3.5,
-    "numReviews": 55
+    "numReviews": 542
   },
   {
-    "name": "Nike Fashion 961",
+    "name": "Puma Fashion 950",
     "image": "https://picsum.photos/seed/620/800/800",
     "images": [
       "https://picsum.photos/seed/620/800/800",
@@ -2336,17 +2336,17 @@ const products = [
       "https://picsum.photos/seed/623/800/800",
       "https://picsum.photos/seed/624/800/800"
     ],
-    "description": "High-quality fashion from Nike. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Nike",
+    "description": "High-quality fashion from Puma. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Puma",
     "category": "Fashion",
-    "price": 10276,
-    "countInStock": 30,
-    "isFeatured": true,
-    "rating": 3.3,
-    "numReviews": 434
+    "price": 9201,
+    "countInStock": 50,
+    "isFeatured": false,
+    "rating": 5,
+    "numReviews": 38
   },
   {
-    "name": "IKEA Home & Furniture 735",
+    "name": "Sleepwell Home & Furniture 734",
     "image": "https://picsum.photos/seed/625/800/800",
     "images": [
       "https://picsum.photos/seed/625/800/800",
@@ -2355,17 +2355,17 @@ const products = [
       "https://picsum.photos/seed/628/800/800",
       "https://picsum.photos/seed/629/800/800"
     ],
-    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "IKEA",
+    "description": "High-quality home & furniture from Sleepwell. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Sleepwell",
     "category": "Home & Furniture",
-    "price": 4892,
-    "countInStock": 11,
+    "price": 28740,
+    "countInStock": 4,
     "isFeatured": false,
     "rating": 3.8,
-    "numReviews": 842
+    "numReviews": 731
   },
   {
-    "name": "LG Appliances 567",
+    "name": "Bajaj Appliances 64",
     "image": "https://picsum.photos/seed/630/800/800",
     "images": [
       "https://picsum.photos/seed/630/800/800",
@@ -2374,17 +2374,17 @@ const products = [
       "https://picsum.photos/seed/633/800/800",
       "https://picsum.photos/seed/634/800/800"
     ],
-    "description": "High-quality appliances from LG. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "LG",
+    "description": "High-quality appliances from Bajaj. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Bajaj",
     "category": "Appliances",
-    "price": 40361,
-    "countInStock": 97,
+    "price": 15109,
+    "countInStock": 68,
     "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 468
+    "rating": 4.7,
+    "numReviews": 728
   },
   {
-    "name": "Nestle Grocery 807",
+    "name": "Nestle Grocery 360",
     "image": "https://picsum.photos/seed/635/800/800",
     "images": [
       "https://picsum.photos/seed/635/800/800",
@@ -2393,17 +2393,17 @@ const products = [
       "https://picsum.photos/seed/638/800/800",
       "https://picsum.photos/seed/639/800/800"
     ],
-    "description": "High-quality grocery from Nestle. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality grocery from Nestle. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "Nestle",
     "category": "Grocery",
-    "price": 1499,
-    "countInStock": 12,
+    "price": 4359,
+    "countInStock": 57,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 379
+    "rating": 3.1,
+    "numReviews": 230
   },
   {
-    "name": "Mamaearth Beauty 353",
+    "name": "Estee Lauder Beauty 908",
     "image": "https://picsum.photos/seed/640/800/800",
     "images": [
       "https://picsum.photos/seed/640/800/800",
@@ -2412,17 +2412,17 @@ const products = [
       "https://picsum.photos/seed/643/800/800",
       "https://picsum.photos/seed/644/800/800"
     ],
-    "description": "High-quality beauty from Mamaearth. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Mamaearth",
+    "description": "High-quality beauty from Estee Lauder. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Estee Lauder",
     "category": "Beauty",
-    "price": 4313,
-    "countInStock": 89,
+    "price": 4205,
+    "countInStock": 95,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 113
+    "rating": 3.7,
+    "numReviews": 276
   },
   {
-    "name": "Fossil Wearables 194",
+    "name": "boAt Wearables 8",
     "image": "https://picsum.photos/seed/645/800/800",
     "images": [
       "https://picsum.photos/seed/645/800/800",
@@ -2431,17 +2431,17 @@ const products = [
       "https://picsum.photos/seed/648/800/800",
       "https://picsum.photos/seed/649/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Fossil",
+    "description": "High-quality wearables from boAt. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "boAt",
     "category": "Wearables",
-    "price": 6917,
-    "countInStock": 6,
-    "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 742
+    "price": 29555,
+    "countInStock": 81,
+    "isFeatured": true,
+    "rating": 3.6,
+    "numReviews": 723
   },
   {
-    "name": "Skybags Travel 321",
+    "name": "Mocobara Travel 233",
     "image": "https://picsum.photos/seed/650/800/800",
     "images": [
       "https://picsum.photos/seed/650/800/800",
@@ -2450,17 +2450,17 @@ const products = [
       "https://picsum.photos/seed/653/800/800",
       "https://picsum.photos/seed/654/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from Mocobara. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Mocobara",
     "category": "Travel",
-    "price": 14016,
-    "countInStock": 18,
+    "price": 3764,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 3,
-    "numReviews": 630
+    "rating": 3.1,
+    "numReviews": 191
   },
   {
-    "name": "Nivea Sports 466",
+    "name": "Decathlon Sports 870",
     "image": "https://picsum.photos/seed/655/800/800",
     "images": [
       "https://picsum.photos/seed/655/800/800",
@@ -2469,17 +2469,17 @@ const products = [
       "https://picsum.photos/seed/658/800/800",
       "https://picsum.photos/seed/659/800/800"
     ],
-    "description": "High-quality sports from Nivea. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Nivea",
+    "description": "High-quality sports from Decathlon. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Decathlon",
     "category": "Sports",
-    "price": 3523,
-    "countInStock": 73,
+    "price": 37953,
+    "countInStock": 76,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 749
+    "rating": 4.4,
+    "numReviews": 828
   },
   {
-    "name": "Scholastic Books 827",
+    "name": "Oxford Books 277",
     "image": "https://picsum.photos/seed/660/800/800",
     "images": [
       "https://picsum.photos/seed/660/800/800",
@@ -2488,17 +2488,17 @@ const products = [
       "https://picsum.photos/seed/663/800/800",
       "https://picsum.photos/seed/664/800/800"
     ],
-    "description": "High-quality books from Scholastic. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Scholastic",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 832,
-    "countInStock": 58,
+    "price": 2012,
+    "countInStock": 66,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 647
+    "rating": 4.9,
+    "numReviews": 181
   },
   {
-    "name": "Motorola Mobiles 197",
+    "name": "Samsung Mobiles 606",
     "image": "https://picsum.photos/seed/665/800/800",
     "images": [
       "https://picsum.photos/seed/665/800/800",
@@ -2507,17 +2507,17 @@ const products = [
       "https://picsum.photos/seed/668/800/800",
       "https://picsum.photos/seed/669/800/800"
     ],
-    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Motorola",
+    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Mobiles",
-    "price": 47805,
-    "countInStock": 81,
-    "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 412
+    "price": 119116,
+    "countInStock": 78,
+    "isFeatured": true,
+    "rating": 4.3,
+    "numReviews": 67
   },
   {
-    "name": "Acer Electronics 702",
+    "name": "Acer Electronics 955",
     "image": "https://picsum.photos/seed/670/800/800",
     "images": [
       "https://picsum.photos/seed/670/800/800",
@@ -2526,17 +2526,17 @@ const products = [
       "https://picsum.photos/seed/673/800/800",
       "https://picsum.photos/seed/674/800/800"
     ],
-    "description": "High-quality electronics from Acer. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Acer",
     "category": "Electronics",
-    "price": 94635,
-    "countInStock": 80,
-    "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 66
+    "price": 24791,
+    "countInStock": 93,
+    "isFeatured": true,
+    "rating": 3.8,
+    "numReviews": 673
   },
   {
-    "name": "Zara Fashion 558",
+    "name": "H&M Fashion 651",
     "image": "https://picsum.photos/seed/675/800/800",
     "images": [
       "https://picsum.photos/seed/675/800/800",
@@ -2545,17 +2545,17 @@ const products = [
       "https://picsum.photos/seed/678/800/800",
       "https://picsum.photos/seed/679/800/800"
     ],
-    "description": "High-quality fashion from Zara. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Zara",
+    "description": "High-quality fashion from H&M. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "H&M",
     "category": "Fashion",
-    "price": 747,
-    "countInStock": 98,
+    "price": 9260,
+    "countInStock": 73,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 294
+    "rating": 3.4,
+    "numReviews": 879
   },
   {
-    "name": "Pepperfry Home & Furniture 729",
+    "name": "Home Centre Home & Furniture 916",
     "image": "https://picsum.photos/seed/680/800/800",
     "images": [
       "https://picsum.photos/seed/680/800/800",
@@ -2564,17 +2564,17 @@ const products = [
       "https://picsum.photos/seed/683/800/800",
       "https://picsum.photos/seed/684/800/800"
     ],
-    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Pepperfry",
+    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Home Centre",
     "category": "Home & Furniture",
-    "price": 41946,
-    "countInStock": 22,
-    "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 392
+    "price": 41676,
+    "countInStock": 75,
+    "isFeatured": true,
+    "rating": 3.4,
+    "numReviews": 80
   },
   {
-    "name": "LG Appliances 203",
+    "name": "LG Appliances 265",
     "image": "https://picsum.photos/seed/685/800/800",
     "images": [
       "https://picsum.photos/seed/685/800/800",
@@ -2586,14 +2586,14 @@ const products = [
     "description": "High-quality appliances from LG. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "LG",
     "category": "Appliances",
-    "price": 13242,
-    "countInStock": 29,
+    "price": 39716,
+    "countInStock": 70,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 693
+    "rating": 4,
+    "numReviews": 777
   },
   {
-    "name": "Hindustan Unilever Grocery 602",
+    "name": "Dabur Grocery 603",
     "image": "https://picsum.photos/seed/690/800/800",
     "images": [
       "https://picsum.photos/seed/690/800/800",
@@ -2602,17 +2602,17 @@ const products = [
       "https://picsum.photos/seed/693/800/800",
       "https://picsum.photos/seed/694/800/800"
     ],
-    "description": "High-quality grocery from Hindustan Unilever. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Hindustan Unilever",
+    "description": "High-quality grocery from Dabur. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Dabur",
     "category": "Grocery",
-    "price": 1896,
-    "countInStock": 58,
-    "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 184
+    "price": 2545,
+    "countInStock": 81,
+    "isFeatured": true,
+    "rating": 3.9,
+    "numReviews": 709
   },
   {
-    "name": "Clinique Beauty 354",
+    "name": "Maybelline Beauty 294",
     "image": "https://picsum.photos/seed/695/800/800",
     "images": [
       "https://picsum.photos/seed/695/800/800",
@@ -2621,17 +2621,17 @@ const products = [
       "https://picsum.photos/seed/698/800/800",
       "https://picsum.photos/seed/699/800/800"
     ],
-    "description": "High-quality beauty from Clinique. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Clinique",
+    "description": "High-quality beauty from Maybelline. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Maybelline",
     "category": "Beauty",
-    "price": 3113,
-    "countInStock": 54,
+    "price": 4425,
+    "countInStock": 30,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 478
+    "rating": 3.4,
+    "numReviews": 220
   },
   {
-    "name": "Samsung Wearables 325",
+    "name": "Fitbit Wearables 651",
     "image": "https://picsum.photos/seed/700/800/800",
     "images": [
       "https://picsum.photos/seed/700/800/800",
@@ -2640,17 +2640,17 @@ const products = [
       "https://picsum.photos/seed/703/800/800",
       "https://picsum.photos/seed/704/800/800"
     ],
-    "description": "High-quality wearables from Samsung. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Fitbit",
     "category": "Wearables",
-    "price": 9330,
-    "countInStock": 31,
-    "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 417
+    "price": 13393,
+    "countInStock": 82,
+    "isFeatured": true,
+    "rating": 3.4,
+    "numReviews": 634
   },
   {
-    "name": "Mocobara Travel 363",
+    "name": "American Tourister Travel 286",
     "image": "https://picsum.photos/seed/705/800/800",
     "images": [
       "https://picsum.photos/seed/705/800/800",
@@ -2659,17 +2659,17 @@ const products = [
       "https://picsum.photos/seed/708/800/800",
       "https://picsum.photos/seed/709/800/800"
     ],
-    "description": "High-quality travel from Mocobara. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Mocobara",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 15257,
-    "countInStock": 67,
+    "price": 4441,
+    "countInStock": 70,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 322
+    "rating": 3.7,
+    "numReviews": 158
   },
   {
-    "name": "Decathlon Sports 181",
+    "name": "Wilson Sports 925",
     "image": "https://picsum.photos/seed/710/800/800",
     "images": [
       "https://picsum.photos/seed/710/800/800",
@@ -2678,17 +2678,17 @@ const products = [
       "https://picsum.photos/seed/713/800/800",
       "https://picsum.photos/seed/714/800/800"
     ],
-    "description": "High-quality sports from Decathlon. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Decathlon",
+    "description": "High-quality sports from Wilson. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Wilson",
     "category": "Sports",
-    "price": 28530,
-    "countInStock": 91,
-    "isFeatured": true,
-    "rating": 3.3,
-    "numReviews": 379
+    "price": 10474,
+    "countInStock": 54,
+    "isFeatured": false,
+    "rating": 4.2,
+    "numReviews": 608
   },
   {
-    "name": "HarperCollins Books 238",
+    "name": "Penguin Books 103",
     "image": "https://picsum.photos/seed/715/800/800",
     "images": [
       "https://picsum.photos/seed/715/800/800",
@@ -2697,17 +2697,17 @@ const products = [
       "https://picsum.photos/seed/718/800/800",
       "https://picsum.photos/seed/719/800/800"
     ],
-    "description": "High-quality books from HarperCollins. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "HarperCollins",
+    "description": "High-quality books from Penguin. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Penguin",
     "category": "Books",
-    "price": 934,
-    "countInStock": 43,
+    "price": 2031,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 540
+    "rating": 3.6,
+    "numReviews": 501
   },
   {
-    "name": "Samsung Mobiles 854",
+    "name": "Realme Mobiles 691",
     "image": "https://picsum.photos/seed/720/800/800",
     "images": [
       "https://picsum.photos/seed/720/800/800",
@@ -2716,17 +2716,17 @@ const products = [
       "https://picsum.photos/seed/723/800/800",
       "https://picsum.photos/seed/724/800/800"
     ],
-    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality mobiles from Realme. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Realme",
     "category": "Mobiles",
-    "price": 65432,
-    "countInStock": 24,
-    "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 642
+    "price": 37354,
+    "countInStock": 68,
+    "isFeatured": true,
+    "rating": 4.7,
+    "numReviews": 224
   },
   {
-    "name": "Razer Electronics 486",
+    "name": "Sony Electronics 433",
     "image": "https://picsum.photos/seed/725/800/800",
     "images": [
       "https://picsum.photos/seed/725/800/800",
@@ -2735,17 +2735,17 @@ const products = [
       "https://picsum.photos/seed/728/800/800",
       "https://picsum.photos/seed/729/800/800"
     ],
-    "description": "High-quality electronics from Razer. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Razer",
+    "description": "High-quality electronics from Sony. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Sony",
     "category": "Electronics",
-    "price": 113850,
-    "countInStock": 60,
+    "price": 20630,
+    "countInStock": 65,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 71
+    "rating": 4,
+    "numReviews": 240
   },
   {
-    "name": "FabIndia Fashion 374",
+    "name": "Allen Solly Fashion 995",
     "image": "https://picsum.photos/seed/730/800/800",
     "images": [
       "https://picsum.photos/seed/730/800/800",
@@ -2754,17 +2754,17 @@ const products = [
       "https://picsum.photos/seed/733/800/800",
       "https://picsum.photos/seed/734/800/800"
     ],
-    "description": "High-quality fashion from FabIndia. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "FabIndia",
+    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Allen Solly",
     "category": "Fashion",
-    "price": 5143,
-    "countInStock": 84,
+    "price": 3284,
+    "countInStock": 45,
     "isFeatured": false,
-    "rating": 4.6,
-    "numReviews": 740
+    "rating": 4.1,
+    "numReviews": 697
   },
   {
-    "name": "IKEA Home & Furniture 845",
+    "name": "Home Centre Home & Furniture 734",
     "image": "https://picsum.photos/seed/735/800/800",
     "images": [
       "https://picsum.photos/seed/735/800/800",
@@ -2773,17 +2773,17 @@ const products = [
       "https://picsum.photos/seed/738/800/800",
       "https://picsum.photos/seed/739/800/800"
     ],
-    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "IKEA",
+    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Home Centre",
     "category": "Home & Furniture",
-    "price": 50074,
-    "countInStock": 77,
+    "price": 13666,
+    "countInStock": 96,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 936
+    "rating": 4.5,
+    "numReviews": 457
   },
   {
-    "name": "Bajaj Appliances 830",
+    "name": "Havells Appliances 728",
     "image": "https://picsum.photos/seed/740/800/800",
     "images": [
       "https://picsum.photos/seed/740/800/800",
@@ -2792,17 +2792,17 @@ const products = [
       "https://picsum.photos/seed/743/800/800",
       "https://picsum.photos/seed/744/800/800"
     ],
-    "description": "High-quality appliances from Bajaj. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Bajaj",
+    "description": "High-quality appliances from Havells. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Havells",
     "category": "Appliances",
-    "price": 33140,
-    "countInStock": 18,
-    "isFeatured": true,
-    "rating": 3.4,
-    "numReviews": 103
+    "price": 29617,
+    "countInStock": 66,
+    "isFeatured": false,
+    "rating": 3.9,
+    "numReviews": 913
   },
   {
-    "name": "Britannia Grocery 970",
+    "name": "Amul Grocery 83",
     "image": "https://picsum.photos/seed/745/800/800",
     "images": [
       "https://picsum.photos/seed/745/800/800",
@@ -2811,17 +2811,17 @@ const products = [
       "https://picsum.photos/seed/748/800/800",
       "https://picsum.photos/seed/749/800/800"
     ],
-    "description": "High-quality grocery from Britannia. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Britannia",
+    "description": "High-quality grocery from Amul. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Amul",
     "category": "Grocery",
-    "price": 3077,
-    "countInStock": 83,
+    "price": 1207,
+    "countInStock": 70,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 381
+    "rating": 4.9,
+    "numReviews": 721
   },
   {
-    "name": "Lakme Beauty 745",
+    "name": "Mamaearth Beauty 669",
     "image": "https://picsum.photos/seed/750/800/800",
     "images": [
       "https://picsum.photos/seed/750/800/800",
@@ -2830,17 +2830,17 @@ const products = [
       "https://picsum.photos/seed/753/800/800",
       "https://picsum.photos/seed/754/800/800"
     ],
-    "description": "High-quality beauty from Lakme. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Lakme",
+    "description": "High-quality beauty from Mamaearth. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Mamaearth",
     "category": "Beauty",
-    "price": 2048,
-    "countInStock": 14,
+    "price": 2237,
+    "countInStock": 9,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 810
+    "rating": 3.7,
+    "numReviews": 316
   },
   {
-    "name": "boAt Wearables 164",
+    "name": "boAt Wearables 472",
     "image": "https://picsum.photos/seed/755/800/800",
     "images": [
       "https://picsum.photos/seed/755/800/800",
@@ -2849,17 +2849,17 @@ const products = [
       "https://picsum.photos/seed/758/800/800",
       "https://picsum.photos/seed/759/800/800"
     ],
-    "description": "High-quality wearables from boAt. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality wearables from boAt. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "boAt",
     "category": "Wearables",
-    "price": 3959,
-    "countInStock": 78,
+    "price": 6093,
+    "countInStock": 48,
     "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 283
+    "rating": 3.2,
+    "numReviews": 750
   },
   {
-    "name": "Samsonite Travel 376",
+    "name": "Samsonite Travel 418",
     "image": "https://picsum.photos/seed/760/800/800",
     "images": [
       "https://picsum.photos/seed/760/800/800",
@@ -2868,17 +2868,17 @@ const products = [
       "https://picsum.photos/seed/763/800/800",
       "https://picsum.photos/seed/764/800/800"
     ],
-    "description": "High-quality travel from Samsonite. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality travel from Samsonite. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Samsonite",
     "category": "Travel",
-    "price": 9377,
-    "countInStock": 1,
+    "price": 18242,
+    "countInStock": 39,
     "isFeatured": false,
     "rating": 4.3,
-    "numReviews": 69
+    "numReviews": 856
   },
   {
-    "name": "Yonex Sports 87",
+    "name": "Decathlon Sports 749",
     "image": "https://picsum.photos/seed/765/800/800",
     "images": [
       "https://picsum.photos/seed/765/800/800",
@@ -2887,17 +2887,17 @@ const products = [
       "https://picsum.photos/seed/768/800/800",
       "https://picsum.photos/seed/769/800/800"
     ],
-    "description": "High-quality sports from Yonex. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Yonex",
+    "description": "High-quality sports from Decathlon. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Decathlon",
     "category": "Sports",
-    "price": 21753,
-    "countInStock": 32,
+    "price": 5198,
+    "countInStock": 23,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 685
+    "rating": 3.2,
+    "numReviews": 988
   },
   {
-    "name": "HarperCollins Books 901",
+    "name": "Rupa Books 595",
     "image": "https://picsum.photos/seed/770/800/800",
     "images": [
       "https://picsum.photos/seed/770/800/800",
@@ -2906,17 +2906,17 @@ const products = [
       "https://picsum.photos/seed/773/800/800",
       "https://picsum.photos/seed/774/800/800"
     ],
-    "description": "High-quality books from HarperCollins. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "HarperCollins",
+    "description": "High-quality books from Rupa. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Rupa",
     "category": "Books",
-    "price": 451,
-    "countInStock": 34,
-    "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 406
+    "price": 1108,
+    "countInStock": 47,
+    "isFeatured": true,
+    "rating": 4.4,
+    "numReviews": 688
   },
   {
-    "name": "Samsung Mobiles 629",
+    "name": "Motorola Mobiles 927",
     "image": "https://picsum.photos/seed/775/800/800",
     "images": [
       "https://picsum.photos/seed/775/800/800",
@@ -2925,17 +2925,17 @@ const products = [
       "https://picsum.photos/seed/778/800/800",
       "https://picsum.photos/seed/779/800/800"
     ],
-    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Motorola",
     "category": "Mobiles",
-    "price": 91073,
-    "countInStock": 28,
+    "price": 103572,
+    "countInStock": 21,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 22
+    "rating": 4.3,
+    "numReviews": 601
   },
   {
-    "name": "MSI Electronics 400",
+    "name": "HP Electronics 801",
     "image": "https://picsum.photos/seed/780/800/800",
     "images": [
       "https://picsum.photos/seed/780/800/800",
@@ -2944,17 +2944,17 @@ const products = [
       "https://picsum.photos/seed/783/800/800",
       "https://picsum.photos/seed/784/800/800"
     ],
-    "description": "High-quality electronics from MSI. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "MSI",
+    "description": "High-quality electronics from HP. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "HP",
     "category": "Electronics",
-    "price": 120886,
-    "countInStock": 79,
+    "price": 30746,
+    "countInStock": 82,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 562
+    "rating": 4,
+    "numReviews": 375
   },
   {
-    "name": "FabIndia Fashion 863",
+    "name": "Zara Fashion 843",
     "image": "https://picsum.photos/seed/785/800/800",
     "images": [
       "https://picsum.photos/seed/785/800/800",
@@ -2963,17 +2963,17 @@ const products = [
       "https://picsum.photos/seed/788/800/800",
       "https://picsum.photos/seed/789/800/800"
     ],
-    "description": "High-quality fashion from FabIndia. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "FabIndia",
+    "description": "High-quality fashion from Zara. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Zara",
     "category": "Fashion",
-    "price": 2439,
-    "countInStock": 25,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 503
+    "price": 5695,
+    "countInStock": 66,
+    "isFeatured": true,
+    "rating": 4.4,
+    "numReviews": 335
   },
   {
-    "name": "Urban Ladder Home & Furniture 145",
+    "name": "Urban Ladder Home & Furniture 911",
     "image": "https://picsum.photos/seed/790/800/800",
     "images": [
       "https://picsum.photos/seed/790/800/800",
@@ -2982,17 +2982,17 @@ const products = [
       "https://picsum.photos/seed/793/800/800",
       "https://picsum.photos/seed/794/800/800"
     ],
-    "description": "High-quality home & furniture from Urban Ladder. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality home & furniture from Urban Ladder. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Urban Ladder",
     "category": "Home & Furniture",
-    "price": 47967,
-    "countInStock": 67,
-    "isFeatured": true,
-    "rating": 3.5,
-    "numReviews": 739
+    "price": 3742,
+    "countInStock": 28,
+    "isFeatured": false,
+    "rating": 4.6,
+    "numReviews": 718
   },
   {
-    "name": "LG Appliances 724",
+    "name": "LG Appliances 821",
     "image": "https://picsum.photos/seed/795/800/800",
     "images": [
       "https://picsum.photos/seed/795/800/800",
@@ -3001,17 +3001,17 @@ const products = [
       "https://picsum.photos/seed/798/800/800",
       "https://picsum.photos/seed/799/800/800"
     ],
-    "description": "High-quality appliances from LG. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality appliances from LG. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "LG",
     "category": "Appliances",
-    "price": 36119,
-    "countInStock": 62,
+    "price": 48646,
+    "countInStock": 46,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 326
+    "rating": 3.7,
+    "numReviews": 406
   },
   {
-    "name": "Dabur Grocery 778",
+    "name": "Organic India Grocery 96",
     "image": "https://picsum.photos/seed/800/800/800",
     "images": [
       "https://picsum.photos/seed/800/800/800",
@@ -3020,17 +3020,17 @@ const products = [
       "https://picsum.photos/seed/803/800/800",
       "https://picsum.photos/seed/804/800/800"
     ],
-    "description": "High-quality grocery from Dabur. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Dabur",
+    "description": "High-quality grocery from Organic India. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Organic India",
     "category": "Grocery",
-    "price": 4447,
-    "countInStock": 5,
-    "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 229
+    "price": 4231,
+    "countInStock": 9,
+    "isFeatured": true,
+    "rating": 3.3,
+    "numReviews": 337
   },
   {
-    "name": "Neutrogena Beauty 488",
+    "name": "L Oreoal Beauty 276",
     "image": "https://picsum.photos/seed/805/800/800",
     "images": [
       "https://picsum.photos/seed/805/800/800",
@@ -3039,17 +3039,17 @@ const products = [
       "https://picsum.photos/seed/808/800/800",
       "https://picsum.photos/seed/809/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Neutrogena",
+    "description": "High-quality beauty from L Oreoal. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "L Oreoal",
     "category": "Beauty",
-    "price": 1295,
-    "countInStock": 45,
-    "isFeatured": true,
-    "rating": 4.2,
-    "numReviews": 383
+    "price": 2972,
+    "countInStock": 85,
+    "isFeatured": false,
+    "rating": 3.3,
+    "numReviews": 508
   },
   {
-    "name": "Samsung Wearables 997",
+    "name": "Apple Wearables 49",
     "image": "https://picsum.photos/seed/810/800/800",
     "images": [
       "https://picsum.photos/seed/810/800/800",
@@ -3058,17 +3058,17 @@ const products = [
       "https://picsum.photos/seed/813/800/800",
       "https://picsum.photos/seed/814/800/800"
     ],
-    "description": "High-quality wearables from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality wearables from Apple. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Apple",
     "category": "Wearables",
-    "price": 38336,
-    "countInStock": 71,
+    "price": 25220,
+    "countInStock": 54,
     "isFeatured": false,
-    "rating": 3,
-    "numReviews": 649
+    "rating": 5,
+    "numReviews": 406
   },
   {
-    "name": "Wildcraft Travel 879",
+    "name": "American Tourister Travel 949",
     "image": "https://picsum.photos/seed/815/800/800",
     "images": [
       "https://picsum.photos/seed/815/800/800",
@@ -3077,17 +3077,17 @@ const products = [
       "https://picsum.photos/seed/818/800/800",
       "https://picsum.photos/seed/819/800/800"
     ],
-    "description": "High-quality travel from Wildcraft. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Wildcraft",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 16196,
-    "countInStock": 0,
-    "isFeatured": true,
-    "rating": 4.2,
-    "numReviews": 118
+    "price": 8338,
+    "countInStock": 37,
+    "isFeatured": false,
+    "rating": 3.9,
+    "numReviews": 123
   },
   {
-    "name": "Spalding Sports 800",
+    "name": "Wilson Sports 619",
     "image": "https://picsum.photos/seed/820/800/800",
     "images": [
       "https://picsum.photos/seed/820/800/800",
@@ -3096,17 +3096,17 @@ const products = [
       "https://picsum.photos/seed/823/800/800",
       "https://picsum.photos/seed/824/800/800"
     ],
-    "description": "High-quality sports from Spalding. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Spalding",
+    "description": "High-quality sports from Wilson. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Wilson",
     "category": "Sports",
-    "price": 38560,
-    "countInStock": 81,
+    "price": 27029,
+    "countInStock": 66,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 154
+    "rating": 4.1,
+    "numReviews": 964
   },
   {
-    "name": "Pearson Books 974",
+    "name": "Oxford Books 932",
     "image": "https://picsum.photos/seed/825/800/800",
     "images": [
       "https://picsum.photos/seed/825/800/800",
@@ -3115,17 +3115,17 @@ const products = [
       "https://picsum.photos/seed/828/800/800",
       "https://picsum.photos/seed/829/800/800"
     ],
-    "description": "High-quality books from Pearson. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Pearson",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 281,
-    "countInStock": 65,
+    "price": 1468,
+    "countInStock": 25,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 404
+    "rating": 4.8,
+    "numReviews": 645
   },
   {
-    "name": "Samsung Mobiles 262",
+    "name": "Vivo Mobiles 656",
     "image": "https://picsum.photos/seed/830/800/800",
     "images": [
       "https://picsum.photos/seed/830/800/800",
@@ -3134,17 +3134,17 @@ const products = [
       "https://picsum.photos/seed/833/800/800",
       "https://picsum.photos/seed/834/800/800"
     ],
-    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality mobiles from Vivo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Vivo",
     "category": "Mobiles",
-    "price": 75056,
-    "countInStock": 14,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 45
+    "price": 95415,
+    "countInStock": 61,
+    "isFeatured": true,
+    "rating": 4.7,
+    "numReviews": 121
   },
   {
-    "name": "Microsoft Electronics 463",
+    "name": "Microsoft Electronics 817",
     "image": "https://picsum.photos/seed/835/800/800",
     "images": [
       "https://picsum.photos/seed/835/800/800",
@@ -3153,17 +3153,17 @@ const products = [
       "https://picsum.photos/seed/838/800/800",
       "https://picsum.photos/seed/839/800/800"
     ],
-    "description": "High-quality electronics from Microsoft. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality electronics from Microsoft. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Microsoft",
     "category": "Electronics",
-    "price": 149259,
-    "countInStock": 18,
-    "isFeatured": true,
-    "rating": 4.7,
-    "numReviews": 42
+    "price": 81480,
+    "countInStock": 69,
+    "isFeatured": false,
+    "rating": 3.6,
+    "numReviews": 634
   },
   {
-    "name": "Adidas Fashion 97",
+    "name": "Puma Fashion 478",
     "image": "https://picsum.photos/seed/840/800/800",
     "images": [
       "https://picsum.photos/seed/840/800/800",
@@ -3172,17 +3172,17 @@ const products = [
       "https://picsum.photos/seed/843/800/800",
       "https://picsum.photos/seed/844/800/800"
     ],
-    "description": "High-quality fashion from Adidas. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Adidas",
+    "description": "High-quality fashion from Puma. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Puma",
     "category": "Fashion",
-    "price": 1656,
-    "countInStock": 60,
+    "price": 10138,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 543
+    "rating": 3.3,
+    "numReviews": 207
   },
   {
-    "name": "Duroflex Home & Furniture 67",
+    "name": "Pepperfry Home & Furniture 202",
     "image": "https://picsum.photos/seed/845/800/800",
     "images": [
       "https://picsum.photos/seed/845/800/800",
@@ -3191,17 +3191,17 @@ const products = [
       "https://picsum.photos/seed/848/800/800",
       "https://picsum.photos/seed/849/800/800"
     ],
-    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Duroflex",
+    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Pepperfry",
     "category": "Home & Furniture",
-    "price": 12072,
-    "countInStock": 2,
+    "price": 44894,
+    "countInStock": 85,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 6
+    "rating": 3,
+    "numReviews": 211
   },
   {
-    "name": "LG Appliances 912",
+    "name": "Kent Appliances 317",
     "image": "https://picsum.photos/seed/850/800/800",
     "images": [
       "https://picsum.photos/seed/850/800/800",
@@ -3210,17 +3210,17 @@ const products = [
       "https://picsum.photos/seed/853/800/800",
       "https://picsum.photos/seed/854/800/800"
     ],
-    "description": "High-quality appliances from LG. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "LG",
+    "description": "High-quality appliances from Kent. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Kent",
     "category": "Appliances",
-    "price": 40124,
-    "countInStock": 79,
+    "price": 27495,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 345
+    "rating": 3.1,
+    "numReviews": 449
   },
   {
-    "name": "Hindustan Unilever Grocery 714",
+    "name": "Tata Grocery 927",
     "image": "https://picsum.photos/seed/855/800/800",
     "images": [
       "https://picsum.photos/seed/855/800/800",
@@ -3229,17 +3229,17 @@ const products = [
       "https://picsum.photos/seed/858/800/800",
       "https://picsum.photos/seed/859/800/800"
     ],
-    "description": "High-quality grocery from Hindustan Unilever. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Hindustan Unilever",
+    "description": "High-quality grocery from Tata. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Tata",
     "category": "Grocery",
-    "price": 4297,
-    "countInStock": 45,
+    "price": 1870,
+    "countInStock": 89,
     "isFeatured": true,
-    "rating": 4.6,
-    "numReviews": 177
+    "rating": 3.4,
+    "numReviews": 747
   },
   {
-    "name": "Neutrogena Beauty 597",
+    "name": "Mamaearth Beauty 783",
     "image": "https://picsum.photos/seed/860/800/800",
     "images": [
       "https://picsum.photos/seed/860/800/800",
@@ -3248,17 +3248,17 @@ const products = [
       "https://picsum.photos/seed/863/800/800",
       "https://picsum.photos/seed/864/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Neutrogena",
+    "description": "High-quality beauty from Mamaearth. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Mamaearth",
     "category": "Beauty",
-    "price": 1910,
-    "countInStock": 42,
+    "price": 540,
+    "countInStock": 16,
     "isFeatured": false,
-    "rating": 4.6,
-    "numReviews": 322
+    "rating": 4.3,
+    "numReviews": 335
   },
   {
-    "name": "Fossil Wearables 5",
+    "name": "Samsung Wearables 87",
     "image": "https://picsum.photos/seed/865/800/800",
     "images": [
       "https://picsum.photos/seed/865/800/800",
@@ -3267,17 +3267,17 @@ const products = [
       "https://picsum.photos/seed/868/800/800",
       "https://picsum.photos/seed/869/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Fossil",
+    "description": "High-quality wearables from Samsung. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Wearables",
-    "price": 11186,
-    "countInStock": 18,
-    "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 613
+    "price": 25130,
+    "countInStock": 76,
+    "isFeatured": true,
+    "rating": 3.3,
+    "numReviews": 796
   },
   {
-    "name": "Wildcraft Travel 156",
+    "name": "Skybags Travel 365",
     "image": "https://picsum.photos/seed/870/800/800",
     "images": [
       "https://picsum.photos/seed/870/800/800",
@@ -3286,17 +3286,17 @@ const products = [
       "https://picsum.photos/seed/873/800/800",
       "https://picsum.photos/seed/874/800/800"
     ],
-    "description": "High-quality travel from Wildcraft. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Wildcraft",
+    "description": "High-quality travel from Skybags. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Skybags",
     "category": "Travel",
-    "price": 13335,
-    "countInStock": 27,
+    "price": 12049,
+    "countInStock": 92,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 912
+    "rating": 3.7,
+    "numReviews": 152
   },
   {
-    "name": "Decathlon Sports 573",
+    "name": "Speedo Sports 524",
     "image": "https://picsum.photos/seed/875/800/800",
     "images": [
       "https://picsum.photos/seed/875/800/800",
@@ -3305,17 +3305,17 @@ const products = [
       "https://picsum.photos/seed/878/800/800",
       "https://picsum.photos/seed/879/800/800"
     ],
-    "description": "High-quality sports from Decathlon. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Decathlon",
+    "description": "High-quality sports from Speedo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Speedo",
     "category": "Sports",
-    "price": 646,
-    "countInStock": 6,
+    "price": 16764,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 931
+    "rating": 4.9,
+    "numReviews": 560
   },
   {
-    "name": "Oxford Books 531",
+    "name": "Pearson Books 251",
     "image": "https://picsum.photos/seed/880/800/800",
     "images": [
       "https://picsum.photos/seed/880/800/800",
@@ -3324,17 +3324,17 @@ const products = [
       "https://picsum.photos/seed/883/800/800",
       "https://picsum.photos/seed/884/800/800"
     ],
-    "description": "High-quality books from Oxford. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Oxford",
+    "description": "High-quality books from Pearson. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Pearson",
     "category": "Books",
-    "price": 973,
-    "countInStock": 24,
+    "price": 424,
+    "countInStock": 57,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 249
+    "rating": 3,
+    "numReviews": 227
   },
   {
-    "name": "Realme Mobiles 685",
+    "name": "Realme Mobiles 727",
     "image": "https://picsum.photos/seed/885/800/800",
     "images": [
       "https://picsum.photos/seed/885/800/800",
@@ -3346,14 +3346,14 @@ const products = [
     "description": "High-quality mobiles from Realme. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Realme",
     "category": "Mobiles",
-    "price": 43185,
-    "countInStock": 43,
+    "price": 65314,
+    "countInStock": 32,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 516
+    "rating": 3.5,
+    "numReviews": 677
   },
   {
-    "name": "MSI Electronics 716",
+    "name": "HP Electronics 779",
     "image": "https://picsum.photos/seed/890/800/800",
     "images": [
       "https://picsum.photos/seed/890/800/800",
@@ -3362,17 +3362,17 @@ const products = [
       "https://picsum.photos/seed/893/800/800",
       "https://picsum.photos/seed/894/800/800"
     ],
-    "description": "High-quality electronics from MSI. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "MSI",
+    "description": "High-quality electronics from HP. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "HP",
     "category": "Electronics",
-    "price": 127957,
-    "countInStock": 4,
+    "price": 104177,
+    "countInStock": 67,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 993
+    "rating": 3.7,
+    "numReviews": 577
   },
   {
-    "name": "Nike Fashion 420",
+    "name": "Adidas Fashion 336",
     "image": "https://picsum.photos/seed/895/800/800",
     "images": [
       "https://picsum.photos/seed/895/800/800",
@@ -3381,17 +3381,17 @@ const products = [
       "https://picsum.photos/seed/898/800/800",
       "https://picsum.photos/seed/899/800/800"
     ],
-    "description": "High-quality fashion from Nike. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Nike",
+    "description": "High-quality fashion from Adidas. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Adidas",
     "category": "Fashion",
-    "price": 2286,
-    "countInStock": 74,
+    "price": 2177,
+    "countInStock": 6,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 502
+    "rating": 3.9,
+    "numReviews": 428
   },
   {
-    "name": "Sleepwell Home & Furniture 533",
+    "name": "IKEA Home & Furniture 401",
     "image": "https://picsum.photos/seed/900/800/800",
     "images": [
       "https://picsum.photos/seed/900/800/800",
@@ -3400,17 +3400,17 @@ const products = [
       "https://picsum.photos/seed/903/800/800",
       "https://picsum.photos/seed/904/800/800"
     ],
-    "description": "High-quality home & furniture from Sleepwell. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Sleepwell",
+    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "IKEA",
     "category": "Home & Furniture",
-    "price": 50542,
+    "price": 5301,
     "countInStock": 32,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 139
+    "rating": 3.6,
+    "numReviews": 261
   },
   {
-    "name": "Haier Appliances 52",
+    "name": "Havells Appliances 441",
     "image": "https://picsum.photos/seed/905/800/800",
     "images": [
       "https://picsum.photos/seed/905/800/800",
@@ -3419,17 +3419,17 @@ const products = [
       "https://picsum.photos/seed/908/800/800",
       "https://picsum.photos/seed/909/800/800"
     ],
-    "description": "High-quality appliances from Haier. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Haier",
+    "description": "High-quality appliances from Havells. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Havells",
     "category": "Appliances",
-    "price": 25893,
-    "countInStock": 79,
+    "price": 31794,
+    "countInStock": 22,
     "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 440
+    "rating": 3.2,
+    "numReviews": 454
   },
   {
-    "name": "Happilo Grocery 955",
+    "name": "Organic India Grocery 771",
     "image": "https://picsum.photos/seed/910/800/800",
     "images": [
       "https://picsum.photos/seed/910/800/800",
@@ -3438,17 +3438,17 @@ const products = [
       "https://picsum.photos/seed/913/800/800",
       "https://picsum.photos/seed/914/800/800"
     ],
-    "description": "High-quality grocery from Happilo. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Happilo",
+    "description": "High-quality grocery from Organic India. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Organic India",
     "category": "Grocery",
-    "price": 2918,
-    "countInStock": 19,
-    "isFeatured": true,
-    "rating": 4.6,
-    "numReviews": 710
+    "price": 2395,
+    "countInStock": 73,
+    "isFeatured": false,
+    "rating": 4.2,
+    "numReviews": 255
   },
   {
-    "name": "MAC Beauty 196",
+    "name": "Clinique Beauty 699",
     "image": "https://picsum.photos/seed/915/800/800",
     "images": [
       "https://picsum.photos/seed/915/800/800",
@@ -3457,17 +3457,17 @@ const products = [
       "https://picsum.photos/seed/918/800/800",
       "https://picsum.photos/seed/919/800/800"
     ],
-    "description": "High-quality beauty from MAC. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "MAC",
+    "description": "High-quality beauty from Clinique. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Clinique",
     "category": "Beauty",
-    "price": 2305,
-    "countInStock": 85,
+    "price": 3584,
+    "countInStock": 20,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 877
+    "rating": 4.3,
+    "numReviews": 538
   },
   {
-    "name": "Noise Wearables 655",
+    "name": "Amazfit Wearables 322",
     "image": "https://picsum.photos/seed/920/800/800",
     "images": [
       "https://picsum.photos/seed/920/800/800",
@@ -3476,17 +3476,17 @@ const products = [
       "https://picsum.photos/seed/923/800/800",
       "https://picsum.photos/seed/924/800/800"
     ],
-    "description": "High-quality wearables from Noise. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Noise",
+    "description": "High-quality wearables from Amazfit. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Amazfit",
     "category": "Wearables",
-    "price": 17495,
-    "countInStock": 46,
+    "price": 18632,
+    "countInStock": 63,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 879
+    "rating": 4.2,
+    "numReviews": 216
   },
   {
-    "name": "Safari Travel 924",
+    "name": "Mocobara Travel 232",
     "image": "https://picsum.photos/seed/925/800/800",
     "images": [
       "https://picsum.photos/seed/925/800/800",
@@ -3495,17 +3495,17 @@ const products = [
       "https://picsum.photos/seed/928/800/800",
       "https://picsum.photos/seed/929/800/800"
     ],
-    "description": "High-quality travel from Safari. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Safari",
+    "description": "High-quality travel from Mocobara. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Mocobara",
     "category": "Travel",
-    "price": 20206,
-    "countInStock": 27,
-    "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 379
+    "price": 6821,
+    "countInStock": 94,
+    "isFeatured": false,
+    "rating": 3.8,
+    "numReviews": 205
   },
   {
-    "name": "Powermax Sports 302",
+    "name": "Powermax Sports 960",
     "image": "https://picsum.photos/seed/930/800/800",
     "images": [
       "https://picsum.photos/seed/930/800/800",
@@ -3514,17 +3514,17 @@ const products = [
       "https://picsum.photos/seed/933/800/800",
       "https://picsum.photos/seed/934/800/800"
     ],
-    "description": "High-quality sports from Powermax. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality sports from Powermax. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Powermax",
     "category": "Sports",
-    "price": 1186,
-    "countInStock": 35,
+    "price": 29550,
+    "countInStock": 95,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 581
+    "rating": 4,
+    "numReviews": 7
   },
   {
-    "name": "Scholastic Books 473",
+    "name": "Westland Books 796",
     "image": "https://picsum.photos/seed/935/800/800",
     "images": [
       "https://picsum.photos/seed/935/800/800",
@@ -3533,17 +3533,17 @@ const products = [
       "https://picsum.photos/seed/938/800/800",
       "https://picsum.photos/seed/939/800/800"
     ],
-    "description": "High-quality books from Scholastic. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Scholastic",
+    "description": "High-quality books from Westland. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Westland",
     "category": "Books",
-    "price": 1316,
-    "countInStock": 36,
+    "price": 382,
+    "countInStock": 9,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 682
+    "rating": 4,
+    "numReviews": 162
   },
   {
-    "name": "Motorola Mobiles 423",
+    "name": "Motorola Mobiles 843",
     "image": "https://picsum.photos/seed/940/800/800",
     "images": [
       "https://picsum.photos/seed/940/800/800",
@@ -3552,17 +3552,17 @@ const products = [
       "https://picsum.photos/seed/943/800/800",
       "https://picsum.photos/seed/944/800/800"
     ],
-    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "Motorola",
     "category": "Mobiles",
-    "price": 54098,
-    "countInStock": 20,
+    "price": 62507,
+    "countInStock": 78,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 183
+    "rating": 4.3,
+    "numReviews": 761
   },
   {
-    "name": "Dell Electronics 90",
+    "name": "MSI Electronics 313",
     "image": "https://picsum.photos/seed/945/800/800",
     "images": [
       "https://picsum.photos/seed/945/800/800",
@@ -3571,17 +3571,17 @@ const products = [
       "https://picsum.photos/seed/948/800/800",
       "https://picsum.photos/seed/949/800/800"
     ],
-    "description": "High-quality electronics from Dell. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Dell",
+    "description": "High-quality electronics from MSI. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "MSI",
     "category": "Electronics",
-    "price": 48042,
-    "countInStock": 92,
+    "price": 166048,
+    "countInStock": 91,
     "isFeatured": false,
-    "rating": 5,
-    "numReviews": 200
+    "rating": 4.7,
+    "numReviews": 588
   },
   {
-    "name": "Allen Solly Fashion 507",
+    "name": "Allen Solly Fashion 896",
     "image": "https://picsum.photos/seed/950/800/800",
     "images": [
       "https://picsum.photos/seed/950/800/800",
@@ -3590,17 +3590,17 @@ const products = [
       "https://picsum.photos/seed/953/800/800",
       "https://picsum.photos/seed/954/800/800"
     ],
-    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Allen Solly",
     "category": "Fashion",
-    "price": 5920,
-    "countInStock": 52,
-    "isFeatured": true,
-    "rating": 4.5,
-    "numReviews": 791
+    "price": 4889,
+    "countInStock": 24,
+    "isFeatured": false,
+    "rating": 3.5,
+    "numReviews": 286
   },
   {
-    "name": "Godrej Interio Home & Furniture 141",
+    "name": "IKEA Home & Furniture 753",
     "image": "https://picsum.photos/seed/955/800/800",
     "images": [
       "https://picsum.photos/seed/955/800/800",
@@ -3609,17 +3609,17 @@ const products = [
       "https://picsum.photos/seed/958/800/800",
       "https://picsum.photos/seed/959/800/800"
     ],
-    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Godrej Interio",
+    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "IKEA",
     "category": "Home & Furniture",
-    "price": 3690,
-    "countInStock": 45,
+    "price": 38063,
+    "countInStock": 36,
     "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 568
+    "rating": 4.3,
+    "numReviews": 452
   },
   {
-    "name": "Samsung Appliances 572",
+    "name": "Kent Appliances 225",
     "image": "https://picsum.photos/seed/960/800/800",
     "images": [
       "https://picsum.photos/seed/960/800/800",
@@ -3628,17 +3628,17 @@ const products = [
       "https://picsum.photos/seed/963/800/800",
       "https://picsum.photos/seed/964/800/800"
     ],
-    "description": "High-quality appliances from Samsung. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality appliances from Kent. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Kent",
     "category": "Appliances",
-    "price": 54392,
-    "countInStock": 79,
+    "price": 40822,
+    "countInStock": 72,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 768
+    "rating": 3.4,
+    "numReviews": 82
   },
   {
-    "name": "Amul Grocery 248",
+    "name": "Nestle Grocery 970",
     "image": "https://picsum.photos/seed/965/800/800",
     "images": [
       "https://picsum.photos/seed/965/800/800",
@@ -3647,17 +3647,17 @@ const products = [
       "https://picsum.photos/seed/968/800/800",
       "https://picsum.photos/seed/969/800/800"
     ],
-    "description": "High-quality grocery from Amul. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Amul",
+    "description": "High-quality grocery from Nestle. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Nestle",
     "category": "Grocery",
-    "price": 1518,
-    "countInStock": 64,
+    "price": 3835,
+    "countInStock": 71,
     "isFeatured": true,
-    "rating": 4.3,
-    "numReviews": 919
+    "rating": 4.9,
+    "numReviews": 922
   },
   {
-    "name": "Mamaearth Beauty 269",
+    "name": "MAC Beauty 646",
     "image": "https://picsum.photos/seed/970/800/800",
     "images": [
       "https://picsum.photos/seed/970/800/800",
@@ -3666,17 +3666,17 @@ const products = [
       "https://picsum.photos/seed/973/800/800",
       "https://picsum.photos/seed/974/800/800"
     ],
-    "description": "High-quality beauty from Mamaearth. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Mamaearth",
+    "description": "High-quality beauty from MAC. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "MAC",
     "category": "Beauty",
-    "price": 513,
-    "countInStock": 39,
-    "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 619
+    "price": 1419,
+    "countInStock": 87,
+    "isFeatured": true,
+    "rating": 3.4,
+    "numReviews": 701
   },
   {
-    "name": "Samsung Wearables 804",
+    "name": "Fitbit Wearables 777",
     "image": "https://picsum.photos/seed/975/800/800",
     "images": [
       "https://picsum.photos/seed/975/800/800",
@@ -3685,17 +3685,17 @@ const products = [
       "https://picsum.photos/seed/978/800/800",
       "https://picsum.photos/seed/979/800/800"
     ],
-    "description": "High-quality wearables from Samsung. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Fitbit",
     "category": "Wearables",
-    "price": 27355,
-    "countInStock": 52,
+    "price": 32214,
+    "countInStock": 27,
     "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 767
+    "rating": 3.6,
+    "numReviews": 870
   },
   {
-    "name": "Skybags Travel 695",
+    "name": "Mocobara Travel 662",
     "image": "https://picsum.photos/seed/980/800/800",
     "images": [
       "https://picsum.photos/seed/980/800/800",
@@ -3704,17 +3704,17 @@ const products = [
       "https://picsum.photos/seed/983/800/800",
       "https://picsum.photos/seed/984/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from Mocobara. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Mocobara",
     "category": "Travel",
-    "price": 12242,
-    "countInStock": 25,
+    "price": 9041,
+    "countInStock": 42,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 160
+    "rating": 3.1,
+    "numReviews": 155
   },
   {
-    "name": "Spalding Sports 809",
+    "name": "Spalding Sports 57",
     "image": "https://picsum.photos/seed/985/800/800",
     "images": [
       "https://picsum.photos/seed/985/800/800",
@@ -3723,17 +3723,17 @@ const products = [
       "https://picsum.photos/seed/988/800/800",
       "https://picsum.photos/seed/989/800/800"
     ],
-    "description": "High-quality sports from Spalding. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality sports from Spalding. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Spalding",
     "category": "Sports",
-    "price": 26595,
-    "countInStock": 64,
+    "price": 33341,
+    "countInStock": 23,
     "isFeatured": false,
-    "rating": 3,
-    "numReviews": 300
+    "rating": 4.8,
+    "numReviews": 247
   },
   {
-    "name": "HarperCollins Books 425",
+    "name": "Oxford Books 554",
     "image": "https://picsum.photos/seed/990/800/800",
     "images": [
       "https://picsum.photos/seed/990/800/800",
@@ -3742,17 +3742,17 @@ const products = [
       "https://picsum.photos/seed/993/800/800",
       "https://picsum.photos/seed/994/800/800"
     ],
-    "description": "High-quality books from HarperCollins. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "HarperCollins",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 573,
-    "countInStock": 77,
+    "price": 1929,
+    "countInStock": 91,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 893
+    "rating": 3.5,
+    "numReviews": 516
   },
   {
-    "name": "Oppo Mobiles 593",
+    "name": "Google Mobiles 229",
     "image": "https://picsum.photos/seed/995/800/800",
     "images": [
       "https://picsum.photos/seed/995/800/800",
@@ -3761,17 +3761,17 @@ const products = [
       "https://picsum.photos/seed/998/800/800",
       "https://picsum.photos/seed/999/800/800"
     ],
-    "description": "High-quality mobiles from Oppo. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Oppo",
+    "description": "High-quality mobiles from Google. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Google",
     "category": "Mobiles",
-    "price": 35499,
-    "countInStock": 72,
+    "price": 60079,
+    "countInStock": 30,
     "isFeatured": false,
     "rating": 4.4,
-    "numReviews": 512
+    "numReviews": 856
   },
   {
-    "name": "Lenovo Electronics 792",
+    "name": "Acer Electronics 265",
     "image": "https://picsum.photos/seed/1000/800/800",
     "images": [
       "https://picsum.photos/seed/1000/800/800",
@@ -3780,17 +3780,17 @@ const products = [
       "https://picsum.photos/seed/1003/800/800",
       "https://picsum.photos/seed/1004/800/800"
     ],
-    "description": "High-quality electronics from Lenovo. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Lenovo",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 38400,
-    "countInStock": 1,
-    "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 93
+    "price": 33544,
+    "countInStock": 67,
+    "isFeatured": true,
+    "rating": 4.9,
+    "numReviews": 107
   },
   {
-    "name": "Puma Fashion 946",
+    "name": "Nike Fashion 148",
     "image": "https://picsum.photos/seed/1005/800/800",
     "images": [
       "https://picsum.photos/seed/1005/800/800",
@@ -3799,17 +3799,17 @@ const products = [
       "https://picsum.photos/seed/1008/800/800",
       "https://picsum.photos/seed/1009/800/800"
     ],
-    "description": "High-quality fashion from Puma. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Puma",
+    "description": "High-quality fashion from Nike. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Nike",
     "category": "Fashion",
-    "price": 6090,
-    "countInStock": 18,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 510
+    "price": 9450,
+    "countInStock": 10,
+    "isFeatured": true,
+    "rating": 3.9,
+    "numReviews": 789
   },
   {
-    "name": "Godrej Interio Home & Furniture 268",
+    "name": "Pepperfry Home & Furniture 613",
     "image": "https://picsum.photos/seed/1010/800/800",
     "images": [
       "https://picsum.photos/seed/1010/800/800",
@@ -3818,17 +3818,17 @@ const products = [
       "https://picsum.photos/seed/1013/800/800",
       "https://picsum.photos/seed/1014/800/800"
     ],
-    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Godrej Interio",
+    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Pepperfry",
     "category": "Home & Furniture",
-    "price": 37028,
-    "countInStock": 36,
-    "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 1
+    "price": 24042,
+    "countInStock": 11,
+    "isFeatured": true,
+    "rating": 3.6,
+    "numReviews": 105
   },
   {
-    "name": "Samsung Appliances 869",
+    "name": "Daikin Appliances 278",
     "image": "https://picsum.photos/seed/1015/800/800",
     "images": [
       "https://picsum.photos/seed/1015/800/800",
@@ -3837,17 +3837,17 @@ const products = [
       "https://picsum.photos/seed/1018/800/800",
       "https://picsum.photos/seed/1019/800/800"
     ],
-    "description": "High-quality appliances from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality appliances from Daikin. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Daikin",
     "category": "Appliances",
-    "price": 21752,
-    "countInStock": 52,
+    "price": 30650,
+    "countInStock": 89,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 829
+    "rating": 3.7,
+    "numReviews": 898
   },
   {
-    "name": "Nestle Grocery 67",
+    "name": "Hindustan Unilever Grocery 695",
     "image": "https://picsum.photos/seed/1020/800/800",
     "images": [
       "https://picsum.photos/seed/1020/800/800",
@@ -3856,17 +3856,17 @@ const products = [
       "https://picsum.photos/seed/1023/800/800",
       "https://picsum.photos/seed/1024/800/800"
     ],
-    "description": "High-quality grocery from Nestle. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Nestle",
+    "description": "High-quality grocery from Hindustan Unilever. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Hindustan Unilever",
     "category": "Grocery",
-    "price": 4460,
-    "countInStock": 52,
+    "price": 700,
+    "countInStock": 94,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 541
+    "rating": 3.4,
+    "numReviews": 838
   },
   {
-    "name": "L Oreoal Beauty 521",
+    "name": "MAC Beauty 876",
     "image": "https://picsum.photos/seed/1025/800/800",
     "images": [
       "https://picsum.photos/seed/1025/800/800",
@@ -3875,17 +3875,17 @@ const products = [
       "https://picsum.photos/seed/1028/800/800",
       "https://picsum.photos/seed/1029/800/800"
     ],
-    "description": "High-quality beauty from L Oreoal. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "L Oreoal",
+    "description": "High-quality beauty from MAC. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "MAC",
     "category": "Beauty",
-    "price": 3723,
-    "countInStock": 96,
+    "price": 3794,
+    "countInStock": 54,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 950
+    "rating": 4.6,
+    "numReviews": 172
   },
   {
-    "name": "Noise Wearables 241",
+    "name": "Samsung Wearables 982",
     "image": "https://picsum.photos/seed/1030/800/800",
     "images": [
       "https://picsum.photos/seed/1030/800/800",
@@ -3894,17 +3894,17 @@ const products = [
       "https://picsum.photos/seed/1033/800/800",
       "https://picsum.photos/seed/1034/800/800"
     ],
-    "description": "High-quality wearables from Noise. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Noise",
+    "description": "High-quality wearables from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Wearables",
-    "price": 39389,
-    "countInStock": 30,
+    "price": 28098,
+    "countInStock": 51,
     "isFeatured": false,
-    "rating": 3,
-    "numReviews": 672
+    "rating": 4.8,
+    "numReviews": 297
   },
   {
-    "name": "Skybags Travel 367",
+    "name": "Wildcraft Travel 488",
     "image": "https://picsum.photos/seed/1035/800/800",
     "images": [
       "https://picsum.photos/seed/1035/800/800",
@@ -3913,17 +3913,17 @@ const products = [
       "https://picsum.photos/seed/1038/800/800",
       "https://picsum.photos/seed/1039/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from Wildcraft. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Wildcraft",
     "category": "Travel",
-    "price": 2868,
-    "countInStock": 46,
+    "price": 8651,
+    "countInStock": 71,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 851
+    "rating": 3.6,
+    "numReviews": 834
   },
   {
-    "name": "Yonex Sports 149",
+    "name": "Speedo Sports 927",
     "image": "https://picsum.photos/seed/1040/800/800",
     "images": [
       "https://picsum.photos/seed/1040/800/800",
@@ -3932,17 +3932,17 @@ const products = [
       "https://picsum.photos/seed/1043/800/800",
       "https://picsum.photos/seed/1044/800/800"
     ],
-    "description": "High-quality sports from Yonex. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Yonex",
+    "description": "High-quality sports from Speedo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Speedo",
     "category": "Sports",
-    "price": 536,
-    "countInStock": 23,
+    "price": 7251,
+    "countInStock": 40,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 668
+    "rating": 4.5,
+    "numReviews": 99
   },
   {
-    "name": "Penguin Books 287",
+    "name": "Oxford Books 657",
     "image": "https://picsum.photos/seed/1045/800/800",
     "images": [
       "https://picsum.photos/seed/1045/800/800",
@@ -3951,17 +3951,17 @@ const products = [
       "https://picsum.photos/seed/1048/800/800",
       "https://picsum.photos/seed/1049/800/800"
     ],
-    "description": "High-quality books from Penguin. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Penguin",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 1996,
-    "countInStock": 4,
+    "price": 280,
+    "countInStock": 75,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 106
+    "rating": 3.9,
+    "numReviews": 327
   },
   {
-    "name": "Google Mobiles 255",
+    "name": "OnePlus Mobiles 53",
     "image": "https://picsum.photos/seed/1050/800/800",
     "images": [
       "https://picsum.photos/seed/1050/800/800",
@@ -3970,17 +3970,17 @@ const products = [
       "https://picsum.photos/seed/1053/800/800",
       "https://picsum.photos/seed/1054/800/800"
     ],
-    "description": "High-quality mobiles from Google. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Google",
+    "description": "High-quality mobiles from OnePlus. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "OnePlus",
     "category": "Mobiles",
-    "price": 55884,
-    "countInStock": 37,
+    "price": 97778,
+    "countInStock": 41,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 17
+    "rating": 3.7,
+    "numReviews": 946
   },
   {
-    "name": "Lenovo Electronics 265",
+    "name": "Lenovo Electronics 210",
     "image": "https://picsum.photos/seed/1055/800/800",
     "images": [
       "https://picsum.photos/seed/1055/800/800",
@@ -3989,17 +3989,17 @@ const products = [
       "https://picsum.photos/seed/1058/800/800",
       "https://picsum.photos/seed/1059/800/800"
     ],
-    "description": "High-quality electronics from Lenovo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality electronics from Lenovo. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Lenovo",
     "category": "Electronics",
-    "price": 102123,
-    "countInStock": 75,
+    "price": 97625,
+    "countInStock": 77,
     "isFeatured": true,
-    "rating": 4,
-    "numReviews": 776
+    "rating": 3.4,
+    "numReviews": 195
   },
   {
-    "name": "H&M Fashion 846",
+    "name": "Nike Fashion 831",
     "image": "https://picsum.photos/seed/1060/800/800",
     "images": [
       "https://picsum.photos/seed/1060/800/800",
@@ -4008,17 +4008,17 @@ const products = [
       "https://picsum.photos/seed/1063/800/800",
       "https://picsum.photos/seed/1064/800/800"
     ],
-    "description": "High-quality fashion from H&M. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "H&M",
+    "description": "High-quality fashion from Nike. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Nike",
     "category": "Fashion",
-    "price": 8882,
-    "countInStock": 89,
-    "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 860
+    "price": 8826,
+    "countInStock": 52,
+    "isFeatured": false,
+    "rating": 4.7,
+    "numReviews": 45
   },
   {
-    "name": "Home Centre Home & Furniture 553",
+    "name": "Sleepwell Home & Furniture 716",
     "image": "https://picsum.photos/seed/1065/800/800",
     "images": [
       "https://picsum.photos/seed/1065/800/800",
@@ -4027,17 +4027,17 @@ const products = [
       "https://picsum.photos/seed/1068/800/800",
       "https://picsum.photos/seed/1069/800/800"
     ],
-    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Home Centre",
+    "description": "High-quality home & furniture from Sleepwell. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Sleepwell",
     "category": "Home & Furniture",
-    "price": 50849,
-    "countInStock": 94,
+    "price": 7882,
+    "countInStock": 68,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 28
+    "rating": 3.2,
+    "numReviews": 61
   },
   {
-    "name": "Prestige Appliances 441",
+    "name": "Prestige Appliances 818",
     "image": "https://picsum.photos/seed/1070/800/800",
     "images": [
       "https://picsum.photos/seed/1070/800/800",
@@ -4049,14 +4049,14 @@ const products = [
     "description": "High-quality appliances from Prestige. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "Prestige",
     "category": "Appliances",
-    "price": 20754,
-    "countInStock": 46,
-    "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 881
+    "price": 51181,
+    "countInStock": 7,
+    "isFeatured": true,
+    "rating": 5,
+    "numReviews": 568
   },
   {
-    "name": "Organic India Grocery 636",
+    "name": "Nestle Grocery 505",
     "image": "https://picsum.photos/seed/1075/800/800",
     "images": [
       "https://picsum.photos/seed/1075/800/800",
@@ -4065,17 +4065,17 @@ const products = [
       "https://picsum.photos/seed/1078/800/800",
       "https://picsum.photos/seed/1079/800/800"
     ],
-    "description": "High-quality grocery from Organic India. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Organic India",
+    "description": "High-quality grocery from Nestle. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Nestle",
     "category": "Grocery",
-    "price": 132,
-    "countInStock": 16,
-    "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 383
+    "price": 4984,
+    "countInStock": 85,
+    "isFeatured": true,
+    "rating": 4.7,
+    "numReviews": 553
   },
   {
-    "name": "The Body Shop Beauty 342",
+    "name": "Maybelline Beauty 614",
     "image": "https://picsum.photos/seed/1080/800/800",
     "images": [
       "https://picsum.photos/seed/1080/800/800",
@@ -4084,17 +4084,17 @@ const products = [
       "https://picsum.photos/seed/1083/800/800",
       "https://picsum.photos/seed/1084/800/800"
     ],
-    "description": "High-quality beauty from The Body Shop. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "The Body Shop",
+    "description": "High-quality beauty from Maybelline. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Maybelline",
     "category": "Beauty",
-    "price": 2553,
-    "countInStock": 24,
+    "price": 422,
+    "countInStock": 38,
     "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 309
+    "rating": 3,
+    "numReviews": 715
   },
   {
-    "name": "boAt Wearables 516",
+    "name": "Noise Wearables 369",
     "image": "https://picsum.photos/seed/1085/800/800",
     "images": [
       "https://picsum.photos/seed/1085/800/800",
@@ -4103,17 +4103,17 @@ const products = [
       "https://picsum.photos/seed/1088/800/800",
       "https://picsum.photos/seed/1089/800/800"
     ],
-    "description": "High-quality wearables from boAt. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "boAt",
+    "description": "High-quality wearables from Noise. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Noise",
     "category": "Wearables",
-    "price": 7903,
-    "countInStock": 62,
-    "isFeatured": false,
-    "rating": 4.6,
-    "numReviews": 172
+    "price": 37573,
+    "countInStock": 97,
+    "isFeatured": true,
+    "rating": 4.3,
+    "numReviews": 602
   },
   {
-    "name": "Skybags Travel 522",
+    "name": "Samsonite Travel 171",
     "image": "https://picsum.photos/seed/1090/800/800",
     "images": [
       "https://picsum.photos/seed/1090/800/800",
@@ -4122,17 +4122,17 @@ const products = [
       "https://picsum.photos/seed/1093/800/800",
       "https://picsum.photos/seed/1094/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from Samsonite. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Samsonite",
     "category": "Travel",
-    "price": 20843,
-    "countInStock": 29,
-    "isFeatured": false,
-    "rating": 4,
-    "numReviews": 277
+    "price": 17256,
+    "countInStock": 26,
+    "isFeatured": true,
+    "rating": 4.8,
+    "numReviews": 280
   },
   {
-    "name": "Cosco Sports 105",
+    "name": "Wilson Sports 762",
     "image": "https://picsum.photos/seed/1095/800/800",
     "images": [
       "https://picsum.photos/seed/1095/800/800",
@@ -4141,17 +4141,17 @@ const products = [
       "https://picsum.photos/seed/1098/800/800",
       "https://picsum.photos/seed/1099/800/800"
     ],
-    "description": "High-quality sports from Cosco. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Cosco",
+    "description": "High-quality sports from Wilson. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Wilson",
     "category": "Sports",
-    "price": 16247,
-    "countInStock": 69,
-    "isFeatured": false,
+    "price": 28479,
+    "countInStock": 49,
+    "isFeatured": true,
     "rating": 3.6,
-    "numReviews": 412
+    "numReviews": 902
   },
   {
-    "name": "Westland Books 768",
+    "name": "Pearson Books 9",
     "image": "https://picsum.photos/seed/1100/800/800",
     "images": [
       "https://picsum.photos/seed/1100/800/800",
@@ -4160,17 +4160,17 @@ const products = [
       "https://picsum.photos/seed/1103/800/800",
       "https://picsum.photos/seed/1104/800/800"
     ],
-    "description": "High-quality books from Westland. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Westland",
+    "description": "High-quality books from Pearson. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Pearson",
     "category": "Books",
-    "price": 1692,
-    "countInStock": 98,
-    "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 506
+    "price": 1943,
+    "countInStock": 53,
+    "isFeatured": true,
+    "rating": 4,
+    "numReviews": 583
   },
   {
-    "name": "Xiaomi Mobiles 683",
+    "name": "Realme Mobiles 661",
     "image": "https://picsum.photos/seed/1105/800/800",
     "images": [
       "https://picsum.photos/seed/1105/800/800",
@@ -4179,17 +4179,17 @@ const products = [
       "https://picsum.photos/seed/1108/800/800",
       "https://picsum.photos/seed/1109/800/800"
     ],
-    "description": "High-quality mobiles from Xiaomi. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Xiaomi",
+    "description": "High-quality mobiles from Realme. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Realme",
     "category": "Mobiles",
-    "price": 129873,
-    "countInStock": 5,
-    "isFeatured": true,
-    "rating": 3.5,
-    "numReviews": 401
+    "price": 68743,
+    "countInStock": 69,
+    "isFeatured": false,
+    "rating": 4.3,
+    "numReviews": 264
   },
   {
-    "name": "HP Electronics 133",
+    "name": "Acer Electronics 104",
     "image": "https://picsum.photos/seed/1110/800/800",
     "images": [
       "https://picsum.photos/seed/1110/800/800",
@@ -4198,17 +4198,17 @@ const products = [
       "https://picsum.photos/seed/1113/800/800",
       "https://picsum.photos/seed/1114/800/800"
     ],
-    "description": "High-quality electronics from HP. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "HP",
+    "description": "High-quality electronics from Acer. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Acer",
     "category": "Electronics",
-    "price": 164456,
-    "countInStock": 91,
-    "isFeatured": true,
-    "rating": 3.8,
-    "numReviews": 132
+    "price": 136316,
+    "countInStock": 85,
+    "isFeatured": false,
+    "rating": 3.3,
+    "numReviews": 18
   },
   {
-    "name": "Puma Fashion 846",
+    "name": "Raymond Fashion 484",
     "image": "https://picsum.photos/seed/1115/800/800",
     "images": [
       "https://picsum.photos/seed/1115/800/800",
@@ -4217,17 +4217,17 @@ const products = [
       "https://picsum.photos/seed/1118/800/800",
       "https://picsum.photos/seed/1119/800/800"
     ],
-    "description": "High-quality fashion from Puma. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Puma",
+    "description": "High-quality fashion from Raymond. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Raymond",
     "category": "Fashion",
-    "price": 7721,
-    "countInStock": 44,
+    "price": 4379,
+    "countInStock": 66,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 871
+    "rating": 4.3,
+    "numReviews": 306
   },
   {
-    "name": "IKEA Home & Furniture 619",
+    "name": "Pepperfry Home & Furniture 542",
     "image": "https://picsum.photos/seed/1120/800/800",
     "images": [
       "https://picsum.photos/seed/1120/800/800",
@@ -4236,17 +4236,17 @@ const products = [
       "https://picsum.photos/seed/1123/800/800",
       "https://picsum.photos/seed/1124/800/800"
     ],
-    "description": "High-quality home & furniture from IKEA. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "IKEA",
+    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Pepperfry",
     "category": "Home & Furniture",
-    "price": 29173,
-    "countInStock": 35,
+    "price": 40082,
+    "countInStock": 72,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 222
+    "rating": 4.2,
+    "numReviews": 570
   },
   {
-    "name": "Daikin Appliances 963",
+    "name": "LG Appliances 724",
     "image": "https://picsum.photos/seed/1125/800/800",
     "images": [
       "https://picsum.photos/seed/1125/800/800",
@@ -4255,17 +4255,17 @@ const products = [
       "https://picsum.photos/seed/1128/800/800",
       "https://picsum.photos/seed/1129/800/800"
     ],
-    "description": "High-quality appliances from Daikin. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Daikin",
+    "description": "High-quality appliances from LG. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "LG",
     "category": "Appliances",
-    "price": 11582,
-    "countInStock": 84,
+    "price": 53432,
+    "countInStock": 11,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 5
+    "rating": 4.8,
+    "numReviews": 895
   },
   {
-    "name": "Organic India Grocery 677",
+    "name": "ITC Grocery 422",
     "image": "https://picsum.photos/seed/1130/800/800",
     "images": [
       "https://picsum.photos/seed/1130/800/800",
@@ -4274,17 +4274,17 @@ const products = [
       "https://picsum.photos/seed/1133/800/800",
       "https://picsum.photos/seed/1134/800/800"
     ],
-    "description": "High-quality grocery from Organic India. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Organic India",
+    "description": "High-quality grocery from ITC. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "ITC",
     "category": "Grocery",
-    "price": 951,
-    "countInStock": 90,
+    "price": 223,
+    "countInStock": 32,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 24
+    "rating": 3.8,
+    "numReviews": 234
   },
   {
-    "name": "Clinique Beauty 926",
+    "name": "Maybelline Beauty 179",
     "image": "https://picsum.photos/seed/1135/800/800",
     "images": [
       "https://picsum.photos/seed/1135/800/800",
@@ -4293,17 +4293,17 @@ const products = [
       "https://picsum.photos/seed/1138/800/800",
       "https://picsum.photos/seed/1139/800/800"
     ],
-    "description": "High-quality beauty from Clinique. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Clinique",
+    "description": "High-quality beauty from Maybelline. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Maybelline",
     "category": "Beauty",
-    "price": 170,
-    "countInStock": 11,
+    "price": 3457,
+    "countInStock": 28,
     "isFeatured": false,
-    "rating": 4.6,
-    "numReviews": 320
+    "rating": 3.6,
+    "numReviews": 811
   },
   {
-    "name": "Fossil Wearables 445",
+    "name": "Garmin Wearables 404",
     "image": "https://picsum.photos/seed/1140/800/800",
     "images": [
       "https://picsum.photos/seed/1140/800/800",
@@ -4312,17 +4312,17 @@ const products = [
       "https://picsum.photos/seed/1143/800/800",
       "https://picsum.photos/seed/1144/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Fossil",
+    "description": "High-quality wearables from Garmin. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Garmin",
     "category": "Wearables",
-    "price": 8710,
-    "countInStock": 40,
+    "price": 16598,
+    "countInStock": 36,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 94
+    "rating": 4.7,
+    "numReviews": 793
   },
   {
-    "name": "Safari Travel 785",
+    "name": "Safari Travel 990",
     "image": "https://picsum.photos/seed/1145/800/800",
     "images": [
       "https://picsum.photos/seed/1145/800/800",
@@ -4331,17 +4331,17 @@ const products = [
       "https://picsum.photos/seed/1148/800/800",
       "https://picsum.photos/seed/1149/800/800"
     ],
-    "description": "High-quality travel from Safari. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality travel from Safari. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Safari",
     "category": "Travel",
-    "price": 9553,
-    "countInStock": 70,
+    "price": 6800,
+    "countInStock": 65,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 122
+    "rating": 3.8,
+    "numReviews": 910
   },
   {
-    "name": "Wilson Sports 698",
+    "name": "Powermax Sports 804",
     "image": "https://picsum.photos/seed/1150/800/800",
     "images": [
       "https://picsum.photos/seed/1150/800/800",
@@ -4350,17 +4350,17 @@ const products = [
       "https://picsum.photos/seed/1153/800/800",
       "https://picsum.photos/seed/1154/800/800"
     ],
-    "description": "High-quality sports from Wilson. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Wilson",
+    "description": "High-quality sports from Powermax. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Powermax",
     "category": "Sports",
-    "price": 26374,
-    "countInStock": 2,
+    "price": 34584,
+    "countInStock": 15,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 942
+    "rating": 4.1,
+    "numReviews": 919
   },
   {
-    "name": "Scholastic Books 794",
+    "name": "Rupa Books 719",
     "image": "https://picsum.photos/seed/1155/800/800",
     "images": [
       "https://picsum.photos/seed/1155/800/800",
@@ -4369,17 +4369,17 @@ const products = [
       "https://picsum.photos/seed/1158/800/800",
       "https://picsum.photos/seed/1159/800/800"
     ],
-    "description": "High-quality books from Scholastic. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Scholastic",
+    "description": "High-quality books from Rupa. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Rupa",
     "category": "Books",
-    "price": 1018,
-    "countInStock": 10,
+    "price": 1531,
+    "countInStock": 27,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 652
+    "rating": 4.8,
+    "numReviews": 732
   },
   {
-    "name": "Oppo Mobiles 579",
+    "name": "Motorola Mobiles 88",
     "image": "https://picsum.photos/seed/1160/800/800",
     "images": [
       "https://picsum.photos/seed/1160/800/800",
@@ -4388,17 +4388,17 @@ const products = [
       "https://picsum.photos/seed/1163/800/800",
       "https://picsum.photos/seed/1164/800/800"
     ],
-    "description": "High-quality mobiles from Oppo. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Oppo",
+    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Motorola",
     "category": "Mobiles",
-    "price": 30837,
-    "countInStock": 0,
+    "price": 107815,
+    "countInStock": 17,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 708
+    "rating": 3.6,
+    "numReviews": 869
   },
   {
-    "name": "Sony Electronics 81",
+    "name": "Sony Electronics 83",
     "image": "https://picsum.photos/seed/1165/800/800",
     "images": [
       "https://picsum.photos/seed/1165/800/800",
@@ -4407,17 +4407,17 @@ const products = [
       "https://picsum.photos/seed/1168/800/800",
       "https://picsum.photos/seed/1169/800/800"
     ],
-    "description": "High-quality electronics from Sony. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality electronics from Sony. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Sony",
     "category": "Electronics",
-    "price": 53999,
-    "countInStock": 88,
-    "isFeatured": false,
+    "price": 156396,
+    "countInStock": 71,
+    "isFeatured": true,
     "rating": 3.5,
-    "numReviews": 457
+    "numReviews": 21
   },
   {
-    "name": "Nike Fashion 257",
+    "name": "Zara Fashion 906",
     "image": "https://picsum.photos/seed/1170/800/800",
     "images": [
       "https://picsum.photos/seed/1170/800/800",
@@ -4426,17 +4426,17 @@ const products = [
       "https://picsum.photos/seed/1173/800/800",
       "https://picsum.photos/seed/1174/800/800"
     ],
-    "description": "High-quality fashion from Nike. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Nike",
+    "description": "High-quality fashion from Zara. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Zara",
     "category": "Fashion",
-    "price": 2755,
-    "countInStock": 11,
-    "isFeatured": true,
-    "rating": 4.7,
-    "numReviews": 14
+    "price": 7958,
+    "countInStock": 30,
+    "isFeatured": false,
+    "rating": 4.6,
+    "numReviews": 202
   },
   {
-    "name": "Urban Ladder Home & Furniture 161",
+    "name": "Nilkamal Home & Furniture 292",
     "image": "https://picsum.photos/seed/1175/800/800",
     "images": [
       "https://picsum.photos/seed/1175/800/800",
@@ -4445,17 +4445,17 @@ const products = [
       "https://picsum.photos/seed/1178/800/800",
       "https://picsum.photos/seed/1179/800/800"
     ],
-    "description": "High-quality home & furniture from Urban Ladder. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Urban Ladder",
+    "description": "High-quality home & furniture from Nilkamal. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Nilkamal",
     "category": "Home & Furniture",
-    "price": 16550,
-    "countInStock": 99,
+    "price": 25015,
+    "countInStock": 60,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 689
+    "rating": 3.7,
+    "numReviews": 314
   },
   {
-    "name": "Prestige Appliances 396",
+    "name": "Philips Appliances 492",
     "image": "https://picsum.photos/seed/1180/800/800",
     "images": [
       "https://picsum.photos/seed/1180/800/800",
@@ -4464,17 +4464,17 @@ const products = [
       "https://picsum.photos/seed/1183/800/800",
       "https://picsum.photos/seed/1184/800/800"
     ],
-    "description": "High-quality appliances from Prestige. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Prestige",
+    "description": "High-quality appliances from Philips. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Philips",
     "category": "Appliances",
-    "price": 49048,
-    "countInStock": 62,
+    "price": 17797,
+    "countInStock": 77,
     "isFeatured": false,
     "rating": 3.3,
-    "numReviews": 145
+    "numReviews": 711
   },
   {
-    "name": "Organic India Grocery 743",
+    "name": "ITC Grocery 188",
     "image": "https://picsum.photos/seed/1185/800/800",
     "images": [
       "https://picsum.photos/seed/1185/800/800",
@@ -4483,17 +4483,17 @@ const products = [
       "https://picsum.photos/seed/1188/800/800",
       "https://picsum.photos/seed/1189/800/800"
     ],
-    "description": "High-quality grocery from Organic India. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Organic India",
+    "description": "High-quality grocery from ITC. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "ITC",
     "category": "Grocery",
-    "price": 1585,
-    "countInStock": 54,
-    "isFeatured": true,
-    "rating": 4.9,
-    "numReviews": 723
+    "price": 1422,
+    "countInStock": 45,
+    "isFeatured": false,
+    "rating": 3.9,
+    "numReviews": 866
   },
   {
-    "name": "Lakme Beauty 370",
+    "name": "Clinique Beauty 596",
     "image": "https://picsum.photos/seed/1190/800/800",
     "images": [
       "https://picsum.photos/seed/1190/800/800",
@@ -4502,17 +4502,17 @@ const products = [
       "https://picsum.photos/seed/1193/800/800",
       "https://picsum.photos/seed/1194/800/800"
     ],
-    "description": "High-quality beauty from Lakme. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Lakme",
+    "description": "High-quality beauty from Clinique. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Clinique",
     "category": "Beauty",
-    "price": 2228,
-    "countInStock": 70,
-    "isFeatured": true,
-    "rating": 3,
-    "numReviews": 96
+    "price": 1500,
+    "countInStock": 38,
+    "isFeatured": false,
+    "rating": 3.8,
+    "numReviews": 931
   },
   {
-    "name": "Apple Wearables 240",
+    "name": "Amazfit Wearables 47",
     "image": "https://picsum.photos/seed/1195/800/800",
     "images": [
       "https://picsum.photos/seed/1195/800/800",
@@ -4521,17 +4521,17 @@ const products = [
       "https://picsum.photos/seed/1198/800/800",
       "https://picsum.photos/seed/1199/800/800"
     ],
-    "description": "High-quality wearables from Apple. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Apple",
+    "description": "High-quality wearables from Amazfit. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Amazfit",
     "category": "Wearables",
-    "price": 4840,
-    "countInStock": 6,
+    "price": 38638,
+    "countInStock": 65,
     "isFeatured": true,
-    "rating": 5,
-    "numReviews": 538
+    "rating": 4.3,
+    "numReviews": 195
   },
   {
-    "name": "Samsonite Travel 50",
+    "name": "American Tourister Travel 642",
     "image": "https://picsum.photos/seed/1200/800/800",
     "images": [
       "https://picsum.photos/seed/1200/800/800",
@@ -4540,17 +4540,17 @@ const products = [
       "https://picsum.photos/seed/1203/800/800",
       "https://picsum.photos/seed/1204/800/800"
     ],
-    "description": "High-quality travel from Samsonite. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Samsonite",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 5151,
-    "countInStock": 20,
+    "price": 5509,
+    "countInStock": 43,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 577
+    "rating": 4.7,
+    "numReviews": 571
   },
   {
-    "name": "Cosco Sports 412",
+    "name": "Decathlon Sports 36",
     "image": "https://picsum.photos/seed/1205/800/800",
     "images": [
       "https://picsum.photos/seed/1205/800/800",
@@ -4559,17 +4559,17 @@ const products = [
       "https://picsum.photos/seed/1208/800/800",
       "https://picsum.photos/seed/1209/800/800"
     ],
-    "description": "High-quality sports from Cosco. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Cosco",
+    "description": "High-quality sports from Decathlon. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Decathlon",
     "category": "Sports",
-    "price": 16724,
-    "countInStock": 13,
+    "price": 5577,
+    "countInStock": 70,
     "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 811
+    "rating": 3.5,
+    "numReviews": 732
   },
   {
-    "name": "Westland Books 158",
+    "name": "HarperCollins Books 594",
     "image": "https://picsum.photos/seed/1210/800/800",
     "images": [
       "https://picsum.photos/seed/1210/800/800",
@@ -4578,17 +4578,17 @@ const products = [
       "https://picsum.photos/seed/1213/800/800",
       "https://picsum.photos/seed/1214/800/800"
     ],
-    "description": "High-quality books from Westland. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Westland",
+    "description": "High-quality books from HarperCollins. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "HarperCollins",
     "category": "Books",
-    "price": 182,
-    "countInStock": 63,
+    "price": 1951,
+    "countInStock": 86,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 384
+    "rating": 5,
+    "numReviews": 383
   },
   {
-    "name": "Apple Mobiles 609",
+    "name": "OnePlus Mobiles 411",
     "image": "https://picsum.photos/seed/1215/800/800",
     "images": [
       "https://picsum.photos/seed/1215/800/800",
@@ -4597,17 +4597,17 @@ const products = [
       "https://picsum.photos/seed/1218/800/800",
       "https://picsum.photos/seed/1219/800/800"
     ],
-    "description": "High-quality mobiles from Apple. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Apple",
+    "description": "High-quality mobiles from OnePlus. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "OnePlus",
     "category": "Mobiles",
-    "price": 112012,
-    "countInStock": 88,
+    "price": 129256,
+    "countInStock": 23,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 617
+    "rating": 4.9,
+    "numReviews": 479
   },
   {
-    "name": "Acer Electronics 595",
+    "name": "HP Electronics 800",
     "image": "https://picsum.photos/seed/1220/800/800",
     "images": [
       "https://picsum.photos/seed/1220/800/800",
@@ -4616,17 +4616,17 @@ const products = [
       "https://picsum.photos/seed/1223/800/800",
       "https://picsum.photos/seed/1224/800/800"
     ],
-    "description": "High-quality electronics from Acer. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Acer",
+    "description": "High-quality electronics from HP. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "HP",
     "category": "Electronics",
-    "price": 124835,
-    "countInStock": 51,
+    "price": 103468,
+    "countInStock": 76,
     "isFeatured": false,
     "rating": 4.3,
-    "numReviews": 480
+    "numReviews": 843
   },
   {
-    "name": "Levis Fashion 791",
+    "name": "Adidas Fashion 207",
     "image": "https://picsum.photos/seed/1225/800/800",
     "images": [
       "https://picsum.photos/seed/1225/800/800",
@@ -4635,17 +4635,17 @@ const products = [
       "https://picsum.photos/seed/1228/800/800",
       "https://picsum.photos/seed/1229/800/800"
     ],
-    "description": "High-quality fashion from Levis. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Levis",
+    "description": "High-quality fashion from Adidas. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Adidas",
     "category": "Fashion",
-    "price": 9771,
-    "countInStock": 8,
+    "price": 1829,
+    "countInStock": 3,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 643
+    "rating": 3,
+    "numReviews": 973
   },
   {
-    "name": "Pepperfry Home & Furniture 121",
+    "name": "Duroflex Home & Furniture 834",
     "image": "https://picsum.photos/seed/1230/800/800",
     "images": [
       "https://picsum.photos/seed/1230/800/800",
@@ -4654,17 +4654,17 @@ const products = [
       "https://picsum.photos/seed/1233/800/800",
       "https://picsum.photos/seed/1234/800/800"
     ],
-    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Pepperfry",
+    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Duroflex",
     "category": "Home & Furniture",
-    "price": 40354,
-    "countInStock": 44,
+    "price": 7012,
+    "countInStock": 28,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 633
+    "rating": 4.7,
+    "numReviews": 779
   },
   {
-    "name": "Havells Appliances 882",
+    "name": "Philips Appliances 208",
     "image": "https://picsum.photos/seed/1235/800/800",
     "images": [
       "https://picsum.photos/seed/1235/800/800",
@@ -4673,17 +4673,17 @@ const products = [
       "https://picsum.photos/seed/1238/800/800",
       "https://picsum.photos/seed/1239/800/800"
     ],
-    "description": "High-quality appliances from Havells. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Havells",
+    "description": "High-quality appliances from Philips. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Philips",
     "category": "Appliances",
-    "price": 43411,
-    "countInStock": 81,
+    "price": 15639,
+    "countInStock": 12,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 893
+    "rating": 4.5,
+    "numReviews": 755
   },
   {
-    "name": "Reliance Grocery 318",
+    "name": "Happilo Grocery 717",
     "image": "https://picsum.photos/seed/1240/800/800",
     "images": [
       "https://picsum.photos/seed/1240/800/800",
@@ -4692,17 +4692,17 @@ const products = [
       "https://picsum.photos/seed/1243/800/800",
       "https://picsum.photos/seed/1244/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Happilo. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Happilo",
     "category": "Grocery",
-    "price": 2382,
-    "countInStock": 90,
-    "isFeatured": true,
-    "rating": 3.1,
-    "numReviews": 380
+    "price": 1419,
+    "countInStock": 67,
+    "isFeatured": false,
+    "rating": 3.6,
+    "numReviews": 382
   },
   {
-    "name": "Neutrogena Beauty 487",
+    "name": "The Body Shop Beauty 120",
     "image": "https://picsum.photos/seed/1245/800/800",
     "images": [
       "https://picsum.photos/seed/1245/800/800",
@@ -4711,17 +4711,17 @@ const products = [
       "https://picsum.photos/seed/1248/800/800",
       "https://picsum.photos/seed/1249/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Neutrogena",
+    "description": "High-quality beauty from The Body Shop. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "The Body Shop",
     "category": "Beauty",
-    "price": 4026,
-    "countInStock": 63,
+    "price": 3422,
+    "countInStock": 54,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 450
+    "rating": 4.8,
+    "numReviews": 594
   },
   {
-    "name": "Garmin Wearables 381",
+    "name": "Apple Wearables 750",
     "image": "https://picsum.photos/seed/1250/800/800",
     "images": [
       "https://picsum.photos/seed/1250/800/800",
@@ -4730,17 +4730,17 @@ const products = [
       "https://picsum.photos/seed/1253/800/800",
       "https://picsum.photos/seed/1254/800/800"
     ],
-    "description": "High-quality wearables from Garmin. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Garmin",
+    "description": "High-quality wearables from Apple. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Apple",
     "category": "Wearables",
-    "price": 17126,
-    "countInStock": 85,
+    "price": 40966,
+    "countInStock": 99,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 28
+    "rating": 3.9,
+    "numReviews": 211
   },
   {
-    "name": "Skybags Travel 723",
+    "name": "Mocobara Travel 235",
     "image": "https://picsum.photos/seed/1255/800/800",
     "images": [
       "https://picsum.photos/seed/1255/800/800",
@@ -4749,17 +4749,17 @@ const products = [
       "https://picsum.photos/seed/1258/800/800",
       "https://picsum.photos/seed/1259/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from Mocobara. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Mocobara",
     "category": "Travel",
-    "price": 1693,
-    "countInStock": 74,
-    "isFeatured": true,
-    "rating": 3.8,
-    "numReviews": 811
+    "price": 3866,
+    "countInStock": 22,
+    "isFeatured": false,
+    "rating": 4.6,
+    "numReviews": 563
   },
   {
-    "name": "Nivea Sports 665",
+    "name": "Spalding Sports 469",
     "image": "https://picsum.photos/seed/1260/800/800",
     "images": [
       "https://picsum.photos/seed/1260/800/800",
@@ -4768,17 +4768,17 @@ const products = [
       "https://picsum.photos/seed/1263/800/800",
       "https://picsum.photos/seed/1264/800/800"
     ],
-    "description": "High-quality sports from Nivea. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Nivea",
+    "description": "High-quality sports from Spalding. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Spalding",
     "category": "Sports",
-    "price": 35733,
-    "countInStock": 83,
-    "isFeatured": true,
-    "rating": 3.6,
-    "numReviews": 799
+    "price": 27316,
+    "countInStock": 28,
+    "isFeatured": false,
+    "rating": 4.2,
+    "numReviews": 635
   },
   {
-    "name": "Oxford Books 167",
+    "name": "Scholastic Books 131",
     "image": "https://picsum.photos/seed/1265/800/800",
     "images": [
       "https://picsum.photos/seed/1265/800/800",
@@ -4787,17 +4787,17 @@ const products = [
       "https://picsum.photos/seed/1268/800/800",
       "https://picsum.photos/seed/1269/800/800"
     ],
-    "description": "High-quality books from Oxford. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Oxford",
+    "description": "High-quality books from Scholastic. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Scholastic",
     "category": "Books",
-    "price": 1657,
-    "countInStock": 22,
-    "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 841
+    "price": 2014,
+    "countInStock": 98,
+    "isFeatured": true,
+    "rating": 4.2,
+    "numReviews": 601
   },
   {
-    "name": "Samsung Mobiles 975",
+    "name": "Apple Mobiles 180",
     "image": "https://picsum.photos/seed/1270/800/800",
     "images": [
       "https://picsum.photos/seed/1270/800/800",
@@ -4806,17 +4806,17 @@ const products = [
       "https://picsum.photos/seed/1273/800/800",
       "https://picsum.photos/seed/1274/800/800"
     ],
-    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality mobiles from Apple. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Apple",
     "category": "Mobiles",
-    "price": 95942,
-    "countInStock": 55,
+    "price": 66216,
+    "countInStock": 62,
     "isFeatured": false,
     "rating": 4,
-    "numReviews": 769
+    "numReviews": 225
   },
   {
-    "name": "Razer Electronics 613",
+    "name": "Dell Electronics 942",
     "image": "https://picsum.photos/seed/1275/800/800",
     "images": [
       "https://picsum.photos/seed/1275/800/800",
@@ -4825,17 +4825,17 @@ const products = [
       "https://picsum.photos/seed/1278/800/800",
       "https://picsum.photos/seed/1279/800/800"
     ],
-    "description": "High-quality electronics from Razer. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Razer",
+    "description": "High-quality electronics from Dell. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Dell",
     "category": "Electronics",
-    "price": 100434,
-    "countInStock": 98,
-    "isFeatured": true,
-    "rating": 3,
-    "numReviews": 460
+    "price": 67914,
+    "countInStock": 59,
+    "isFeatured": false,
+    "rating": 4.4,
+    "numReviews": 997
   },
   {
-    "name": "Raymond Fashion 25",
+    "name": "Raymond Fashion 764",
     "image": "https://picsum.photos/seed/1280/800/800",
     "images": [
       "https://picsum.photos/seed/1280/800/800",
@@ -4844,17 +4844,17 @@ const products = [
       "https://picsum.photos/seed/1283/800/800",
       "https://picsum.photos/seed/1284/800/800"
     ],
-    "description": "High-quality fashion from Raymond. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality fashion from Raymond. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "Raymond",
     "category": "Fashion",
-    "price": 7469,
-    "countInStock": 25,
-    "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 529
+    "price": 5258,
+    "countInStock": 85,
+    "isFeatured": true,
+    "rating": 4.5,
+    "numReviews": 794
   },
   {
-    "name": "Nilkamal Home & Furniture 24",
+    "name": "Pepperfry Home & Furniture 317",
     "image": "https://picsum.photos/seed/1285/800/800",
     "images": [
       "https://picsum.photos/seed/1285/800/800",
@@ -4863,17 +4863,17 @@ const products = [
       "https://picsum.photos/seed/1288/800/800",
       "https://picsum.photos/seed/1289/800/800"
     ],
-    "description": "High-quality home & furniture from Nilkamal. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Nilkamal",
+    "description": "High-quality home & furniture from Pepperfry. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Pepperfry",
     "category": "Home & Furniture",
-    "price": 29118,
-    "countInStock": 68,
+    "price": 44670,
+    "countInStock": 83,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 261
+    "rating": 4.6,
+    "numReviews": 560
   },
   {
-    "name": "Samsung Appliances 515",
+    "name": "Haier Appliances 813",
     "image": "https://picsum.photos/seed/1290/800/800",
     "images": [
       "https://picsum.photos/seed/1290/800/800",
@@ -4882,17 +4882,17 @@ const products = [
       "https://picsum.photos/seed/1293/800/800",
       "https://picsum.photos/seed/1294/800/800"
     ],
-    "description": "High-quality appliances from Samsung. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality appliances from Haier. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Haier",
     "category": "Appliances",
-    "price": 48778,
-    "countInStock": 50,
+    "price": 27194,
+    "countInStock": 9,
     "isFeatured": true,
-    "rating": 3.1,
-    "numReviews": 433
+    "rating": 4.9,
+    "numReviews": 913
   },
   {
-    "name": "Reliance Grocery 158",
+    "name": "Happilo Grocery 339",
     "image": "https://picsum.photos/seed/1295/800/800",
     "images": [
       "https://picsum.photos/seed/1295/800/800",
@@ -4901,17 +4901,17 @@ const products = [
       "https://picsum.photos/seed/1298/800/800",
       "https://picsum.photos/seed/1299/800/800"
     ],
-    "description": "High-quality grocery from Reliance. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Reliance",
+    "description": "High-quality grocery from Happilo. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Happilo",
     "category": "Grocery",
-    "price": 807,
+    "price": 316,
     "countInStock": 23,
-    "isFeatured": true,
-    "rating": 4,
-    "numReviews": 361
+    "isFeatured": false,
+    "rating": 4.6,
+    "numReviews": 485
   },
   {
-    "name": "Neutrogena Beauty 132",
+    "name": "Neutrogena Beauty 657",
     "image": "https://picsum.photos/seed/1300/800/800",
     "images": [
       "https://picsum.photos/seed/1300/800/800",
@@ -4920,17 +4920,17 @@ const products = [
       "https://picsum.photos/seed/1303/800/800",
       "https://picsum.photos/seed/1304/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum comfort and durability for your daily needs.",
     "brand": "Neutrogena",
     "category": "Beauty",
-    "price": 5065,
-    "countInStock": 95,
+    "price": 468,
+    "countInStock": 85,
     "isFeatured": true,
-    "rating": 3.7,
-    "numReviews": 904
+    "rating": 4.7,
+    "numReviews": 331
   },
   {
-    "name": "Fossil Wearables 772",
+    "name": "Samsung Wearables 238",
     "image": "https://picsum.photos/seed/1305/800/800",
     "images": [
       "https://picsum.photos/seed/1305/800/800",
@@ -4939,17 +4939,17 @@ const products = [
       "https://picsum.photos/seed/1308/800/800",
       "https://picsum.photos/seed/1309/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Fossil",
+    "description": "High-quality wearables from Samsung. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Samsung",
     "category": "Wearables",
-    "price": 11615,
-    "countInStock": 41,
+    "price": 33042,
+    "countInStock": 46,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 427
+    "rating": 4.5,
+    "numReviews": 587
   },
   {
-    "name": "Samsonite Travel 31",
+    "name": "American Tourister Travel 292",
     "image": "https://picsum.photos/seed/1310/800/800",
     "images": [
       "https://picsum.photos/seed/1310/800/800",
@@ -4958,17 +4958,17 @@ const products = [
       "https://picsum.photos/seed/1313/800/800",
       "https://picsum.photos/seed/1314/800/800"
     ],
-    "description": "High-quality travel from Samsonite. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Samsonite",
+    "description": "High-quality travel from American Tourister. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "American Tourister",
     "category": "Travel",
-    "price": 5278,
-    "countInStock": 86,
+    "price": 12725,
+    "countInStock": 79,
     "isFeatured": true,
-    "rating": 3.8,
-    "numReviews": 334
+    "rating": 4.2,
+    "numReviews": 920
   },
   {
-    "name": "Speedo Sports 861",
+    "name": "Decathlon Sports 758",
     "image": "https://picsum.photos/seed/1315/800/800",
     "images": [
       "https://picsum.photos/seed/1315/800/800",
@@ -4977,17 +4977,17 @@ const products = [
       "https://picsum.photos/seed/1318/800/800",
       "https://picsum.photos/seed/1319/800/800"
     ],
-    "description": "High-quality sports from Speedo. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Speedo",
+    "description": "High-quality sports from Decathlon. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Decathlon",
     "category": "Sports",
-    "price": 16538,
-    "countInStock": 53,
+    "price": 33146,
+    "countInStock": 39,
     "isFeatured": false,
-    "rating": 4,
-    "numReviews": 148
+    "rating": 4.9,
+    "numReviews": 743
   },
   {
-    "name": "Oxford Books 57",
+    "name": "Rupa Books 342",
     "image": "https://picsum.photos/seed/1320/800/800",
     "images": [
       "https://picsum.photos/seed/1320/800/800",
@@ -4996,17 +4996,17 @@ const products = [
       "https://picsum.photos/seed/1323/800/800",
       "https://picsum.photos/seed/1324/800/800"
     ],
-    "description": "High-quality books from Oxford. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Oxford",
+    "description": "High-quality books from Rupa. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Rupa",
     "category": "Books",
-    "price": 913,
-    "countInStock": 54,
+    "price": 1744,
+    "countInStock": 8,
     "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 296
+    "rating": 4.4,
+    "numReviews": 132
   },
   {
-    "name": "Motorola Mobiles 405",
+    "name": "Realme Mobiles 597",
     "image": "https://picsum.photos/seed/1325/800/800",
     "images": [
       "https://picsum.photos/seed/1325/800/800",
@@ -5015,17 +5015,17 @@ const products = [
       "https://picsum.photos/seed/1328/800/800",
       "https://picsum.photos/seed/1329/800/800"
     ],
-    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Motorola",
+    "description": "High-quality mobiles from Realme. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Realme",
     "category": "Mobiles",
-    "price": 47665,
-    "countInStock": 14,
+    "price": 128045,
+    "countInStock": 3,
     "isFeatured": false,
-    "rating": 3.5,
-    "numReviews": 497
+    "rating": 5,
+    "numReviews": 648
   },
   {
-    "name": "Microsoft Electronics 410",
+    "name": "MSI Electronics 998",
     "image": "https://picsum.photos/seed/1330/800/800",
     "images": [
       "https://picsum.photos/seed/1330/800/800",
@@ -5034,17 +5034,17 @@ const products = [
       "https://picsum.photos/seed/1333/800/800",
       "https://picsum.photos/seed/1334/800/800"
     ],
-    "description": "High-quality electronics from Microsoft. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Microsoft",
+    "description": "High-quality electronics from MSI. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "MSI",
     "category": "Electronics",
-    "price": 81820,
-    "countInStock": 96,
+    "price": 155024,
+    "countInStock": 41,
     "isFeatured": false,
-    "rating": 4.7,
-    "numReviews": 678
+    "rating": 4.8,
+    "numReviews": 577
   },
   {
-    "name": "Raymond Fashion 829",
+    "name": "Levis Fashion 666",
     "image": "https://picsum.photos/seed/1335/800/800",
     "images": [
       "https://picsum.photos/seed/1335/800/800",
@@ -5053,17 +5053,17 @@ const products = [
       "https://picsum.photos/seed/1338/800/800",
       "https://picsum.photos/seed/1339/800/800"
     ],
-    "description": "High-quality fashion from Raymond. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Raymond",
+    "description": "High-quality fashion from Levis. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Levis",
     "category": "Fashion",
-    "price": 4124,
-    "countInStock": 48,
+    "price": 5662,
+    "countInStock": 58,
     "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 905
+    "rating": 3.3,
+    "numReviews": 944
   },
   {
-    "name": "Nilkamal Home & Furniture 999",
+    "name": "Duroflex Home & Furniture 602",
     "image": "https://picsum.photos/seed/1340/800/800",
     "images": [
       "https://picsum.photos/seed/1340/800/800",
@@ -5072,17 +5072,17 @@ const products = [
       "https://picsum.photos/seed/1343/800/800",
       "https://picsum.photos/seed/1344/800/800"
     ],
-    "description": "High-quality home & furniture from Nilkamal. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Nilkamal",
+    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Duroflex",
     "category": "Home & Furniture",
-    "price": 27868,
-    "countInStock": 7,
+    "price": 22791,
+    "countInStock": 31,
     "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 83
+    "rating": 3.7,
+    "numReviews": 563
   },
   {
-    "name": "Kent Appliances 470",
+    "name": "Havells Appliances 806",
     "image": "https://picsum.photos/seed/1345/800/800",
     "images": [
       "https://picsum.photos/seed/1345/800/800",
@@ -5091,17 +5091,17 @@ const products = [
       "https://picsum.photos/seed/1348/800/800",
       "https://picsum.photos/seed/1349/800/800"
     ],
-    "description": "High-quality appliances from Kent. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Kent",
+    "description": "High-quality appliances from Havells. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Havells",
     "category": "Appliances",
-    "price": 8993,
-    "countInStock": 10,
+    "price": 49953,
+    "countInStock": 61,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 668
+    "rating": 3.1,
+    "numReviews": 475
   },
   {
-    "name": "Organic India Grocery 691",
+    "name": "Amul Grocery 438",
     "image": "https://picsum.photos/seed/1350/800/800",
     "images": [
       "https://picsum.photos/seed/1350/800/800",
@@ -5110,17 +5110,17 @@ const products = [
       "https://picsum.photos/seed/1353/800/800",
       "https://picsum.photos/seed/1354/800/800"
     ],
-    "description": "High-quality grocery from Organic India. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Organic India",
+    "description": "High-quality grocery from Amul. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Amul",
     "category": "Grocery",
-    "price": 4473,
-    "countInStock": 17,
-    "isFeatured": true,
-    "rating": 3.4,
-    "numReviews": 283
+    "price": 4501,
+    "countInStock": 73,
+    "isFeatured": false,
+    "rating": 3.6,
+    "numReviews": 512
   },
   {
-    "name": "Neutrogena Beauty 434",
+    "name": "Lakme Beauty 163",
     "image": "https://picsum.photos/seed/1355/800/800",
     "images": [
       "https://picsum.photos/seed/1355/800/800",
@@ -5129,17 +5129,17 @@ const products = [
       "https://picsum.photos/seed/1358/800/800",
       "https://picsum.photos/seed/1359/800/800"
     ],
-    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Neutrogena",
+    "description": "High-quality beauty from Lakme. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Lakme",
     "category": "Beauty",
-    "price": 3818,
-    "countInStock": 99,
+    "price": 2104,
+    "countInStock": 70,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 925
+    "rating": 4.8,
+    "numReviews": 25
   },
   {
-    "name": "Apple Wearables 382",
+    "name": "Apple Wearables 12",
     "image": "https://picsum.photos/seed/1360/800/800",
     "images": [
       "https://picsum.photos/seed/1360/800/800",
@@ -5148,17 +5148,17 @@ const products = [
       "https://picsum.photos/seed/1363/800/800",
       "https://picsum.photos/seed/1364/800/800"
     ],
-    "description": "High-quality wearables from Apple. This product is designed to provide maximum performance and durability for your daily needs.",
+    "description": "High-quality wearables from Apple. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "Apple",
     "category": "Wearables",
-    "price": 29522,
-    "countInStock": 69,
-    "isFeatured": false,
-    "rating": 4.4,
-    "numReviews": 807
+    "price": 27137,
+    "countInStock": 45,
+    "isFeatured": true,
+    "rating": 3.1,
+    "numReviews": 346
   },
   {
-    "name": "Skybags Travel 394",
+    "name": "VIP Travel 641",
     "image": "https://picsum.photos/seed/1365/800/800",
     "images": [
       "https://picsum.photos/seed/1365/800/800",
@@ -5167,17 +5167,17 @@ const products = [
       "https://picsum.photos/seed/1368/800/800",
       "https://picsum.photos/seed/1369/800/800"
     ],
-    "description": "High-quality travel from Skybags. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Skybags",
+    "description": "High-quality travel from VIP. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "VIP",
     "category": "Travel",
-    "price": 5620,
-    "countInStock": 73,
+    "price": 8962,
+    "countInStock": 62,
     "isFeatured": false,
-    "rating": 4.2,
-    "numReviews": 271
+    "rating": 4.7,
+    "numReviews": 924
   },
   {
-    "name": "Nivea Sports 226",
+    "name": "Speedo Sports 317",
     "image": "https://picsum.photos/seed/1370/800/800",
     "images": [
       "https://picsum.photos/seed/1370/800/800",
@@ -5186,17 +5186,17 @@ const products = [
       "https://picsum.photos/seed/1373/800/800",
       "https://picsum.photos/seed/1374/800/800"
     ],
-    "description": "High-quality sports from Nivea. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Nivea",
+    "description": "High-quality sports from Speedo. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Speedo",
     "category": "Sports",
-    "price": 25751,
-    "countInStock": 62,
+    "price": 7458,
+    "countInStock": 27,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 68
+    "rating": 3,
+    "numReviews": 408
   },
   {
-    "name": "HarperCollins Books 608",
+    "name": "Penguin Books 559",
     "image": "https://picsum.photos/seed/1375/800/800",
     "images": [
       "https://picsum.photos/seed/1375/800/800",
@@ -5205,17 +5205,17 @@ const products = [
       "https://picsum.photos/seed/1378/800/800",
       "https://picsum.photos/seed/1379/800/800"
     ],
-    "description": "High-quality books from HarperCollins. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "HarperCollins",
+    "description": "High-quality books from Penguin. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Penguin",
     "category": "Books",
-    "price": 1619,
-    "countInStock": 13,
-    "isFeatured": true,
-    "rating": 3.8,
-    "numReviews": 147
+    "price": 1558,
+    "countInStock": 3,
+    "isFeatured": false,
+    "rating": 4.5,
+    "numReviews": 141
   },
   {
-    "name": "Samsung Mobiles 634",
+    "name": "Google Mobiles 504",
     "image": "https://picsum.photos/seed/1380/800/800",
     "images": [
       "https://picsum.photos/seed/1380/800/800",
@@ -5224,17 +5224,17 @@ const products = [
       "https://picsum.photos/seed/1383/800/800",
       "https://picsum.photos/seed/1384/800/800"
     ],
-    "description": "High-quality mobiles from Samsung. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality mobiles from Google. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Google",
     "category": "Mobiles",
-    "price": 56542,
-    "countInStock": 69,
-    "isFeatured": true,
-    "rating": 4.5,
-    "numReviews": 494
+    "price": 101126,
+    "countInStock": 10,
+    "isFeatured": false,
+    "rating": 3.7,
+    "numReviews": 549
   },
   {
-    "name": "Dell Electronics 92",
+    "name": "Sony Electronics 881",
     "image": "https://picsum.photos/seed/1385/800/800",
     "images": [
       "https://picsum.photos/seed/1385/800/800",
@@ -5243,17 +5243,17 @@ const products = [
       "https://picsum.photos/seed/1388/800/800",
       "https://picsum.photos/seed/1389/800/800"
     ],
-    "description": "High-quality electronics from Dell. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Dell",
+    "description": "High-quality electronics from Sony. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Sony",
     "category": "Electronics",
-    "price": 116377,
-    "countInStock": 27,
-    "isFeatured": false,
-    "rating": 4.8,
-    "numReviews": 767
+    "price": 31852,
+    "countInStock": 33,
+    "isFeatured": true,
+    "rating": 4.9,
+    "numReviews": 620
   },
   {
-    "name": "Nike Fashion 500",
+    "name": "FabIndia Fashion 703",
     "image": "https://picsum.photos/seed/1390/800/800",
     "images": [
       "https://picsum.photos/seed/1390/800/800",
@@ -5262,17 +5262,17 @@ const products = [
       "https://picsum.photos/seed/1393/800/800",
       "https://picsum.photos/seed/1394/800/800"
     ],
-    "description": "High-quality fashion from Nike. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Nike",
+    "description": "High-quality fashion from FabIndia. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "FabIndia",
     "category": "Fashion",
-    "price": 5880,
-    "countInStock": 33,
-    "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 483
+    "price": 9394,
+    "countInStock": 44,
+    "isFeatured": true,
+    "rating": 4.9,
+    "numReviews": 78
   },
   {
-    "name": "Duroflex Home & Furniture 120",
+    "name": "Godrej Interio Home & Furniture 19",
     "image": "https://picsum.photos/seed/1395/800/800",
     "images": [
       "https://picsum.photos/seed/1395/800/800",
@@ -5281,17 +5281,17 @@ const products = [
       "https://picsum.photos/seed/1398/800/800",
       "https://picsum.photos/seed/1399/800/800"
     ],
-    "description": "High-quality home & furniture from Duroflex. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Duroflex",
+    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Godrej Interio",
     "category": "Home & Furniture",
-    "price": 39570,
-    "countInStock": 85,
+    "price": 3438,
+    "countInStock": 53,
     "isFeatured": false,
-    "rating": 4.1,
-    "numReviews": 882
+    "rating": 4.8,
+    "numReviews": 400
   },
   {
-    "name": "Samsung Appliances 97",
+    "name": "Kent Appliances 344",
     "image": "https://picsum.photos/seed/1400/800/800",
     "images": [
       "https://picsum.photos/seed/1400/800/800",
@@ -5300,17 +5300,17 @@ const products = [
       "https://picsum.photos/seed/1403/800/800",
       "https://picsum.photos/seed/1404/800/800"
     ],
-    "description": "High-quality appliances from Samsung. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Samsung",
+    "description": "High-quality appliances from Kent. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Kent",
     "category": "Appliances",
-    "price": 60574,
-    "countInStock": 92,
-    "isFeatured": true,
-    "rating": 3.3,
-    "numReviews": 995
+    "price": 39090,
+    "countInStock": 15,
+    "isFeatured": false,
+    "rating": 3.5,
+    "numReviews": 130
   },
   {
-    "name": "Hindustan Unilever Grocery 19",
+    "name": "Dabur Grocery 726",
     "image": "https://picsum.photos/seed/1405/800/800",
     "images": [
       "https://picsum.photos/seed/1405/800/800",
@@ -5319,17 +5319,17 @@ const products = [
       "https://picsum.photos/seed/1408/800/800",
       "https://picsum.photos/seed/1409/800/800"
     ],
-    "description": "High-quality grocery from Hindustan Unilever. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Hindustan Unilever",
+    "description": "High-quality grocery from Dabur. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Dabur",
     "category": "Grocery",
-    "price": 1686,
-    "countInStock": 53,
+    "price": 3403,
+    "countInStock": 17,
     "isFeatured": false,
-    "rating": 4.5,
-    "numReviews": 22
+    "rating": 3.9,
+    "numReviews": 352
   },
   {
-    "name": "The Body Shop Beauty 634",
+    "name": "Lakme Beauty 190",
     "image": "https://picsum.photos/seed/1410/800/800",
     "images": [
       "https://picsum.photos/seed/1410/800/800",
@@ -5338,17 +5338,17 @@ const products = [
       "https://picsum.photos/seed/1413/800/800",
       "https://picsum.photos/seed/1414/800/800"
     ],
-    "description": "High-quality beauty from The Body Shop. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "The Body Shop",
+    "description": "High-quality beauty from Lakme. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Lakme",
     "category": "Beauty",
-    "price": 2495,
-    "countInStock": 88,
-    "isFeatured": true,
+    "price": 1534,
+    "countInStock": 16,
+    "isFeatured": false,
     "rating": 4.8,
-    "numReviews": 532
+    "numReviews": 578
   },
   {
-    "name": "Fossil Wearables 836",
+    "name": "Garmin Wearables 521",
     "image": "https://picsum.photos/seed/1415/800/800",
     "images": [
       "https://picsum.photos/seed/1415/800/800",
@@ -5357,17 +5357,17 @@ const products = [
       "https://picsum.photos/seed/1418/800/800",
       "https://picsum.photos/seed/1419/800/800"
     ],
-    "description": "High-quality wearables from Fossil. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Fossil",
+    "description": "High-quality wearables from Garmin. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Garmin",
     "category": "Wearables",
-    "price": 5816,
-    "countInStock": 14,
-    "isFeatured": true,
+    "price": 14456,
+    "countInStock": 99,
+    "isFeatured": false,
     "rating": 3.1,
-    "numReviews": 235
+    "numReviews": 809
   },
   {
-    "name": "Wildcraft Travel 907",
+    "name": "Safari Travel 830",
     "image": "https://picsum.photos/seed/1420/800/800",
     "images": [
       "https://picsum.photos/seed/1420/800/800",
@@ -5376,17 +5376,17 @@ const products = [
       "https://picsum.photos/seed/1423/800/800",
       "https://picsum.photos/seed/1424/800/800"
     ],
-    "description": "High-quality travel from Wildcraft. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Wildcraft",
+    "description": "High-quality travel from Safari. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Safari",
     "category": "Travel",
-    "price": 18212,
-    "countInStock": 15,
-    "isFeatured": true,
-    "rating": 3.4,
-    "numReviews": 497
+    "price": 5671,
+    "countInStock": 82,
+    "isFeatured": false,
+    "rating": 3.2,
+    "numReviews": 73
   },
   {
-    "name": "Spalding Sports 82",
+    "name": "Cosco Sports 518",
     "image": "https://picsum.photos/seed/1425/800/800",
     "images": [
       "https://picsum.photos/seed/1425/800/800",
@@ -5395,17 +5395,17 @@ const products = [
       "https://picsum.photos/seed/1428/800/800",
       "https://picsum.photos/seed/1429/800/800"
     ],
-    "description": "High-quality sports from Spalding. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Spalding",
+    "description": "High-quality sports from Cosco. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Cosco",
     "category": "Sports",
-    "price": 535,
-    "countInStock": 44,
+    "price": 34366,
+    "countInStock": 76,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 102
+    "rating": 4.8,
+    "numReviews": 671
   },
   {
-    "name": "Westland Books 13",
+    "name": "HarperCollins Books 101",
     "image": "https://picsum.photos/seed/1430/800/800",
     "images": [
       "https://picsum.photos/seed/1430/800/800",
@@ -5414,17 +5414,17 @@ const products = [
       "https://picsum.photos/seed/1433/800/800",
       "https://picsum.photos/seed/1434/800/800"
     ],
-    "description": "High-quality books from Westland. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Westland",
+    "description": "High-quality books from HarperCollins. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "HarperCollins",
     "category": "Books",
-    "price": 1528,
-    "countInStock": 34,
-    "isFeatured": true,
-    "rating": 3.6,
-    "numReviews": 901
+    "price": 340,
+    "countInStock": 29,
+    "isFeatured": false,
+    "rating": 3.7,
+    "numReviews": 702
   },
   {
-    "name": "Realme Mobiles 846",
+    "name": "Realme Mobiles 204",
     "image": "https://picsum.photos/seed/1435/800/800",
     "images": [
       "https://picsum.photos/seed/1435/800/800",
@@ -5433,17 +5433,17 @@ const products = [
       "https://picsum.photos/seed/1438/800/800",
       "https://picsum.photos/seed/1439/800/800"
     ],
-    "description": "High-quality mobiles from Realme. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality mobiles from Realme. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Realme",
     "category": "Mobiles",
-    "price": 83183,
-    "countInStock": 35,
+    "price": 68618,
+    "countInStock": 7,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 506
+    "rating": 4.1,
+    "numReviews": 512
   },
   {
-    "name": "Microsoft Electronics 364",
+    "name": "MSI Electronics 633",
     "image": "https://picsum.photos/seed/1440/800/800",
     "images": [
       "https://picsum.photos/seed/1440/800/800",
@@ -5452,17 +5452,17 @@ const products = [
       "https://picsum.photos/seed/1443/800/800",
       "https://picsum.photos/seed/1444/800/800"
     ],
-    "description": "High-quality electronics from Microsoft. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Microsoft",
+    "description": "High-quality electronics from MSI. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "MSI",
     "category": "Electronics",
-    "price": 160958,
-    "countInStock": 96,
-    "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 980
+    "price": 131920,
+    "countInStock": 11,
+    "isFeatured": true,
+    "rating": 3.2,
+    "numReviews": 877
   },
   {
-    "name": "Zara Fashion 575",
+    "name": "Adidas Fashion 683",
     "image": "https://picsum.photos/seed/1445/800/800",
     "images": [
       "https://picsum.photos/seed/1445/800/800",
@@ -5471,17 +5471,17 @@ const products = [
       "https://picsum.photos/seed/1448/800/800",
       "https://picsum.photos/seed/1449/800/800"
     ],
-    "description": "High-quality fashion from Zara. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Zara",
+    "description": "High-quality fashion from Adidas. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Adidas",
     "category": "Fashion",
-    "price": 6630,
-    "countInStock": 74,
+    "price": 4959,
+    "countInStock": 71,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 369
+    "rating": 3.3,
+    "numReviews": 828
   },
   {
-    "name": "Godrej Interio Home & Furniture 102",
+    "name": "Godrej Interio Home & Furniture 935",
     "image": "https://picsum.photos/seed/1450/800/800",
     "images": [
       "https://picsum.photos/seed/1450/800/800",
@@ -5490,17 +5490,17 @@ const products = [
       "https://picsum.photos/seed/1453/800/800",
       "https://picsum.photos/seed/1454/800/800"
     ],
-    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum utility and durability for your daily needs.",
     "brand": "Godrej Interio",
     "category": "Home & Furniture",
-    "price": 7898,
-    "countInStock": 77,
+    "price": 39925,
+    "countInStock": 92,
     "isFeatured": false,
-    "rating": 3.3,
-    "numReviews": 243
+    "rating": 3.2,
+    "numReviews": 24
   },
   {
-    "name": "Haier Appliances 453",
+    "name": "Bajaj Appliances 169",
     "image": "https://picsum.photos/seed/1455/800/800",
     "images": [
       "https://picsum.photos/seed/1455/800/800",
@@ -5509,17 +5509,17 @@ const products = [
       "https://picsum.photos/seed/1458/800/800",
       "https://picsum.photos/seed/1459/800/800"
     ],
-    "description": "High-quality appliances from Haier. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Haier",
+    "description": "High-quality appliances from Bajaj. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Bajaj",
     "category": "Appliances",
-    "price": 32614,
-    "countInStock": 51,
+    "price": 28908,
+    "countInStock": 71,
     "isFeatured": false,
-    "rating": 3.7,
-    "numReviews": 415
+    "rating": 3.9,
+    "numReviews": 451
   },
   {
-    "name": "Dabur Grocery 875",
+    "name": "Hindustan Unilever Grocery 419",
     "image": "https://picsum.photos/seed/1460/800/800",
     "images": [
       "https://picsum.photos/seed/1460/800/800",
@@ -5528,17 +5528,17 @@ const products = [
       "https://picsum.photos/seed/1463/800/800",
       "https://picsum.photos/seed/1464/800/800"
     ],
-    "description": "High-quality grocery from Dabur. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Dabur",
+    "description": "High-quality grocery from Hindustan Unilever. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Hindustan Unilever",
     "category": "Grocery",
-    "price": 246,
-    "countInStock": 19,
+    "price": 3932,
+    "countInStock": 78,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 191
+    "rating": 3.3,
+    "numReviews": 44
   },
   {
-    "name": "Estee Lauder Beauty 643",
+    "name": "MAC Beauty 531",
     "image": "https://picsum.photos/seed/1465/800/800",
     "images": [
       "https://picsum.photos/seed/1465/800/800",
@@ -5547,17 +5547,17 @@ const products = [
       "https://picsum.photos/seed/1468/800/800",
       "https://picsum.photos/seed/1469/800/800"
     ],
-    "description": "High-quality beauty from Estee Lauder. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Estee Lauder",
+    "description": "High-quality beauty from MAC. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "MAC",
     "category": "Beauty",
-    "price": 3164,
-    "countInStock": 84,
+    "price": 4505,
+    "countInStock": 74,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 233
+    "rating": 4.7,
+    "numReviews": 338
   },
   {
-    "name": "Garmin Wearables 616",
+    "name": "Fitbit Wearables 269",
     "image": "https://picsum.photos/seed/1470/800/800",
     "images": [
       "https://picsum.photos/seed/1470/800/800",
@@ -5566,17 +5566,17 @@ const products = [
       "https://picsum.photos/seed/1473/800/800",
       "https://picsum.photos/seed/1474/800/800"
     ],
-    "description": "High-quality wearables from Garmin. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Garmin",
+    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum utility and durability for your daily needs.",
+    "brand": "Fitbit",
     "category": "Wearables",
-    "price": 40328,
-    "countInStock": 27,
+    "price": 37815,
+    "countInStock": 83,
     "isFeatured": false,
-    "rating": 4.3,
-    "numReviews": 758
+    "rating": 4.9,
+    "numReviews": 278
   },
   {
-    "name": "American Tourister Travel 893",
+    "name": "Skybags Travel 162",
     "image": "https://picsum.photos/seed/1475/800/800",
     "images": [
       "https://picsum.photos/seed/1475/800/800",
@@ -5585,17 +5585,17 @@ const products = [
       "https://picsum.photos/seed/1478/800/800",
       "https://picsum.photos/seed/1479/800/800"
     ],
-    "description": "High-quality travel from American Tourister. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "American Tourister",
+    "description": "High-quality travel from Skybags. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Skybags",
     "category": "Travel",
-    "price": 19945,
-    "countInStock": 11,
+    "price": 5826,
+    "countInStock": 47,
     "isFeatured": false,
-    "rating": 3.1,
-    "numReviews": 687
+    "rating": 4.6,
+    "numReviews": 693
   },
   {
-    "name": "Nivea Sports 227",
+    "name": "Yonex Sports 919",
     "image": "https://picsum.photos/seed/1480/800/800",
     "images": [
       "https://picsum.photos/seed/1480/800/800",
@@ -5604,17 +5604,17 @@ const products = [
       "https://picsum.photos/seed/1483/800/800",
       "https://picsum.photos/seed/1484/800/800"
     ],
-    "description": "High-quality sports from Nivea. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Nivea",
+    "description": "High-quality sports from Yonex. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Yonex",
     "category": "Sports",
-    "price": 33897,
-    "countInStock": 56,
+    "price": 30202,
+    "countInStock": 3,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 951
+    "rating": 4.4,
+    "numReviews": 884
   },
   {
-    "name": "Penguin Books 307",
+    "name": "Oxford Books 929",
     "image": "https://picsum.photos/seed/1485/800/800",
     "images": [
       "https://picsum.photos/seed/1485/800/800",
@@ -5623,17 +5623,17 @@ const products = [
       "https://picsum.photos/seed/1488/800/800",
       "https://picsum.photos/seed/1489/800/800"
     ],
-    "description": "High-quality books from Penguin. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Penguin",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 823,
-    "countInStock": 24,
-    "isFeatured": true,
-    "rating": 3.5,
-    "numReviews": 603
+    "price": 1947,
+    "countInStock": 50,
+    "isFeatured": false,
+    "rating": 4.6,
+    "numReviews": 722
   },
   {
-    "name": "Realme Mobiles 746",
+    "name": "Motorola Mobiles 582",
     "image": "https://picsum.photos/seed/1490/800/800",
     "images": [
       "https://picsum.photos/seed/1490/800/800",
@@ -5642,17 +5642,17 @@ const products = [
       "https://picsum.photos/seed/1493/800/800",
       "https://picsum.photos/seed/1494/800/800"
     ],
-    "description": "High-quality mobiles from Realme. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Realme",
+    "description": "High-quality mobiles from Motorola. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Motorola",
     "category": "Mobiles",
-    "price": 93265,
-    "countInStock": 83,
+    "price": 92634,
+    "countInStock": 4,
     "isFeatured": false,
     "rating": 3.3,
-    "numReviews": 293
+    "numReviews": 405
   },
   {
-    "name": "Razer Electronics 232",
+    "name": "Dell Electronics 276",
     "image": "https://picsum.photos/seed/1495/800/800",
     "images": [
       "https://picsum.photos/seed/1495/800/800",
@@ -5661,17 +5661,17 @@ const products = [
       "https://picsum.photos/seed/1498/800/800",
       "https://picsum.photos/seed/1499/800/800"
     ],
-    "description": "High-quality electronics from Razer. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Razer",
+    "description": "High-quality electronics from Dell. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Dell",
     "category": "Electronics",
-    "price": 25957,
-    "countInStock": 16,
-    "isFeatured": true,
-    "rating": 3.3,
-    "numReviews": 455
+    "price": 143315,
+    "countInStock": 90,
+    "isFeatured": false,
+    "rating": 4.2,
+    "numReviews": 899
   },
   {
-    "name": "Raymond Fashion 518",
+    "name": "Allen Solly Fashion 895",
     "image": "https://picsum.photos/seed/1500/800/800",
     "images": [
       "https://picsum.photos/seed/1500/800/800",
@@ -5680,17 +5680,17 @@ const products = [
       "https://picsum.photos/seed/1503/800/800",
       "https://picsum.photos/seed/1504/800/800"
     ],
-    "description": "High-quality fashion from Raymond. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Raymond",
+    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Allen Solly",
     "category": "Fashion",
-    "price": 2648,
-    "countInStock": 98,
-    "isFeatured": true,
-    "rating": 3.8,
-    "numReviews": 739
+    "price": 2828,
+    "countInStock": 13,
+    "isFeatured": false,
+    "rating": 3.9,
+    "numReviews": 858
   },
   {
-    "name": "Godrej Interio Home & Furniture 942",
+    "name": "Home Centre Home & Furniture 869",
     "image": "https://picsum.photos/seed/1505/800/800",
     "images": [
       "https://picsum.photos/seed/1505/800/800",
@@ -5699,17 +5699,17 @@ const products = [
       "https://picsum.photos/seed/1508/800/800",
       "https://picsum.photos/seed/1509/800/800"
     ],
-    "description": "High-quality home & furniture from Godrej Interio. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Godrej Interio",
+    "description": "High-quality home & furniture from Home Centre. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Home Centre",
     "category": "Home & Furniture",
-    "price": 15077,
-    "countInStock": 72,
+    "price": 48929,
+    "countInStock": 93,
     "isFeatured": false,
-    "rating": 4.9,
-    "numReviews": 103
+    "rating": 3.5,
+    "numReviews": 175
   },
   {
-    "name": "Bajaj Appliances 198",
+    "name": "Prestige Appliances 73",
     "image": "https://picsum.photos/seed/1510/800/800",
     "images": [
       "https://picsum.photos/seed/1510/800/800",
@@ -5718,17 +5718,17 @@ const products = [
       "https://picsum.photos/seed/1513/800/800",
       "https://picsum.photos/seed/1514/800/800"
     ],
-    "description": "High-quality appliances from Bajaj. This product is designed to provide maximum utility and durability for your daily needs.",
-    "brand": "Bajaj",
+    "description": "High-quality appliances from Prestige. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Prestige",
     "category": "Appliances",
-    "price": 23282,
-    "countInStock": 69,
+    "price": 4510,
+    "countInStock": 55,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 724
+    "rating": 3.6,
+    "numReviews": 936
   },
   {
-    "name": "Dabur Grocery 74",
+    "name": "Reliance Grocery 386",
     "image": "https://picsum.photos/seed/1515/800/800",
     "images": [
       "https://picsum.photos/seed/1515/800/800",
@@ -5737,17 +5737,17 @@ const products = [
       "https://picsum.photos/seed/1518/800/800",
       "https://picsum.photos/seed/1519/800/800"
     ],
-    "description": "High-quality grocery from Dabur. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Dabur",
+    "description": "High-quality grocery from Reliance. This product is designed to provide maximum style and durability for your daily needs.",
+    "brand": "Reliance",
     "category": "Grocery",
-    "price": 2766,
-    "countInStock": 91,
+    "price": 4159,
+    "countInStock": 3,
     "isFeatured": false,
-    "rating": 3.2,
-    "numReviews": 205
+    "rating": 3.6,
+    "numReviews": 975
   },
   {
-    "name": "Clinique Beauty 872",
+    "name": "Neutrogena Beauty 765",
     "image": "https://picsum.photos/seed/1520/800/800",
     "images": [
       "https://picsum.photos/seed/1520/800/800",
@@ -5756,17 +5756,17 @@ const products = [
       "https://picsum.photos/seed/1523/800/800",
       "https://picsum.photos/seed/1524/800/800"
     ],
-    "description": "High-quality beauty from Clinique. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Clinique",
+    "description": "High-quality beauty from Neutrogena. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Neutrogena",
     "category": "Beauty",
-    "price": 181,
-    "countInStock": 27,
+    "price": 4696,
+    "countInStock": 66,
     "isFeatured": false,
-    "rating": 3.4,
-    "numReviews": 792
+    "rating": 4.5,
+    "numReviews": 373
   },
   {
-    "name": "Fitbit Wearables 457",
+    "name": "Fitbit Wearables 837",
     "image": "https://picsum.photos/seed/1525/800/800",
     "images": [
       "https://picsum.photos/seed/1525/800/800",
@@ -5775,17 +5775,17 @@ const products = [
       "https://picsum.photos/seed/1528/800/800",
       "https://picsum.photos/seed/1529/800/800"
     ],
-    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum style and durability for your daily needs.",
+    "description": "High-quality wearables from Fitbit. This product is designed to provide maximum performance and durability for your daily needs.",
     "brand": "Fitbit",
     "category": "Wearables",
-    "price": 33967,
-    "countInStock": 68,
+    "price": 21891,
+    "countInStock": 41,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 314
+    "rating": 3.4,
+    "numReviews": 15
   },
   {
-    "name": "Mocobara Travel 59",
+    "name": "Wildcraft Travel 616",
     "image": "https://picsum.photos/seed/1530/800/800",
     "images": [
       "https://picsum.photos/seed/1530/800/800",
@@ -5794,17 +5794,17 @@ const products = [
       "https://picsum.photos/seed/1533/800/800",
       "https://picsum.photos/seed/1534/800/800"
     ],
-    "description": "High-quality travel from Mocobara. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "Mocobara",
+    "description": "High-quality travel from Wildcraft. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Wildcraft",
     "category": "Travel",
-    "price": 7098,
-    "countInStock": 90,
+    "price": 13107,
+    "countInStock": 81,
     "isFeatured": false,
-    "rating": 3.8,
-    "numReviews": 150
+    "rating": 5,
+    "numReviews": 573
   },
   {
-    "name": "Nivea Sports 379",
+    "name": "Spalding Sports 26",
     "image": "https://picsum.photos/seed/1535/800/800",
     "images": [
       "https://picsum.photos/seed/1535/800/800",
@@ -5813,17 +5813,17 @@ const products = [
       "https://picsum.photos/seed/1538/800/800",
       "https://picsum.photos/seed/1539/800/800"
     ],
-    "description": "High-quality sports from Nivea. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Nivea",
+    "description": "High-quality sports from Spalding. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Spalding",
     "category": "Sports",
-    "price": 2819,
-    "countInStock": 77,
-    "isFeatured": true,
-    "rating": 4.4,
-    "numReviews": 800
+    "price": 37328,
+    "countInStock": 45,
+    "isFeatured": false,
+    "rating": 4.2,
+    "numReviews": 80
   },
   {
-    "name": "HarperCollins Books 737",
+    "name": "Oxford Books 50",
     "image": "https://picsum.photos/seed/1540/800/800",
     "images": [
       "https://picsum.photos/seed/1540/800/800",
@@ -5832,17 +5832,17 @@ const products = [
       "https://picsum.photos/seed/1543/800/800",
       "https://picsum.photos/seed/1544/800/800"
     ],
-    "description": "High-quality books from HarperCollins. This product is designed to provide maximum comfort and durability for your daily needs.",
-    "brand": "HarperCollins",
+    "description": "High-quality books from Oxford. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Oxford",
     "category": "Books",
-    "price": 602,
-    "countInStock": 69,
-    "isFeatured": false,
-    "rating": 3.6,
-    "numReviews": 460
+    "price": 1066,
+    "countInStock": 89,
+    "isFeatured": true,
+    "rating": 3.9,
+    "numReviews": 197
   },
   {
-    "name": "Google Mobiles 616",
+    "name": "Vivo Mobiles 751",
     "image": "https://picsum.photos/seed/1545/800/800",
     "images": [
       "https://picsum.photos/seed/1545/800/800",
@@ -5851,17 +5851,17 @@ const products = [
       "https://picsum.photos/seed/1548/800/800",
       "https://picsum.photos/seed/1549/800/800"
     ],
-    "description": "High-quality mobiles from Google. This product is designed to provide maximum performance and durability for your daily needs.",
-    "brand": "Google",
+    "description": "High-quality mobiles from Vivo. This product is designed to provide maximum performance and durability for your daily needs.",
+    "brand": "Vivo",
     "category": "Mobiles",
-    "price": 119686,
-    "countInStock": 81,
-    "isFeatured": true,
-    "rating": 3.9,
-    "numReviews": 973
+    "price": 125206,
+    "countInStock": 57,
+    "isFeatured": false,
+    "rating": 3.4,
+    "numReviews": 342
   },
   {
-    "name": "Sony Electronics 595",
+    "name": "Sony Electronics 476",
     "image": "https://picsum.photos/seed/1550/800/800",
     "images": [
       "https://picsum.photos/seed/1550/800/800",
@@ -5870,17 +5870,17 @@ const products = [
       "https://picsum.photos/seed/1553/800/800",
       "https://picsum.photos/seed/1554/800/800"
     ],
-    "description": "High-quality electronics from Sony. This product is designed to provide maximum utility and durability for your daily needs.",
+    "description": "High-quality electronics from Sony. This product is designed to provide maximum style and durability for your daily needs.",
     "brand": "Sony",
     "category": "Electronics",
-    "price": 159223,
-    "countInStock": 47,
+    "price": 147833,
+    "countInStock": 82,
     "isFeatured": false,
-    "rating": 3.9,
-    "numReviews": 826
+    "rating": 4.3,
+    "numReviews": 798
   },
   {
-    "name": "Puma Fashion 460",
+    "name": "Allen Solly Fashion 670",
     "image": "https://picsum.photos/seed/1555/800/800",
     "images": [
       "https://picsum.photos/seed/1555/800/800",
@@ -5889,59 +5889,27 @@ const products = [
       "https://picsum.photos/seed/1558/800/800",
       "https://picsum.photos/seed/1559/800/800"
     ],
-    "description": "High-quality fashion from Puma. This product is designed to provide maximum style and durability for your daily needs.",
-    "brand": "Puma",
+    "description": "High-quality fashion from Allen Solly. This product is designed to provide maximum comfort and durability for your daily needs.",
+    "brand": "Allen Solly",
     "category": "Fashion",
-    "price": 1774,
-    "countInStock": 24,
-    "isFeatured": true,
-    "rating": 4.8,
-    "numReviews": 289
+    "price": 1146,
+    "countInStock": 72,
+    "isFeatured": false,
+    "rating": 4.1,
+    "numReviews": 545
   }
 ];
 
 const importData = async () => {
   try {
     await Product.deleteMany();
-    await User.deleteMany();
 
-    const adminUser = await User.create({
-      name: "Kristina Evans",
-      email: "kris.evans@gmail.com",
-      password: "password123",
-      isAdmin: true,
-      avatar: "https://i.pravatar.cc/150?u=kris.evans@gmail.com",
-      role: "Sales Manager"
-    });
-
-    const users = [
-      {
-        name: "Michelle Black",
-        email: "michelle@example.com",
-        password: "password123",
-        isAdmin: false,
-        avatar: "https://i.pravatar.cc/150?u=michelle@example.com",
-        role: "Premium Buyer"
-      },
-      {
-        name: "Janice Chandler",
-        email: "janice@example.com",
-        password: "password123",
-        isAdmin: false,
-        avatar: "https://i.pravatar.cc/150?u=janice@example.com",
-        role: "Retailer"
-      },
-      {
-        name: "Mildred Hall",
-        email: "mildred@example.com",
-        password: "password123",
-        isAdmin: false,
-        avatar: "https://i.pravatar.cc/150?u=mildred@example.com",
-        role: "Manager"
-      }
-    ];
-
-    await User.insertMany(users);
+    // Find existing admin — do NOT delete users
+    let adminUser = await User.findOne({ isAdmin: true });
+    if (!adminUser) {
+      console.error("No admin user found. Create an admin user first.");
+      process.exit(1);
+    }
 
     const sampleProducts = products.map((product) => {
       return { ...product, user: adminUser._id };
@@ -5949,7 +5917,7 @@ const importData = async () => {
 
     await Product.insertMany(sampleProducts);
 
-    console.log("Data Imported!");
+    console.log(`${sampleProducts.length} products seeded successfully!`);
     process.exit();
   } catch (error) {
     console.error(`${error}`);

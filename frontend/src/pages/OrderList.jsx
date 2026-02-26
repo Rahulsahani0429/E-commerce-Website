@@ -102,7 +102,7 @@ const OrderList = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await api.put(`/admin/orders/${orderId}/status`, { orderStatus: newStatus });
+      await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
       fetchOrders();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update status');
@@ -111,7 +111,7 @@ const OrderList = () => {
 
   const handlePaymentChange = async (orderId, newPaymentStatus) => {
     try {
-      await api.patch(`/orders/v1/admin/orders/${orderId}/payment`, { paymentStatus: newPaymentStatus });
+      await api.patch(`/admin/orders/${orderId}/payment`, { paymentStatus: newPaymentStatus });
       fetchOrders();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update payment status');
@@ -121,13 +121,7 @@ const OrderList = () => {
   const handleReturnStatusUpdate = async (orderId, newReturnStatus) => {
     try {
       setActionLoading(true);
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      await axios.put(`${API_BASE_URL}/api/orders/${orderId}/return-status`, { status: newReturnStatus }, config);
+      await api.put(`/orders/${orderId}/return-status`, { status: newReturnStatus });
       fetchOrders();
       toast.success(`Return status updated to ${newReturnStatus}`);
     } catch (error) {
@@ -188,12 +182,12 @@ const OrderList = () => {
       setActionLoading(true);
 
       if (editData.status !== selectedOrder.orderStatus) {
-        await api.put(`/admin/orders/${selectedOrder._id}/status`, { orderStatus: editData.status });
+        await api.patch(`/admin/orders/${selectedOrder._id}/status`, { status: editData.status });
       }
 
       const currentPay = selectedOrder.paymentStatus || (selectedOrder.isPaid ? 'SUCCESS' : 'PENDING');
       if (editData.payment !== currentPay) {
-        await api.patch(`/orders/v1/admin/orders/${selectedOrder._id}/payment`, { paymentStatus: editData.payment });
+        await api.patch(`/admin/orders/${selectedOrder._id}/payment`, { paymentStatus: editData.payment });
       }
 
       if (editData.returnStatus !== selectedOrder.returnStatus) {
@@ -213,10 +207,10 @@ const OrderList = () => {
   const confirmDelete = async () => {
     try {
       setActionLoading(true);
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      await axios.delete(`${API_BASE_URL}/api/orders/${selectedOrder._id}`, config);
+      await api.delete(`/orders/${selectedOrder._id}`);
       setShowDeleteModal(false);
       fetchOrders();
+      toast.success("Order deleted successfully");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete order");
     } finally {

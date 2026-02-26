@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
@@ -6,13 +7,136 @@ import { toast } from 'react-toastify';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
 import { useSocket } from '../context/SocketContext';
-import './AdminOrders.css'; 
+import './AdminOrders.css';
+
+// ── Portal-based action dropdown (never clipped by table overflow) ──────────
+const PAYMENT_MENU_WIDTH = 190;
+const ITEM_H = 42;
+const MENU_PAD = 8;
+
+const PaymentActionDropdown = ({ payment, onView, onEdit, onDownload, onSend, onRefund, onDelete }) => {
+  const [open, setOpen] = useState(false);
+  const [style, setStyle] = useState({});
+  const btnRef = useRef(null);
+  const menuRef = useRef(null);
+
+  const actions = [
+    { id: 'view',     label: 'View Details',      icon: '👁️' },
+    { id: 'edit',     label: 'Edit Payment',       icon: '✏️' },
+    { id: 'download', label: 'Download Receipt',   icon: '📥' },
+    { id: 'send',     label: 'Send Receipt',       icon: '📧', disabled: payment.receiptSent },
+    { id: 'refund',   label: 'Issue Refund',       icon: '🔄', disabled: payment.paymentStatus === 'Refunded' },
+    { id: 'delete',   label: 'Delete Payment',     icon: '🗑️', color: '#ff4d4f' },
+  ];
+
+  const compute = useCallback(() => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const menuH = actions.length * ITEM_H + MENU_PAD;
+    const vh = window.innerHeight;
+    const vw = window.innerWidth;
+    const spaceBelow = vh - rect.bottom;
+    const top = spaceBelow >= menuH || spaceBelow >= rect.top
+      ? rect.bottom + 6
+      : rect.top - menuH - 6;
+    let left = rect.right - PAYMENT_MENU_WIDTH;
+    if (left < 8) left = 8;
+    if (left + PAYMENT_MENU_WIDTH > vw - 8) left = vw - PAYMENT_MENU_WIDTH - 8;
+    setStyle({ top, left });
+  }, [actions.length]);
+
+  const toggle = (e) => {
+    e.stopPropagation();
+    if (!open) { compute(); setOpen(true); } else { setOpen(false); }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const down = (e) => {
+      if (
+        menuRef.current && !menuRef.current.contains(e.target) &&
+        btnRef.current  && !btnRef.current.contains(e.target)
+      ) setOpen(false);
+    };
+    document.addEventListener('mousedown', down);
+    return () => document.removeEventListener('mousedown', down);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const upd = () => compute();
+    window.addEventListener('scroll', upd, true);
+    window.addEventListener('resize', upd);
+    return () => { window.removeEventListener('scroll', upd, true); window.removeEventListener('resize', upd); };
+  }, [open, compute]);
+
+  const handleAction = (id) => {
+    setOpen(false);
+    if (id === 'view')     onView(payment);
+    if (id === 'edit')     onEdit(payment);
+    if (id === 'download') onDownload(payment);
+    if (id === 'send')     onSend(payment);
+    if (id === 'refund')   onRefund(payment);
+    if (id === 'delete')   onDelete(payment);
+  };
+
+  return (
+    <>
+      <button ref={btnRef} className="three-dots-btn" onClick={toggle} aria-haspopup="true" aria-expanded={open}>
+        •••
+      </button>
+      {open && createPortal(
+        <div
+          ref={menuRef}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            top: style.top,
+            left: style.left,
+            width: PAYMENT_MENU_WIDTH,
+            zIndex: 99999,
+            background: '#fff',
+            borderRadius: '0.75rem',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08)',
+            border: '1px solid #efefef',
+            padding: '4px',
+            animation: 'payDropIn 0.18s ease-out',
+          }}
+        >
+          <style>{`@keyframes payDropIn { from{opacity:0;transform:translateY(-6px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }`}</style>
+          {actions.map((a) => (
+            <button
+              key={a.id}
+              onClick={() => !a.disabled && handleAction(a.id)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: '0.65rem',
+                padding: '0.55rem 0.9rem', border: 'none', background: 'none',
+                cursor: a.disabled ? 'not-allowed' : 'pointer',
+                fontSize: '0.88rem', fontWeight: 500,
+                color: a.color || (a.disabled ? '#bbb' : '#1a1d1f'),
+                borderRadius: '0.5rem', textAlign: 'left', whiteSpace: 'nowrap',
+                opacity: a.disabled ? 0.42 : 1,
+                transition: 'background 0.13s',
+              }}
+              onMouseEnter={e => { if (!a.disabled) e.currentTarget.style.background = '#f4f7f9'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'none'; }}
+            >
+              <span style={{ fontSize: '1rem', flexShrink: 0 }}>{a.icon}</span>
+              {a.label}
+            </button>
+          ))}
+        </div>,
+        document.body
+      )}
+    </>
+  );
+};
+// ────────────────────────────────────────────────────────────────────────────
 
 const PaymentList = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedPayment, setSelectedPayment] = useState(null);
-    const [openDropdownId, setOpenDropdownId] = useState(null);
     
     // Modal states
     const [showEditModal, setShowEditModal] = useState(false);
@@ -20,6 +144,11 @@ const PaymentList = () => {
     const [showSendModal, setShowSendModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
+    
+    // Filter / sort state
+    const [filterStatus, setFilterStatus] = useState('ALL');
+    const [filterDate, setFilterDate]     = useState('30');
+    const [sortAmount, setSortAmount]     = useState('none');
     
     // Form states
     const [editData, setEditData] = useState({ status: '', notes: '' });
@@ -65,28 +194,14 @@ const PaymentList = () => {
         }
     }, [user, navigate, socket]);
 
-    // Close dropdown on click outside
-    useEffect(() => {
-        const handleClickOutside = () => setOpenDropdownId(null);
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, []);
-
-    const handleActionClick = (e, id) => {
-        e.stopPropagation();
-        setOpenDropdownId(openDropdownId === id ? null : id);
-    };
-
     const handleViewDetails = (payment) => {
         setSelectedPayment(payment);
-        setOpenDropdownId(null);
     };
 
     const handleEditClick = (payment) => {
         setEditData({ status: payment.paymentStatus || 'PENDING', notes: payment.paymentNotes || '' });
         setSelectedPayment(payment);
         setShowEditModal(true);
-        setOpenDropdownId(null);
     };
 
     const handleUpdatePayment = async (e) => {
@@ -170,6 +285,33 @@ const PaymentList = () => {
         }
     };
 
+    // ── Client-side filtering + sorting ────────────────────────────────────
+    const filteredOrders = (() => {
+        let result = [...orders];
+
+        // Status filter
+        if (filterStatus !== 'ALL') {
+            result = result.filter(p => {
+                const s = (p.paymentStatus || 'PENDING').toUpperCase();
+                return s === filterStatus;
+            });
+        }
+
+        // Date filter – last N days
+        if (filterDate !== 'all') {
+            const days = parseInt(filterDate, 10);
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - days);
+            result = result.filter(p => new Date(p.createdAt) >= cutoff);
+        }
+
+        // Sort by amount
+        if (sortAmount === 'asc')  result.sort((a, b) => a.totalPrice - b.totalPrice);
+        if (sortAmount === 'desc') result.sort((a, b) => b.totalPrice - a.totalPrice);
+
+        return result;
+    })();
+
     if (loading) return <AdminLayout pageTitle="Payments"><div className="loader-container">...</div></AdminLayout>;
 
     return (
@@ -177,17 +319,42 @@ const PaymentList = () => {
             <div className="orders-dashboard">
                 <div className="table-header-filters">
                     <div className="filter-group">
-                        <select className="filter-select">
-                            <option>All transactions</option>
-                            <option>Paid</option>
-                            <option>Pending</option>
+                        {/* Status filter */}
+                        <select
+                            className="filter-select"
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                        >
+                            <option value="ALL">All transactions</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="SUCCESS">Success / Paid</option>
+                            <option value="FAILED">Failed</option>
+                            <option value="REFUNDED">Refunded</option>
+                            <option value="CANCELLED">Cancelled</option>
                         </select>
-                        <select className="filter-select">
-                            <option>Last 30 days</option>
+
+                        {/* Date range filter */}
+                        <select
+                            className="filter-select"
+                            value={filterDate}
+                            onChange={(e) => setFilterDate(e.target.value)}
+                        >
+                            <option value="7">Last 7 days</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                            <option value="all">All time</option>
                         </select>
                     </div>
-                    <select className="filter-select">
-                        <option>Sort by Amount</option>
+
+                    {/* Sort by amount */}
+                    <select
+                        className="filter-select"
+                        value={sortAmount}
+                        onChange={(e) => setSortAmount(e.target.value)}
+                    >
+                        <option value="none">Sort by Amount</option>
+                        <option value="desc">Amount: High → Low</option>
+                        <option value="asc">Amount: Low → High</option>
                     </select>
                 </div>
 
@@ -206,10 +373,16 @@ const PaymentList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {orders.map((payment) => (
+                                {filteredOrders.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#9a9fa5' }}>
+                                            No transactions match the selected filters.
+                                        </td>
+                                    </tr>
+                                ) : filteredOrders.map((payment) => (
                                     <tr
                                         key={payment._id}
-                                        className={`${selectedPayment?._id === payment._id ? 'selected' : ''} ${openDropdownId === payment._id ? 'row-active' : ''}`}
+                                        className={selectedPayment?._id === payment._id ? 'selected' : ''}
                                         onClick={() => setSelectedPayment(payment)}
                                     >
                                         <td><div className="custom-cb"></div></td>
@@ -231,36 +404,15 @@ const PaymentList = () => {
                                         <td>${payment.totalPrice.toFixed(2)}</td>
                                         <td style={{ color: '#9a9fa5' }}>{new Date(payment.createdAt).toLocaleDateString()}</td>
                                         <td className="actions-cell">
-                                            <div className="dropdown-container">
-                                                <button 
-                                                    className="three-dots-btn" 
-                                                    onClick={(e) => handleActionClick(e, payment._id)}
-                                                >
-                                                    •••
-                                                </button>
-                                                {openDropdownId === payment._id && (
-                                                    <div className="action-dropdown" onClick={(e) => e.stopPropagation()}>
-                                                        <div className="dropdown-item" onClick={() => handleViewDetails(payment)}>
-                                                            <span className="icon">👁️</span> View Details
-                                                        </div>
-                                                        <div className="dropdown-item" onClick={() => handleEditClick(payment)}>
-                                                            <span className="icon">✏️</span> Edit Payment
-                                                        </div>
-                                                        <div className="dropdown-item" onClick={() => handleDownloadReceipt(payment)}>
-                                                            <span className="icon">📥</span> Download Receipt
-                                                        </div>
-                                                        <div className={`dropdown-item ${payment.receiptSent ? 'disabled' : ''}`} onClick={() => { setSelectedPayment(payment); setShowSendModal(true); setOpenDropdownId(null); }}>
-                                                            <span className="icon">📧</span> Send Receipt
-                                                        </div>
-                                                        <div className={`dropdown-item ${payment.paymentStatus === 'Refunded' ? 'disabled' : ''}`} onClick={() => { setSelectedPayment(payment); setShowRefundModal(true); setOpenDropdownId(null); }}>
-                                                            <span className="icon">🔄</span> Issue Refund
-                                                        </div>
-                                                        <div className="dropdown-item delete" onClick={() => { setSelectedPayment(payment); setShowDeleteModal(true); setOpenDropdownId(null); }}>
-                                                            <span className="icon">🗑️</span> Delete Payment
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
+                                            <PaymentActionDropdown
+                                              payment={payment}
+                                              onView={handleViewDetails}
+                                              onEdit={handleEditClick}
+                                              onDownload={handleDownloadReceipt}
+                                              onSend={(p) => { setSelectedPayment(p); setShowSendModal(true); }}
+                                              onRefund={(p) => { setSelectedPayment(p); setShowRefundModal(true); }}
+                                              onDelete={(p) => { setSelectedPayment(p); setShowDeleteModal(true); }}
+                                            />
                                         </td>
                                     </tr>
                                 ))}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
@@ -7,12 +7,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const sessionExpired = params.get('session') === 'expired';
+  const redirectTo = params.get('redirect') || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate('/');
+      navigate(redirectTo);
     } catch (error) {
       alert(error.response?.data?.message || 'Login failed');
     }
@@ -27,6 +31,11 @@ const Login = () => {
           <div className="auth-img-placeholder">🛒</div>
         </div>
         <div className="auth-right-pane">
+          {sessionExpired && (
+            <div className="session-banner">
+              🔒 Your session expired. Please log in again.
+            </div>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="form-group-flip">
               <input 
@@ -73,7 +82,8 @@ const Login = () => {
         .form-group-flip input:focus { border-bottom: 1px solid var(--primary); }
 
         .terms-text { font-size: 0.75rem; color: #878787; margin-bottom: 1.5rem; line-height: 1.4; }
-        .login-btn-flip { background: #fb641b; color: white; border: none; padding: 0.8rem; font-size: 1rem; font-weight: 700; border-radius: 2px; cursor: pointer; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2); margin-bottom: 1rem; }
+        .login-btn-flip { width: 100%; background: #fb641b; color: white; border: none; padding: 0.8rem; font-size: 1rem; font-weight: 700; border-radius: 2px; cursor: pointer; box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2); margin-bottom: 1rem; }
+        .session-banner { background: #fff3cd; border: 1px solid #ffc107; color: #856404; border-radius: 4px; padding: .6rem .9rem; font-size: .82rem; margin-bottom: 1.25rem; }
         
         .auth-footer-flip { margin-top: auto; text-align: center; padding-bottom: 1rem; }
         .auth-footer-flip a { color: var(--primary); text-decoration: none; font-weight: 700; font-size: 0.9rem; }

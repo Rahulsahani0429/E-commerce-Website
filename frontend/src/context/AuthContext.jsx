@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("cartItems"); // Force clear cart on logout
   };
 
   const updateUserInfo = (userData) => {

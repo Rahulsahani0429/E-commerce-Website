@@ -3,189 +3,181 @@ import { useNavigate } from 'react-router-dom';
 import api from '../utils/api.js';
 import './SearchModal.css';
 
-const SearchModal = ({ isOpen, onClose, userToken }) => {
-    const [query, setQuery] = useState('');
-    const [results, setResults] = useState({ users: [], products: [], orders: [], payments: [] });
-    const [loading, setLoading] = useState(false);
-    const inputRef = useRef(null);
-    const modalRef = useRef(null);
-    const navigate = useNavigate();
+const TRENDING = ['Orders', 'Customers', 'Products', 'Payments', 'Reports'];
 
-    // Auto-focus input when modal opens
-    useEffect(() => {
-        if (isOpen) {
-            setTimeout(() => {
-                inputRef.current?.focus();
-            }, 100);
-        } else {
-            setQuery('');
-            setResults({ users: [], products: [], orders: [], payments: [] });
-        }
-    }, [isOpen]);
+const SearchModal = ({ isOpen, onClose }) => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState({ users: [], products: [], orders: [], payments: [] });
+  const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
-    const performSearch = useCallback(async (searchQuery) => {
-        if (!searchQuery || searchQuery.length < 2) {
-            setResults({ users: [], products: [], orders: [], payments: [] });
-            return;
-        }
+  // Focus input when opened
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 80);
+    } else {
+      setQuery('');
+      setResults({ users: [], products: [], orders: [], payments: [] });
+    }
+  }, [isOpen]);
 
-        setLoading(true);
-        try {
-            const { data } = await api.get("/search", {
-                params: { q: searchQuery }
-            });
-            setResults(data);
-        } catch (error) {
-            console.error('Search error:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (query.trim().length >= 2) {
-                performSearch(query.trim());
-            } else {
-                setResults({ users: [], products: [], orders: [], payments: [] });
-            }
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, [query, performSearch]);
-
-    useEffect(() => {
-        const handleEsc = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleEsc);
-        return () => window.removeEventListener('keydown', handleEsc);
-    }, [onClose]);
-
-    const handleResultClick = (path) => {
-        navigate(path);
+  // Close on outside click
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         onClose();
+      }
     };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [isOpen, onClose]);
 
-    if (!isOpen) return null;
+  // Escape key to close
+  useEffect(() => {
+    const handle = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handle);
+    return () => window.removeEventListener('keydown', handle);
+  }, [onClose]);
 
-    const hasResults = results.users.length > 0 || 
-                       results.products.length > 0 || 
-                       results.orders.length > 0 || 
-                       results.payments.length > 0;
+  // Debounced search
+  const performSearch = useCallback(async (q) => {
+    if (!q || q.length < 2) {
+      setResults({ users: [], products: [], orders: [], payments: [] });
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data } = await api.get('/search', { params: { q } });
+      setResults(data);
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    return (
-        <div className="search-modal-overlay" onClick={onClose}>
-            <div 
-                className="search-modal-container" 
-                onClick={(e) => e.stopPropagation()} 
-                ref={modalRef}
-            >
-                <div className="search-input-wrapper">
-                    <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        placeholder="Search orders, products, customers..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
-                    {query && (
-                        <button className="clear-search" onClick={() => setQuery('')}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    )}
-                </div>
+  useEffect(() => {
+    const t = setTimeout(() => performSearch(query.trim()), 400);
+    return () => clearTimeout(t);
+  }, [query, performSearch]);
 
-                <div className="search-results-content">
-                    {loading ? (
-                        <div className="search-status-message">
-                            <div className="spinner"></div>
-                            <span>Searching...</span>
-                        </div>
-                    ) : query.length < 2 ? (
-                        <div className="search-status-message">
-                            <span>Type at least 2 characters to search...</span>
-                        </div>
-                    ) : !hasResults ? (
-                        <div className="search-status-message">
-                            <span>No results found for "{query}"</span>
-                        </div>
-                    ) : (
-                        <div className="results-groups-container">
-                            {results.products.length > 0 && (
-                                <div className="results-group">
-                                    <h3>Products</h3>
-                                    {results.products.map(product => (
-                                        <div key={product._id} className="result-item" onClick={() => handleResultClick(`/admin/products/${product._id}/edit`)}>
-                                            <img src={product.image} alt={product.name} />
-                                            <div className="result-info">
-                                                <span className="result-title">{product.name}</span>
-                                                <span className="result-subtitle">{product.category}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+  const go = (path) => { navigate(path); onClose(); };
 
-                            {results.users.length > 0 && (
-                                <div className="results-group">
-                                    <h3>Customers</h3>
-                                    {results.users.map(user => (
-                                        <div key={user._id} className="result-item" onClick={() => handleResultClick(`/admin/customers`)}>
-                                            <div className="result-avatar">
-                                                {user.avatar ? <img src={user.avatar} alt={user.name} /> : user.name.charAt(0)}
-                                            </div>
-                                            <div className="result-info">
-                                                <span className="result-title">{user.name}</span>
-                                                <span className="result-subtitle">{user.email}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+  const hasResults = results.users.length > 0 || results.products.length > 0 ||
+                     results.orders.length > 0 || results.payments.length > 0;
 
-                            {results.orders.length > 0 && (
-                                <div className="results-group">
-                                    <h3>Orders</h3>
-                                    {results.orders.map(order => (
-                                        <div key={order._id} className="result-item" onClick={() => handleResultClick(`/admin/orders/${order._id}`)}>
-                                            <div className="result-icon order">#</div>
-                                            <div className="result-info">
-                                                <span className="result-title">Order #{order._id.substring(order._id.length - 6)}</span>
-                                                <span className="result-subtitle">Status: {order.orderStatus} • ₹{order.totalPrice}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+  if (!isOpen) return null;
 
-                            {results.payments.length > 0 && (
-                                <div className="results-group">
-                                    <h3>Payments</h3>
-                                    {results.payments.map(payment => (
-                                        <div key={payment.razorpay_payment_id} className="result-item" onClick={() => handleResultClick(`/admin/payments`)}>
-                                            <div className="result-icon payment">$</div>
-                                            <div className="result-info">
-                                                <span className="result-title">{payment.razorpay_payment_id}</span>
-                                                <span className="result-subtitle">₹{payment.totalPrice} • {payment.paymentStatus}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="search-dropdown" ref={dropdownRef}>
+      {/* Input row */}
+      <div className="sd-input-row">
+        <svg className="sd-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          ref={inputRef}
+          type="text"
+          className="sd-input"
+          placeholder="Search orders, products, customers..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        {query && (
+          <button className="sd-clear-btn" onClick={() => setQuery('')}>✕</button>
+        )}
+      </div>
+
+      {/* Results body */}
+      <div className="sd-body">
+        {loading ? (
+          <div className="sd-status">
+            <div className="sd-spinner" />
+            <span>Searching...</span>
+          </div>
+        ) : query.length < 2 ? (
+          <>
+            <p className="sd-section-label">Trending</p>
+            {TRENDING.map((t) => (
+              <div key={t} className="sd-suggestion-item" onClick={() => go(`/admin/${t.toLowerCase()}`)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9fa5" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>{t}</span>
+              </div>
+            ))}
+          </>
+        ) : !hasResults ? (
+          <div className="sd-status"><span>No results for "{query}"</span></div>
+        ) : (
+          <>
+            {results.products.length > 0 && (
+              <div className="sd-group">
+                <p className="sd-section-label">Products</p>
+                {results.products.map((p) => (
+                  <div key={p._id} className="sd-result-item" onClick={() => go(`/admin/products/${p._id}/edit`)}>
+                    <img src={p.image} alt={p.name} className="sd-result-img" />
+                    <div className="sd-result-meta">
+                      <span className="sd-result-title">{p.name}</span>
+                      <span className="sd-result-sub">{p.category}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {results.users.length > 0 && (
+              <div className="sd-group">
+                <p className="sd-section-label">Customers</p>
+                {results.users.map((u) => (
+                  <div key={u._id} className="sd-result-item" onClick={() => go(`/admin/customers`)}>
+                    <div className="sd-result-avatar">
+                      {u.avatar ? <img src={u.avatar} alt={u.name} /> : u.name.charAt(0)}
+                    </div>
+                    <div className="sd-result-meta">
+                      <span className="sd-result-title">{u.name}</span>
+                      <span className="sd-result-sub">{u.email}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {results.orders.length > 0 && (
+              <div className="sd-group">
+                <p className="sd-section-label">Orders</p>
+                {results.orders.map((o) => (
+                  <div key={o._id} className="sd-result-item" onClick={() => go(`/admin/orders/${o._id}`)}>
+                    <div className="sd-result-icon">#</div>
+                    <div className="sd-result-meta">
+                      <span className="sd-result-title">Order #{o._id.slice(-6).toUpperCase()}</span>
+                      <span className="sd-result-sub">{o.orderStatus} · ₹{o.totalPrice}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {results.payments.length > 0 && (
+              <div className="sd-group">
+                <p className="sd-section-label">Payments</p>
+                {results.payments.map((p) => (
+                  <div key={p._id} className="sd-result-item" onClick={() => go(`/admin/payments`)}>
+                    <div className="sd-result-icon">$</div>
+                    <div className="sd-result-meta">
+                      <span className="sd-result-title">{p.razorpay_payment_id || `#${p._id.slice(-6)}`}</span>
+                      <span className="sd-result-sub">₹{p.totalPrice} · {p.paymentStatus}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default SearchModal;

@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { NotificationProvider } from './context/NotificationContext'
 import './index.css'
+import './axiosSetup.js'
 import App from './App.jsx'
 
 // NOTE: StrictMode is intentionally disabled to prevent double socket connections.
