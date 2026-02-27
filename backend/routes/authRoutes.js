@@ -10,6 +10,7 @@ import {
   updateUser,
 } from "../controllers/authController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.post("/register", registerUser);
 router
   .route("/profile")
   .get(protect, getUserProfile)
-  .put(protect, updateUserProfile);
+  .put(protect, upload.single("avatar"), updateUserProfile);
 router.route("/").get(protect, admin, getUsers);
 router
   .route("/:id")

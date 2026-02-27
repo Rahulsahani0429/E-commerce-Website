@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
+import Avatar from "../components/Avatar";
 import api from "../utils/api.js";
 import "./AdminOrderDetail.css";
 
@@ -372,13 +373,10 @@ export default function AdminOrderDetail() {
                   className="aod-customer-row"
                   onClick={() => navigate(`/admin/customers/${order.user._id}`)}
                 >
-                  <img
-                    src={
-                      order.user.avatar ||
-                      `https://ui-avatars.com/api/?name=${encodeURIComponent(order.user.name || "User")}&background=6366f1&color=fff&size=128`
-                    }
-                    alt={order.user.name}
-                    className="aod-customer-avatar"
+                  <Avatar 
+                    user={order.user} 
+                    size={64} 
+                    className="aod-customer-avatar" 
                   />
                   <div>
                     <p className="aod-customer-name">{order.user.name}</p>

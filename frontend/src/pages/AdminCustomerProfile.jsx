@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
+import Avatar from "../components/Avatar";
 import api from "../utils/api.js";
 import "./AdminCustomerProfile.css";
 
@@ -96,10 +97,10 @@ export default function AdminCustomerProfile() {
         <button className="acp-back-btn" onClick={() => navigate(-1)}>← Back</button>
 
         <div className="acp-avatar-wrap">
-          <img
-            src={customer.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name)}&background=6366f1&color=fff&size=128`}
-            alt={customer.name}
-            className="acp-avatar"
+          <Avatar 
+            user={customer} 
+            size={120} 
+            className="acp-avatar" 
           />
           <span className={`acp-status-dot ${statusCls}`} />
         </div>
@@ -230,10 +231,10 @@ export default function AdminCustomerProfile() {
           {/* Quick Profile Summary */}
           <div className="acp-card">
             <div className="acp-mini-profile">
-              <img
-                src={customer.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name)}&background=6366f1&color=fff&size=128`}
-                alt={customer.name}
-                className="acp-mini-avatar"
+              <Avatar 
+                user={customer} 
+                size={80} 
+                className="acp-mini-avatar" 
               />
               <p className="acp-mini-name">{customer.name}</p>
               <p className="acp-mini-email">{customer.email}</p>

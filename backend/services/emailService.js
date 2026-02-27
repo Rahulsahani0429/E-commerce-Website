@@ -3,21 +3,21 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-/**
- * @desc Get email transport
- */
-const getTransporter = () => {
-    return nodemailer.createTransport({
-        service: process.env.EMAIL_SERVICE,
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        secure: process.env.EMAIL_PORT == 465, // true for 465, false for other ports
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-    });
-};
+const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE || "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+transporter.verify((error, success) => {
+    if (error) {
+        console.error("SMTP Connection Error:", error.message || error);
+    } else {
+        console.log("SMTP Server Ready and Verified");
+    }
+});
 
 /**
  * @desc Get email template based on type
@@ -109,13 +109,20 @@ const getTemplate = (type, data) => {
  */
 export const sendEmail = async (email, type, data) => {
     // Check for placeholders in env
-    if (!process.env.EMAIL_USER || process.env.EMAIL_USER === 'your-email@gmail.com' || process.env.EMAIL_PASS === 'your-app-password') {
-        console.warn("Email credentials are placeholders. Skipping email send.");
-        return { success: false, error: "Email credentials not configured" };
+    if (!process.env.EMAIL_USER || process.env.EMAIL_USER === 'your-email@gmail.com' ||
+        !process.env.EMAIL_PASS || process.env.EMAIL_PASS === 'your_16_character_app_password') {
+
+        const missing = [];
+        if (!process.env.EMAIL_USER || process.env.EMAIL_USER === 'your-email@gmail.com') missing.push("EMAIL_USER");
+        if (!process.env.EMAIL_PASS || process.env.EMAIL_PASS === 'your_16_character_app_password') missing.push("EMAIL_PASS");
+
+        console.warn(`[SMTP] Configuration Missing: ${missing.join(", ")}. skipping email send.`);
+        console.info("[SMTP] TIP: Generate a 16-character 'App Password' from your Google Account settings to allow sending emails.");
+
+        return { success: false, error: `Email credentials not configured: missing ${missing.join(", ")}` };
     }
 
     try {
-        const transporter = getTransporter();
         const { subject, html } = getTemplate(type, data);
 
         const mailOptions = {

@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://i.pravatar.cc/150?u=fake@pravatar.com",
+      default: "",
     },
     role: {
       type: String,

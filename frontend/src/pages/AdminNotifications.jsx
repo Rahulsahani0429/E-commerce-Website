@@ -10,7 +10,8 @@ const AdminNotifications = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
-    const [unreadCount, setUnreadCount] = useState(0);
+    const [counts, setCounts] = useState({ total: 0, read: 0, unread: 0 });
+    const [selectedIds, setSelectedIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // all, unread, read
     const [page, setPage] = useState(1);
@@ -32,6 +33,7 @@ const AdminNotifications = () => {
 
             if (isReset) {
                 setNotifications(data.notifications);
+                setSelectedIds([]); // Clear selection on reset
             } else {
                 setNotifications(prev => {
                     const newNotifs = data.notifications.filter(
@@ -41,14 +43,10 @@ const AdminNotifications = () => {
                 });
             }
 
-            setUnreadCount(data.unreadCount);
+            setCounts(data.counts);
             setHasMore(data.hasMore);
         } catch (error) {
             console.error('Error fetching notifications:', error);
-            if (error.response?.status === 401) {
-                // If token is invalid, log out
-                // logout(); // Only if we are sure
-            }
         } finally {
             setLoading(false);
         }
@@ -81,7 +79,12 @@ const AdminNotifications = () => {
                 if (filter === 'read') return prev;
                 return [newNotif, ...prev];
             });
-            setUnreadCount(prev => prev + 1);
+            
+            setCounts(prev => ({
+                ...prev,
+                total: prev.total + 1,
+                unread: prev.unread + 1
+            }));
 
             // Show browser notification if permitted
             if (Notification.permission === "granted") {
@@ -98,8 +101,8 @@ const AdminNotifications = () => {
         if (e) e.stopPropagation();
         try {
             await api.patch(`/notifications/${id}/read`, {});
-            setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
-            setUnreadCount(prev => Math.max(0, prev - 1));
+            // Refresh counts and list
+            fetchNotifications(true, 1);
         } catch (error) {
             console.error('Error marking as read:', error);
         }
@@ -108,10 +111,59 @@ const AdminNotifications = () => {
     const markAllAsRead = async () => {
         try {
             await api.patch("/notifications/read-all", {});
-            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-            setUnreadCount(0);
+            // Refresh counts and list
+            fetchNotifications(true, 1);
         } catch (error) {
             console.error('Error marking all as read:', error);
+        }
+    };
+
+    const handleDelete = async (id, e) => {
+        if (e) e.stopPropagation();
+        if (!window.confirm("Delete this notification?")) return;
+        try {
+            await api.delete(`/notifications/${id}`);
+            fetchNotifications(true, 1);
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+        }
+    };
+
+    const handleDeleteSelected = async () => {
+        if (selectedIds.length === 0) return;
+        if (!window.confirm(`Delete ${selectedIds.length} selected notifications?`)) return;
+        try {
+            await api.post("/notifications/delete-multiple", { ids: selectedIds });
+            fetchNotifications(true, 1);
+            setSelectedIds([]);
+        } catch (error) {
+            console.error('Error deleting selected:', error);
+        }
+    };
+
+    const handleDeleteAll = async () => {
+        if (!window.confirm("DANGER: Delete ALL notifications? This cannot be undone.")) return;
+        try {
+            await api.delete("/notifications/delete-all");
+            fetchNotifications(true, 1);
+            setSelectedIds([]);
+        } catch (error) {
+            console.error('Error deleting all:', error);
+        }
+    };
+
+    const toggleSelect = (id, e) => {
+        if (e) e.stopPropagation();
+        setSelectedIds(prev => 
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.length === notifications.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(notifications.map(n => n._id));
         }
     };
 
@@ -127,6 +179,10 @@ const AdminNotifications = () => {
             });
             setSendSuccess(true);
             setForm({ title: '', message: '', type: 'system', recipientId: '' });
+            
+            // Refresh notifications to show the sent one if admin
+            fetchNotifications(true, 1);
+
             setTimeout(() => { setSendSuccess(false); setShowCompose(false); }, 2000);
         } catch (error) {
             console.error('Error sending notification:', error);
@@ -177,16 +233,30 @@ const AdminNotifications = () => {
                 <div className="notif-header">
                     <div className="notif-title-section">
                         <h1>Inbox</h1>
-                        {unreadCount > 0 && <span className="unread-badge">{unreadCount} New</span>}
+                        {counts.unread > 0 && <span className="unread-badge">{counts.unread} New</span>}
                     </div>
                     <div className="notif-actions">
                         <div className="notif-tabs">
-                            <button className={`tab-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
-                            <button className={`tab-btn ${filter === 'unread' ? 'active' : ''}`} onClick={() => setFilter('unread')}>Unread</button>
-                            <button className={`tab-btn ${filter === 'read' ? 'active' : ''}`} onClick={() => setFilter('read')}>Read</button>
+                            <button className={`tab-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>
+                                All ({counts.total})
+                            </button>
+                            <button className={`tab-btn ${filter === 'unread' ? 'active' : ''}`} onClick={() => setFilter('unread')}>
+                                Unread ({counts.unread})
+                            </button>
+                            <button className={`tab-btn ${filter === 'read' ? 'active' : ''}`} onClick={() => setFilter('read')}>
+                                Read ({counts.read})
+                            </button>
                         </div>
                         <div style={{ display:'flex', gap:'0.5rem' }}>
                             <button className="btn-mark-all" onClick={markAllAsRead}>Mark all read</button>
+                            {selectedIds.length > 0 && (
+                                <button className="btn-delete-selected" onClick={handleDeleteSelected} style={{ background:'#fee2e2', color:'#ef4444', border:'1px solid #fecaca', padding:'0.45rem 1rem', borderRadius:'6px', cursor:'pointer' }}>
+                                    🗑 Delete ({selectedIds.length})
+                                </button>
+                            )}
+                            <button className="btn-delete-all" onClick={handleDeleteAll} style={{ background:'#fff', color:'#6b7280', border:'1px solid #d1d5db', padding:'0.45rem 1rem', borderRadius:'6px', cursor:'pointer' }}>
+                                Clear All
+                            </button>
                             <button
                                 onClick={() => setShowCompose(v => !v)}
                                 style={{ padding:'0.45rem 1rem', borderRadius:'6px', background: showCompose ? '#e0e7ff' : '#4338ca', color: showCompose ? '#4338ca' : '#fff', fontWeight:700, border:'none', cursor:'pointer', fontSize:'0.85rem' }}
@@ -197,9 +267,21 @@ const AdminNotifications = () => {
                     </div>
                 </div>
 
+                <div className="selection-bar" style={{ padding:'0.5rem 1rem', background:'#f9fafb', borderBottom:'1px solid #e5e7eb', display:'flex', alignItems:'center', gap:'1rem', fontSize:'0.85rem' }}>
+                    <input 
+                        type="checkbox" 
+                        checked={notifications.length > 0 && selectedIds.length === notifications.length} 
+                        onChange={toggleSelectAll} 
+                        style={{ cursor:'pointer' }}
+                    />
+                    <span style={{ color:'#4b5563' }}>Select All Visible</span>
+                </div>
+
                 {/* Compose Panel */}
+                {/* ... existing compose panel code ... */}
                 {showCompose && (
                     <form onSubmit={handleSend} style={{ background:'#f8faff', border:'1px solid #c7d7fe', borderRadius:'12px', padding:'1.25rem 1.5rem', marginBottom:'1.25rem', display:'flex', flexDirection:'column', gap:'0.75rem' }}>
+                        {/* ... form content ... */}
                         <h3 style={{ margin:0, fontSize:'1rem', color:'#3730a3', fontWeight:700 }}>📣 Send Notification to Users</h3>
                         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem' }}>
                             <div style={{ display:'flex', flexDirection:'column', gap:'0.3rem' }}>
@@ -271,23 +353,39 @@ const AdminNotifications = () => {
                         notifications.map((notif) => (
                             <div
                                 key={notif._id}
-                                className={`notif-item ${!notif.isRead ? 'unread' : ''}`}
+                                className={`notif-item ${!notif.isRead ? 'unread' : ''} ${selectedIds.includes(notif._id) ? 'selected' : ''}`}
                                 onClick={() => handleNotifClick(notif)}
+                                style={{ display:'flex', alignItems:'center', gap:'1rem' }}
                             >
+                                <input 
+                                    type="checkbox" 
+                                    checked={selectedIds.includes(notif._id)} 
+                                    onChange={(e) => toggleSelect(notif._id, e)}
+                                    onClick={(e) => e.stopPropagation()}
+                                    style={{ width:'18px', height:'18px', cursor:'pointer' }}
+                                />
                                 {!notif.isRead && <span className="unread-dot"></span>}
                                 {getIcon(notif.type)}
-                                <div className="notif-content">
+                                <div className="notif-content" style={{ flex: 1 }}>
                                     <h3 className="notif-title">{notif.title}</h3>
                                     <p className="notif-message">{notif.message}</p>
                                     <span className="notif-time">{formatTime(notif.createdAt)}</span>
                                 </div>
-                                {!notif.isRead && (
-                                    <div className="item-actions">
+                                <div className="item-actions" style={{ display:'flex', gap:'0.5rem', alignItems:'center' }}>
+                                    {!notif.isRead && (
                                         <button className="btn-read-toggle" onClick={(e) => markAsRead(notif._id, e)}>
                                             Mark read
                                         </button>
-                                    </div>
-                                )}
+                                    )}
+                                    <button 
+                                        className="btn-delete-item" 
+                                        onClick={(e) => handleDelete(notif._id, e)}
+                                        style={{ background:'none', border:'none', cursor:'pointer', fontSize:'1.2rem', padding:'0.5rem', borderRadius:'50%', transition:'background 0.2s' }}
+                                        title="Delete"
+                                    >
+                                        🗑️
+                                    </button>
+                                </div>
                             </div>
                         ))
                     )}

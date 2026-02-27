@@ -20,6 +20,9 @@ const getProducts = async (req, res) => {
     if (req.query.category) {
       query.category = { $regex: `^${req.query.category.trim()}$`, $options: "i" };
     }
+    if (req.query.subcategory) {
+      query.subcategory = { $regex: `^${req.query.subcategory.trim()}$`, $options: "i" };
+    }
 
     if (req.query.brand) {
       query.brand = { $regex: `^${req.query.brand.trim()}$`, $options: "i" };
@@ -103,7 +106,7 @@ const createProduct = async (req, res) => {
     const product = new Product({
       name: "Sample name", price: 0, user: req.user._id,
       image: "/images/sample.jpg", brand: "Sample brand",
-      category: "Sample category", countInStock: 0, numReviews: 0,
+      category: "Sample category", subcategory: "Sample subcategory", countInStock: 0, numReviews: 0,
       description: "Sample description",
     });
     const created = await product.save();
@@ -116,7 +119,7 @@ const createProduct = async (req, res) => {
 /** PUT /api/products/:id */
 const updateProduct = async (req, res) => {
   try {
-    const { name, price, description, image, brand, category, countInStock } = req.body;
+    const { name, price, description, image, brand, category, subcategory, countInStock } = req.body;
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -126,6 +129,7 @@ const updateProduct = async (req, res) => {
     product.image = image || product.image;
     product.brand = brand || product.brand;
     product.category = category || product.category;
+    product.subcategory = subcategory || product.subcategory;
     product.countInStock = countInStock ?? product.countInStock;
 
     const updated = await product.save();

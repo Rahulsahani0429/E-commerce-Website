@@ -6,6 +6,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
+import Avatar from '../components/Avatar';
 import { useSocket } from '../context/SocketContext';
 import './AdminOrders.css';
 
@@ -389,7 +390,7 @@ const PaymentList = () => {
                                         <td className="order-id-cell">#TXN{payment._id.substring(payment._id.length - 6).toUpperCase()}</td>
                                         <td>
                                             <div className="customer-cell-flex">
-                                                <img src={payment.user?.avatar || `https://i.pravatar.cc/150?u=${payment.user?.email}`} alt="" className="customer-avatar-rect" />
+                                                <Avatar user={payment.user} size={36} className="customer-avatar-rect" />
                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                     <span style={{ fontWeight: 600 }}>{payment.user?.name || 'Guest'}</span>
                                                     {payment.receiptSent && <span className="receipt-sent-label">Receipt Sent</span>}
@@ -428,7 +429,7 @@ const PaymentList = () => {
                             </div>
                             <div className="detail-body-refined">
                                 <div className="profile-section-centered">
-                                    <img src={selectedPayment.user?.avatar || `https://i.pravatar.cc/150?u=${selectedPayment.user?.email}`} alt="" className="profile-avatar-lg" />
+                                    <Avatar user={selectedPayment.user} size={64} className="profile-avatar-lg" />
                                     <span className="profile-name-lg">{selectedPayment.user?.name}</span>
                                     <span style={{ color: '#6f767e', fontSize: '0.85rem' }}>Method: Credit Card (Stripe)</span>
                                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api.js';
+import Avatar from './Avatar';
 import './SearchModal.css';
 
 const TRENDING = ['Orders', 'Customers', 'Products', 'Payments', 'Reports'];
@@ -133,12 +134,15 @@ const SearchModal = ({ isOpen, onClose }) => {
               <div className="sd-group">
                 <p className="sd-section-label">Customers</p>
                 {results.users.map((u) => (
-                  <div key={u._id} className="sd-result-item" onClick={() => go(`/admin/customers`)}>
-                    <div className="sd-result-avatar">
-                      {u.avatar ? <img src={u.avatar} alt={u.name} /> : u.name.charAt(0)}
-                    </div>
+                  <div key={u._id} className="sd-result-item" onClick={() => go(`/admin/customers/${u._id}`)}>
+                    <Avatar user={u} size={32} showBadge={false} />
                     <div className="sd-result-meta">
-                      <span className="sd-result-title">{u.name}</span>
+                      <div className="sd-result-top">
+                        <span className="sd-result-title">{u.name}</span>
+                        <span className={`sd-role-badge ${u.role === 'admin' ? 'admin' : 'client'}`}>
+                          {u.role === 'admin' ? 'Admin' : 'Client'}
+                        </span>
+                      </div>
                       <span className="sd-result-sub">{u.email}</span>
                     </div>
                   </div>
@@ -163,10 +167,12 @@ const SearchModal = ({ isOpen, onClose }) => {
               <div className="sd-group">
                 <p className="sd-section-label">Payments</p>
                 {results.payments.map((p) => (
-                  <div key={p._id} className="sd-result-item" onClick={() => go(`/admin/payments`)}>
-                    <div className="sd-result-icon">$</div>
+                  <div key={p._id} className="sd-result-item" onClick={() => go(`/admin/payments?id=${p._id}`)}>
+                    <div className="sd-result-icon">💸</div>
                     <div className="sd-result-meta">
-                      <span className="sd-result-title">{p.razorpay_payment_id || `#${p._id.slice(-6)}`}</span>
+                      <span className="sd-result-title">
+                        {p.razorpay_payment_id || `Payment #${p._id.slice(-6).toUpperCase()}`}
+                      </span>
                       <span className="sd-result-sub">₹{p.totalPrice} · {p.paymentStatus}</span>
                     </div>
                   </div>

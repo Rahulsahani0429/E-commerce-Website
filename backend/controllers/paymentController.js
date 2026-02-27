@@ -222,7 +222,7 @@ export const handleWebhook = async (req, res) => {
  */
 export const getPaymentDetails = async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id).populate("user", "name email");
+        const order = await Order.findById(req.params.id).populate("user", "name email avatar");
         if (!order) {
             return res.status(404).json({ message: "Payment/Order not found" });
         }

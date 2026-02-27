@@ -23,10 +23,10 @@ export const globalSearch = async (req, res) => {
 
         const regex = new RegExp(q, "i");
 
-        // Users: name, email
+        // Users: name, email, role
         const users = await User.find({
             $or: [{ name: regex }, { email: regex }]
-        }).sort({ createdAt: -1 }).limit(5).select("name email avatar");
+        }).sort({ createdAt: -1 }).limit(5).select("name email avatar role");
 
         // Products: name, category
         const products = await Product.find({
@@ -34,7 +34,6 @@ export const globalSearch = async (req, res) => {
         }).sort({ createdAt: -1 }).limit(5).select("name category image");
 
         // Orders & Payments (Search Order ID, Razorpay IDs)
-        // Check if query is a valid ObjectId for direct ID search
         const isObjectId = mongoose.Types.ObjectId.isValid(q);
 
         const ordersQuery = {
@@ -53,13 +52,13 @@ export const globalSearch = async (req, res) => {
             .limit(5)
             .select("_id orderStatus totalPrice createdAt razorpay_order_id");
 
-        // Payments (Transactions) - These are essentially orders with payment info in this system
+        // Payments (Transactions)
         const payments = await Order.find({
             $or: [
                 { razorpay_payment_id: regex },
                 { razorpay_order_id: regex }
             ]
-        }).sort({ createdAt: -1 }).limit(5).select("razorpay_payment_id totalPrice paymentStatus createdAt");
+        }).sort({ createdAt: -1 }).limit(5).select("_id razorpay_payment_id totalPrice paymentStatus createdAt");
 
         res.json({
             users,

@@ -4,6 +4,8 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import NotificationIcon from "./NotificationIcon";
+import { API_BASE_URL } from "../config";
+import Avatar from "./Avatar";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -165,7 +167,8 @@ const Header = () => {
               {user ? (
                 <li className="dropdown account-dropdown">
                   <span className="user-label">
-                    {(user?.name || "User").split(" ")[0]} ▾
+                    <Avatar user={user} size={36} />
+                    <span className="dropdown-arrow">▾</span>
                   </span>
                   <div className="dropdown-content">
                     <Link to="/profile">My Profile</Link>
@@ -216,15 +219,12 @@ const Header = () => {
         <nav className="mega-menu-nav">
           <ul className="mega-menu-list">
             {megaMenuData.map((menu, index) => {
-              // Map display labels to backend categories
-              let categoryLink = `/shop?category=${menu.title}`;
-              if (["MEN", "WOMEN", "KIDS", "GENZ"].includes(menu.title)) {
-                categoryLink = "/shop?category=Fashion";
-              } else if (menu.title === "HOME & LIVING") {
-                categoryLink = "/shop?category=Home & Furniture";
-              } else if (menu.title === "BEAUTY") {
-                categoryLink = "/shop?category=Beauty";
-              }
+              let catName = menu.title;
+              if (["MEN", "WOMEN", "KIDS"].includes(menu.title)) catName = "Fashion";
+              if (menu.title === "HOME & LIVING") catName = "Home & Furniture";
+              if (menu.title === "BEAUTY") catName = "Beauty";
+
+              const categoryLink = `/shop?category=${encodeURIComponent(catName)}${["MEN", "WOMEN", "KIDS"].includes(menu.title) ? `&subcategory=${encodeURIComponent(menu.title)}` : ""}`;
 
               return (
                 <li key={index} className="mega-menu-item">
@@ -240,7 +240,7 @@ const Header = () => {
                             <ul className="mega-cat-list">
                               {cat.items.map((item, itemIdx) => (
                                 <li key={itemIdx}>
-                                  <Link to={`/shop?keyword=${item}`} onClick={closeMenu}>
+                                  <Link to={`/shop?category=${encodeURIComponent(catName)}&subcategory=${encodeURIComponent(item)}`} onClick={closeMenu}>
                                     {item}
                                   </Link>
                                 </li>
@@ -261,7 +261,9 @@ const Header = () => {
       {/* Mobile Drawer */}
       <div className={`mobile-drawer ${mobileMenuOpen ? "open" : ""}`}>
         <div className="drawer-header">
-          <div className="user-icon-bg">👤</div>
+          <div className="user-icon-bg">
+            <Avatar user={user} size={45} />
+          </div>
           <div className="user-info">
             {user ? (
                <div className="user-details">
@@ -284,15 +286,13 @@ const Header = () => {
             <li><Link to="/shop" onClick={closeMenu}>🛍️ All Products</Link></li>
             
             <li className="drawer-section-title">Shop by Category</li>
-            {megaMenuData.map((menu, index) => {
-               let categoryLink = `/shop?category=${menu.title}`;
-               if (["MEN", "WOMEN", "KIDS", "GENZ"].includes(menu.title)) {
-                 categoryLink = "/shop?category=Fashion";
-               } else if (menu.title === "HOME & LIVING") {
-                 categoryLink = "/shop?category=Home & Furniture";
-               } else if (menu.title === "BEAUTY") {
-                 categoryLink = "/shop?category=Beauty";
-               }
+             {megaMenuData.map((menu, index) => {
+                let catName = menu.title;
+                if (["MEN", "WOMEN", "KIDS"].includes(menu.title)) catName = "Fashion";
+                if (menu.title === "HOME & LIVING") catName = "Home & Furniture";
+                if (menu.title === "BEAUTY") catName = "Beauty";
+
+                const categoryLink = `/shop?category=${encodeURIComponent(catName)}${["MEN", "WOMEN", "KIDS"].includes(menu.title) ? `&subcategory=${encodeURIComponent(menu.title)}` : ""}`;
                
                return (
                  <li key={`mobile-${index}`}>
@@ -345,7 +345,11 @@ const Header = () => {
         .mobile-search { display: none; margin-top: 0.5rem; width: 100%; padding: 0 10px 10px; }
 
         .nav-items-list { display: flex; align-items: center; gap: 2rem; list-style: none; font-weight: 600; }
-        .user-label { cursor: pointer; font-size: 1rem; position: relative; padding: 0.5rem 0; }
+        .user-label { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; position: relative; padding: 0.5rem 0; font-size: 1rem; }
+        .user-avatar-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; }
+        .user-avatar-circle { width: 36px; height: 36px; border-radius: 50%; background: #ffe500; color: #333; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; border: 2px solid transparent; }
+        .dropdown-arrow { font-size: 0.8rem; margin-left: 2px; }
+        .admin-avatar { border-color: #03a9f4; box-shadow: 0 0 5px rgba(3,169,244,0.5); }
         .login-btn { background: white; color: var(--primary); padding: 0.4rem 2.5rem; border-radius: 2px; font-size: 1rem; transition: background 0.3s; text-decoration: none; display: block; }
         .login-btn:hover { background: #f0f0f0; }
         .cart-nav { display: flex; align-items: center; gap: 0.6rem; font-size: 1rem; text-decoration: none; color: white; }
@@ -421,6 +425,8 @@ const Header = () => {
         .mobile-drawer.open { left: 0; }
         .drawer-header { background: var(--primary); color: white; padding: 2rem 1.5rem; display: flex; align-items: center; gap: 1rem; position: relative; }
         .user-icon-bg { width: 45px; height: 45px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .mobile-user-avatar-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; }
+        .mobile-user-avatar-circle { width: 45px; height: 45px; border-radius: 50%; background: #ffe500; color: #333; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.4rem; border: 2px solid transparent; }
         .close-drawer { position: absolute; top: 1.2rem; right: 1rem; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
         .user-info { flex: 1; }
         .user-details { display: flex; flex-direction: column; }

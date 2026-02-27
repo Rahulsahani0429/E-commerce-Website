@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
+import Avatar from '../components/Avatar';
 import { toast } from 'react-toastify';
 import { useSocket } from '../context/SocketContext';
 import './AdminCustomers.css';
@@ -241,10 +242,11 @@ const AdminCustomers = () => {
                                     <tr key={customer._id}>
                                         <td>
                                             <div className="user-info-cell">
-                                                <img
-                                                    src={customer.avatar || `https://i.pravatar.cc/150?u=${customer.email}`}
-                                                    alt={customer.name}
-                                                    className="user-avatar-small"
+                                                <Avatar 
+                                                  user={customer} 
+                                                  size={40} 
+                                                  showBadge={false} 
+                                                  className="customer-avatar-rect" 
                                                 />
                                                 <div className="user-details">
                                                     <span className="user-name">{customer.name}</span>

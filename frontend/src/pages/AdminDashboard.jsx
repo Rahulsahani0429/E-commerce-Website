@@ -7,6 +7,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import AdminLayout from '../components/AdminLayout';
+import Avatar from '../components/Avatar';
 import { useSocket } from '../context/SocketContext';
 import { getStatusColor, getStatusLabel, normalizeStatus } from '../utils/statusConfig';
 import axios from 'axios';
@@ -225,7 +226,12 @@ const AdminDashboard = () => {
                 {data.recentOrders.map((order) => (
                   <tr key={order._id}>
                     <td className="order-id">#{order._id.substring(order._id.length - 8).toUpperCase()}</td>
-                    <td className="customer-info">{order.user?.name || 'Guest'}</td>
+                    <td className="customer-info">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Avatar user={order.user} size={32} />
+                        {order.user?.name || 'Guest'}
+                      </div>
+                    </td>
                     <td className="date-cell">{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td className="amount-cell">${order.totalPrice.toFixed(2)}</td>
                     <td>

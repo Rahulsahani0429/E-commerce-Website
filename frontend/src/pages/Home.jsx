@@ -34,9 +34,11 @@ const NAV_CATS = [
   { name: 'Books',           icon: '📚',  path: '/shop/category/Books' },
 ];
 
-const banners = Array.from({ length: 8 }, (_, i) =>
-  `https://picsum.photos/seed/hbanner${i + 1}/1600/420`
-);
+const banners = [
+  ...Array.from({ length: 3 }, (_, i) => `https://picsum.photos/seed/hbanner${i + 1}/1600/420`),
+  `${API_BASE_URL}/uploads/banners/electronics_sale_banner.png`,
+  ...Array.from({ length: 4 }, (_, i) => `https://picsum.photos/seed/hbanner${i + 5}/1600/420`)
+];
 
 /* ── ProductRow: horizontal scroll strip ── */
 const ProductRow = ({ products, catKey }) => (

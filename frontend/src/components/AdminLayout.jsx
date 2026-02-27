@@ -5,6 +5,7 @@ import { connectSocket, disconnectSocket } from "../utils/socket.js";
 import "./AdminLayout.css";
 import { useState, useEffect } from "react";
 import SearchModal from "./SearchModal";
+import Avatar from "./Avatar";
 
 const AdminLayout = ({
   children,
@@ -91,6 +92,14 @@ const AdminLayout = ({
             </svg>
           </div>
           <span className="admin-brand-name">ProfitPulse</span>
+        </div>
+
+        <div className="sidebar-profile-section">
+          <Avatar user={user} size={60} />
+          <div className="sidebar-user-info">
+            <span className="sidebar-user-name">{user.name}</span>
+            <span className="sidebar-user-role">Administrator</span>
+          </div>
         </div>
 
         <nav className="sidebar-menu">
@@ -201,11 +210,7 @@ const AdminLayout = ({
             </Link>
 
             <div className="user-profile-header">
-              <img
-                src={user.avatar || "https://i.pravatar.cc/150?u=admin"}
-                alt="Profile"
-                className="user-avatar-rect"
-              />
+              <Avatar user={user} size={36} />
               <div className="user-meta-info">
                 <span className="user-header-name">{user.name}</span>
                 <span className="user-header-email">{user.email}</span>

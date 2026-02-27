@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useLocation, useNavigate, useParams, Link } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import ProductCard from '../components/ProductCard';
+import CategoryBanner from '../components/CategoryBanner';
 
 const TOP_CAT_BAR = [
   { name: 'All',              icon: '🏠', path: '/shop' },
@@ -38,9 +39,7 @@ const SORT_OPTIONS = [
   { label: 'Newest First',      value: 'newest' },
 ];
 
-const banners = Array.from({ length: 8 }, (_, i) =>
-  `https://picsum.photos/seed/shopbn${i + 1}/1600/400`
-);
+// Legacy banners moved to CategoryBanner component
 
 const Shop = () => {
   const { categoryName, brandName } = useParams();
@@ -48,7 +47,7 @@ const Shop = () => {
   const navigate   = useNavigate();
 
   const [filters, setFilters] = useState({
-    category: '', brand: '', priceRange: '', sort: '', page: 1, keyword: '',
+    category: '', subcategory: '', brand: '', priceRange: '', sort: '', page: 1, keyword: '',
   });
 
   const [products,      setProducts]      = useState([]);
@@ -59,19 +58,19 @@ const Shop = () => {
   const [loading,       setLoading]       = useState(true);
   const [error,         setError]         = useState(null);
   const [showFilters,   setShowFilters]   = useState(false);
-  const [activeBanner,  setActiveBanner]  = useState(0);
   const [openSections,  setOpenSections]  = useState({ categories: true, price: true, brand: true });
 
   /* sync URL -> state */
   useEffect(() => {
     const sp = new URLSearchParams(search);
     setFilters({
-      category:   categoryName  || sp.get('category')    || '',
-      brand:      brandName     || sp.get('brand')        || '',
-      priceRange: sp.get('priceRange') || '',
-      sort:       sp.get('sort')       || '',
-      page:       Number(sp.get('page')) || 1,
-      keyword:    sp.get('keyword')    || '',
+      category:    categoryName  || sp.get('category')    || '',
+      subcategory: sp.get('subcategory') || '',
+      brand:       brandName     || sp.get('brand')        || '',
+      priceRange:  sp.get('priceRange') || '',
+      sort:        sp.get('sort')       || '',
+      page:        Number(sp.get('page')) || 1,
+      keyword:     sp.get('keyword')    || '',
     });
   }, [categoryName, brandName, search]);
 
@@ -83,6 +82,7 @@ const Shop = () => {
         const p = new URLSearchParams();
         if (filters.keyword)  p.set('keyword',  filters.keyword);
         if (filters.category) p.set('category', filters.category);
+        if (filters.subcategory) p.set('subcategory', filters.subcategory);
         if (filters.brand)    p.set('brand',    filters.brand);
         if (filters.sort)     p.set('sort',     filters.sort);
         p.set('page', String(filters.page));
@@ -118,15 +118,12 @@ const Shop = () => {
       .catch(() => setAllCategories([]));
   }, []);
 
-  /* banner rotate */
-  useEffect(() => {
-    const t = setInterval(() => setActiveBanner(p => (p + 1) % banners.length), 5000);
-    return () => clearInterval(t);
-  }, []);
+  /* banner rotate logic moved to CategoryBanner */
 
   /* navigate helper */
-  const go = useCallback((cat, br, price, sort, page) => {
+  const go = useCallback((cat, sub, br, price, sort, page) => {
     const c  = cat   !== undefined ? cat   : filters.category;
+    const sbc = sub   !== undefined ? sub   : filters.subcategory;
     const b  = br    !== undefined ? br    : filters.brand;
     const pr = price !== undefined ? price : filters.priceRange;
     const s  = sort  !== undefined ? sort  : filters.sort;
@@ -136,6 +133,8 @@ const Shop = () => {
     const sp = new URLSearchParams();
     if (c) { path = `/shop/category/${encodeURIComponent(c)}`; if (b) sp.set('brand', b); }
     else if (b) { path = `/shop/brand/${encodeURIComponent(b)}`; }
+    
+    if (sbc) sp.set('subcategory', sbc);
     if (pr) sp.set('priceRange', pr);
     if (s)  sp.set('sort', s);
     if (pg > 1) sp.set('page', String(pg));
@@ -143,11 +142,12 @@ const Shop = () => {
     navigate(`${path}${qs ? '?' + qs : ''}`);
   }, [filters, navigate]);
 
-  const setCategory   = c  => go(c, '',              filters.priceRange, filters.sort, 1);
-  const setBrand      = b  => go(filters.category, b, filters.priceRange, filters.sort, 1);
-  const setPriceRange = pr => go(filters.category, filters.brand, pr,    filters.sort, 1);
-  const setSort       = s  => go(filters.category, filters.brand, filters.priceRange, s, 1);
-  const setPage       = pg => go(filters.category, filters.brand, filters.priceRange, filters.sort, pg);
+  const setCategory      = c   => go(c, '', '', filters.priceRange, filters.sort, 1);
+  const setSubcategory   = sub => go(filters.category, sub, filters.brand, filters.priceRange, filters.sort, 1);
+  const setBrand         = b   => go(filters.category, filters.subcategory, b, filters.priceRange, filters.sort, 1);
+  const setPriceRange    = pr  => go(filters.category, filters.subcategory, filters.brand, pr,    filters.sort, 1);
+  const setSort          = s   => go(filters.category, filters.subcategory, filters.brand, filters.priceRange, s, 1);
+  const setPage          = pg  => go(filters.category, filters.subcategory, filters.brand, filters.priceRange, filters.sort, pg);
   const clearAll      = () => navigate('/shop');
 
   const toggleSection = key => setOpenSections(p => ({ ...p, [key]: !p[key] }));
@@ -171,21 +171,15 @@ const Shop = () => {
       </div>
 
       <div className="container">
-        {/* Hero */}
-        <div className="shop-hero">
-          <div className="shop-hero-track" style={{ transform: `translateX(-${activeBanner * 100}%)` }}>
-            {banners.map((b, i) => <img key={i} src={b} alt="" loading="lazy" />)}
-          </div>
-          <div className="shop-hero-dots">
-            {banners.map((_, i) => <span key={i} className={`shd${activeBanner === i ? ' a' : ''}`} onClick={() => setActiveBanner(i)} />)}
-          </div>
-        </div>
+        {/* Dynamic Category Hero Banner */}
+        <CategoryBanner category={filters.category} />
 
         {/* Breadcrumb */}
-        {(filters.category || filters.brand) && (
+        {(filters.category || filters.subcategory || filters.brand) && (
           <div className="shop-bc">
             <Link to="/shop">Home</Link>
             {filters.category && <><span>/</span><span>{filters.category}</span></>}
+            {filters.subcategory && <><span>/</span><span>{filters.subcategory}</span></>}
             {filters.brand    && <><span>/</span><span>{filters.brand}</span></>}
             <strong>· {totalProducts} items</strong>
           </div>
@@ -212,6 +206,7 @@ const Shop = () => {
             {activeCount > 0 && (
               <div className="ssb-chips">
                 {filters.category && <span className="ssb-chip">{filters.category} <button onClick={() => setCategory('')}>✕</button></span>}
+                {filters.subcategory && <span className="ssb-chip">{filters.subcategory} <button onClick={() => setSubcategory('')}>✕</button></span>}
                 {filters.brand    && <span className="ssb-chip">{filters.brand} <button onClick={() => setBrand('')}>✕</button></span>}
                 {filters.priceRange && <span className="ssb-chip">{PRICE_RANGES.find(r => r.value === filters.priceRange)?.label} <button onClick={() => setPriceRange('')}>✕</button></span>}
               </div>

@@ -26,7 +26,7 @@ const getDashboardStats = async (req, res) => {
         const recentOrders = await Order.find({})
             .sort({ createdAt: -1 })
             .limit(5)
-            .populate("user", "name email");
+            .populate("user", "name email avatar");
 
         // Order Status Distribution (for Donut Chart)
         // Normalize all status values to UPPER_CASE before grouping to eliminate

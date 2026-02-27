@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
+import Notification from "../models/Notification.js";
 
 /**
  * @desc    Get admin notifications with filters and pagination
@@ -9,9 +8,8 @@ import { ObjectId } from "mongodb";
 const getAdminNotifications = async (req, res) => {
     try {
         const { status, page = 1, limit = 10 } = req.query;
-        const db = mongoose.connection.db;
 
-        const query = {};
+        const query = { role: "admin" };
         if (status === "unread") {
             query.isRead = false;
         } else if (status === "read") {
@@ -22,24 +20,27 @@ const getAdminNotifications = async (req, res) => {
         const l = Math.max(1, parseInt(limit));
         const skip = (p - 1) * l;
 
-        const notifications = await db.collection("notifications")
-            .find(query)
+        const notifications = await Notification.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(l)
-            .toArray();
+            .limit(l);
 
-        const totalNotifications = await db.collection("notifications").countDocuments(query);
-        const unreadCount = await db.collection("notifications").countDocuments({ isRead: false });
-        const totalPages = Math.ceil(totalNotifications / l);
+        const total = await Notification.countDocuments({ role: "admin" });
+        const read = await Notification.countDocuments({ role: "admin", isRead: true });
+        const unread = await Notification.countDocuments({ role: "admin", isRead: false });
+
+        const totalPages = Math.ceil((status === "all" || !status ? total : (status === "read" ? read : unread)) / l);
         const hasMore = p < totalPages;
 
         res.json({
             notifications,
+            counts: {
+                total,
+                read,
+                unread
+            },
             currentPage: p,
             totalPages,
-            totalNotifications,
-            unreadCount,
             hasMore
         });
     } catch (error) {
@@ -56,12 +57,11 @@ const getAdminNotifications = async (req, res) => {
 const getUserNotifications = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
-        const db = mongoose.connection.db;
 
         // Query: specifically for this user OR broadcasted to all users
         const query = {
             $or: [
-                { recipient: new mongoose.Types.ObjectId(req.user._id) },
+                { recipient: req.user._id },
                 { role: "user", recipient: null }
             ]
         };
@@ -70,24 +70,27 @@ const getUserNotifications = async (req, res) => {
         const l = Math.max(1, parseInt(limit));
         const skip = (p - 1) * l;
 
-        const notifications = await db.collection("notifications")
-            .find(query)
+        const notifications = await Notification.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(l)
-            .toArray();
+            .limit(l);
 
-        const totalNotifications = await db.collection("notifications").countDocuments(query);
-        const unreadCount = await db.collection("notifications").countDocuments({ ...query, isRead: false });
-        const totalPages = Math.ceil(totalNotifications / l);
+        const total = await Notification.countDocuments(query);
+        const read = await Notification.countDocuments({ ...query, isRead: true });
+        const unread = await Notification.countDocuments({ ...query, isRead: false });
+
+        const totalPages = Math.ceil(total / l);
         const hasMore = p < totalPages;
 
         res.json({
             notifications,
+            counts: {
+                total,
+                read,
+                unread
+            },
             currentPage: p,
             totalPages,
-            totalNotifications,
-            unreadCount,
             hasMore
         });
     } catch (error) {
@@ -103,20 +106,20 @@ const getUserNotifications = async (req, res) => {
  */
 const markAsRead = async (req, res) => {
     try {
-        const db = mongoose.connection.db;
-        const query = { _id: new ObjectId(req.params.id) };
+        const query = { _id: req.params.id };
 
         // If not admin, ensure they own the notification
         if (!req.user.isAdmin) {
-            query.recipient = new mongoose.Types.ObjectId(req.user._id);
+            query.recipient = req.user._id;
         }
 
-        const result = await db.collection("notifications").updateOne(
+        const notification = await Notification.findOneAndUpdate(
             query,
-            { $set: { isRead: true } }
+            { $set: { isRead: true } },
+            { new: true }
         );
 
-        if (result.matchedCount === 0) {
+        if (!notification) {
             return res.status(404).json({ message: "Notification not found" });
         }
 
@@ -134,15 +137,16 @@ const markAsRead = async (req, res) => {
  */
 const markAllRead = async (req, res) => {
     try {
-        const db = mongoose.connection.db;
         const query = { isRead: false };
 
         // If not admin, only mark their own as read
         if (!req.user.isAdmin) {
-            query.recipient = new mongoose.Types.ObjectId(req.user._id);
+            query.recipient = req.user._id;
+        } else {
+            query.role = "admin";
         }
 
-        await db.collection("notifications").updateMany(
+        await Notification.updateMany(
             query,
             { $set: { isRead: true } }
         );
@@ -155,6 +159,84 @@ const markAllRead = async (req, res) => {
 };
 
 /**
+ * @desc    Delete single notification
+ * @route   DELETE /api/notifications/:id
+ * @access  Private/Admin
+ */
+const deleteNotification = async (req, res) => {
+    try {
+        const query = { _id: req.params.id };
+
+        // If not admin, ensure they own the notification
+        if (!req.user.isAdmin) {
+            query.recipient = req.user._id;
+        }
+
+        const notification = await Notification.findOneAndDelete(query);
+
+        if (!notification) {
+            return res.status(404).json({ message: "Notification not found" });
+        }
+
+        res.json({ message: "Notification deleted" });
+    } catch (error) {
+        console.error("Delete Notification Error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
+ * @desc    Delete multiple notifications
+ * @route   POST /api/notifications/delete-multiple
+ * @access  Private/Admin
+ */
+const deleteMultipleNotifications = async (req, res) => {
+    try {
+        const { ids } = req.body;
+        const query = { _id: { $in: ids } };
+
+        // If not admin, ensure they own the notifications
+        if (!req.user.isAdmin) {
+            query.recipient = req.user._id;
+        } else {
+            query.role = "admin";
+        }
+
+        await Notification.deleteMany(query);
+
+        res.json({ message: "Selected notifications deleted" });
+    } catch (error) {
+        console.error("Delete Multiple Error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
+ * @desc    Delete all notifications
+ * @route   DELETE /api/notifications/delete-all
+ * @access  Private/Admin
+ */
+const deleteAllNotifications = async (req, res) => {
+    try {
+        const query = {};
+
+        // If not admin, only delete their own
+        if (!req.user.isAdmin) {
+            query.recipient = req.user._id;
+        } else {
+            query.role = "admin";
+        }
+
+        await Notification.deleteMany(query);
+
+        res.json({ message: "All notifications deleted" });
+    } catch (error) {
+        console.error("Delete All Error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/**
  * @desc    Admin sends a notification to a user or broadcasts to all users
  * @route   POST /api/notifications/send
  * @access  Private/Admin
@@ -162,25 +244,21 @@ const markAllRead = async (req, res) => {
 const sendNotification = async (req, res) => {
     try {
         const { title, message, type = "system", recipientId = null } = req.body;
-        const db = mongoose.connection.db;
 
         if (!title || !message) {
             return res.status(400).json({ message: "Title and message are required" });
         }
 
-        const notif = {
+        const notif = new Notification({
             title,
             message,
             type,
             role: "user",
-            recipient: recipientId ? new mongoose.Types.ObjectId(recipientId) : null,
+            recipient: recipientId || null,
             isRead: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+        });
 
-        const result = await db.collection("notifications").insertOne(notif);
-        const saved = { ...notif, _id: result.insertedId };
+        const saved = await notif.save();
 
         // Emit via socket if available
         const io = req.app.get("io");
@@ -204,5 +282,8 @@ export {
     getUserNotifications,
     markAsRead,
     markAllRead,
+    deleteNotification,
+    deleteMultipleNotifications,
+    deleteAllNotifications,
     sendNotification
 };

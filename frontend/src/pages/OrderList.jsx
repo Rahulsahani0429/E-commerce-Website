@@ -5,6 +5,7 @@ import api from '../utils/api.js';
 import { useSocket } from '../context/SocketContext';
 import { toast } from 'react-toastify';
 import AdminLayout from '../components/AdminLayout';
+import Avatar from '../components/Avatar';
 import ActionDropdown from '../components/ActionDropdown';
 import './AdminOrders.css';
 
@@ -294,8 +295,8 @@ const OrderList = () => {
                       <td className="order-id-cell">#{order._id.substring(order._id.length - 6).toUpperCase()}</td>
                       <td>
                         <div className="customer-cell-flex">
-                          <img src={order.user?.avatar || `https://i.pravatar.cc/150?u=${order.user?.email}`} alt="" className="customer-avatar-rect" />
-                          <span>{order.user?.name || 'Guest'}</span>
+                          <Avatar user={order.user} size={36} />
+                          <span className="customer-name-table">{order.user?.name || 'Guest'}</span>
                         </div>
                       </td>
                       <td>

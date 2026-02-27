@@ -249,6 +249,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        avatar: user.avatar,
       },
       token: generateToken(user._id, user.isAdmin),
     });
@@ -295,6 +296,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        avatar: user.avatar,
       },
       token: generateToken(user._id, user.isAdmin),
     });
@@ -340,6 +342,11 @@ const updateUserProfile = async (req, res) => {
     user.name = req.body.name?.trim() || user.name;
     user.email = req.body.email?.toLowerCase().trim() || user.email;
 
+    if (req.file) {
+      // Normalizing the path for consistent front-end rendering
+      user.avatar = `/uploads/avatars/${req.file.filename}`;
+    }
+
     if (req.body.password) {
       user.password = req.body.password;
     }
@@ -353,6 +360,7 @@ const updateUserProfile = async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
+        avatar: updatedUser.avatar,
       },
       token: generateToken(updatedUser._id, updatedUser.isAdmin),
     });
